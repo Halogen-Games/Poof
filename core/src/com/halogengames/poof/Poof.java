@@ -1,0 +1,74 @@
+package com.halogengames.poof;
+
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.halogengames.poof.Data.GameData;
+import com.halogengames.poof.Data.SoundManager;
+import com.halogengames.poof.scenes.Background;
+import com.halogengames.poof.screens.MainMenuScreen;
+
+public class Poof extends Game {
+	//virtual screen sizes
+	public static final int V_WIDTH = 540;
+	public static final int V_HEIGHT = 960;
+
+	//Cam and viewport
+	public static OrthographicCamera CAM;
+	public static Viewport VIEW_PORT;
+
+	//Fonts
+	public static FreeTypeFontGenerator labelFontGenerator;
+	public static FreeTypeFontGenerator valueFontGenerator;
+
+	public SpriteBatch batch;
+	public ShapeRenderer renderer;
+
+	public static Background bg;
+
+	@Override
+	public void create () {
+		batch = new SpriteBatch();
+		renderer = new ShapeRenderer();
+
+		//defining Background
+		bg = new Background(this);
+
+		//Camera and viewport
+		CAM = new OrthographicCamera();
+		VIEW_PORT = new FitViewport( Poof.V_WIDTH, Poof.V_HEIGHT, CAM);
+		CAM.position.set( VIEW_PORT.getWorldWidth()/2, VIEW_PORT.getWorldHeight()/2, 0);
+
+		//Font
+		labelFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));
+		valueFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));
+
+		//Init GameData
+		GameData.init();
+
+		//Init Sound Manager
+		SoundManager.init();
+
+		//using "this" so that the main menu screen can use sprite batch
+		setScreen(new MainMenuScreen(this));
+	}
+
+	@Override
+	public void render () {
+		//Game class delegates to the current screen hence using super
+		super.render();
+	}
+
+	@Override
+	public void dispose () {
+		//dispose objects for memory cleanup
+		batch.dispose();
+		SoundManager.dispose();
+	}
+}
+
