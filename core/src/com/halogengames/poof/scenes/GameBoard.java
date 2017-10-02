@@ -20,8 +20,8 @@ public class GameBoard extends Widget {
     private final int numCols;
     private final int numRows;
     private Array<Array<Tile>> tiles;
-    private int tileMargin;
-    private int tileSize;
+    private float tileMargin;
+    private float tileSize;
     //tile margin = tile size * factor
     private final float tileMarginFactor;
 
@@ -32,11 +32,8 @@ public class GameBoard extends Widget {
         numRows = GameData.numBoardRows;
 
         tileMarginFactor = 0.07f;
-        tileSize = (int)(getWidth()/(tileMarginFactor*numCols + numCols + tileMarginFactor));
-        tileMargin = (int)(tileSize*tileMarginFactor);
-        System.out.println(tileMargin);
-        //set Height based on num rows
-        setHeight(tileSize*GameData.numBoardRows);
+        tileSize = getWidth()/(tileMarginFactor*numCols + numCols + tileMarginFactor);
+        tileMargin = tileSize*tileMarginFactor;
 
         tiles = new Array<Array<Tile>>();
         for(int i=0; i<numRows; i++){
@@ -52,11 +49,8 @@ public class GameBoard extends Widget {
 
     @Override
     protected void sizeChanged() {
-        tileSize = (int)(getWidth()/(tileMarginFactor*numCols + numCols + tileMarginFactor));
-        tileMargin = (int)(tileSize*tileMarginFactor);
-
-        //adjust height based on num Rows
-        setHeight(tileSize*GameData.numBoardRows);
+        tileSize = getWidth()/(tileMarginFactor*numCols + numCols + tileMarginFactor);
+        tileMargin = tileSize*tileMarginFactor;
 
         tiles = new Array<Array<Tile>>();
         for(int i=0; i<numRows; i++){
@@ -76,8 +70,6 @@ public class GameBoard extends Widget {
                 batch.draw(t.getTexture(), getX() + t.getX(), getY() + t.getY(), tileSize, tileSize);
             }
         }
-
-
 
         setBounds(getX(), getY(), getWidth(), getHeight());
     }

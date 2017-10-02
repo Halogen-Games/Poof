@@ -54,6 +54,9 @@ public class Poof extends Game {
 		//Init Sound Manager
 		SoundManager.init();
 
+		//Catch the back nav button
+		Gdx.input.setCatchBackKey(true);
+
 		//using "this" so that the main menu screen can use sprite batch
 		setScreen(new MainMenuScreen(this));
 	}

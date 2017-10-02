@@ -11,7 +11,7 @@ import com.halogengames.poof.Poof;
 public class Background {
 
     private final Poof game;
-    private int x,y;
+    private float x,y;
     private int vel;
 
     public Background(Poof game){

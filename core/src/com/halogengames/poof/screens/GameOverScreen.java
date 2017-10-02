@@ -1,6 +1,7 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -8,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -135,15 +138,28 @@ class GameOverScreen implements Screen{
                 openMainMenu();
             }
         });
+
+        stage.addListener(new InputListener(){
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if(keycode == Input.Keys.BACK){
+                    openMainMenu();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void startGame(){
         Gdx.input.setInputProcessor(null);
+        dispose();
         game.setScreen(new PlayScreen(game));
     }
 
     private void openMainMenu(){
         Gdx.input.setInputProcessor(null);
+        dispose();
         game.setScreen(new MainMenuScreen(game));
     }
 
@@ -187,6 +203,7 @@ class GameOverScreen implements Screen{
 
     @Override
     public void dispose() {
+        System.out.println("Game Over Screen Disposed");
         textLabelFont.dispose();
         valLabelFont.dispose();
         buttonFont.dispose();

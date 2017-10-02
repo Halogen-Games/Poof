@@ -22,13 +22,13 @@ public class Tile extends Sprite{
 
     private Vector2 coords;
 
-    private final int tileSize;
-    private final int tileMargin;
+    private final float tileSize;
+    private final float tileMargin;
     //velocity and acceleration with which tiles move to their target location
-    private int vel;
-    private final int acc;
+    private float vel;
+    private final float acc;
 
-    public Tile(int i, int j, int tileSize, int tileMargin, int numRows) {
+    public Tile(int i, int j, float tileSize, float tileMargin, int numRows) {
         Random rand = new Random();
         color = GameData.validTileColors.get(rand.nextInt(GameData.validTileColors.size));
 
@@ -36,7 +36,7 @@ public class Tile extends Sprite{
         this.tileMargin = tileMargin;
 
         //setting animation related vars
-        int startingYPos = tileMargin * (numRows + 1) + tileSize * numRows;
+        float startingYPos = tileMargin * (numRows + 1) + tileSize * numRows;
         this.vel = 0;
         this.acc = -startingYPos * 3;
 
@@ -56,8 +56,8 @@ public class Tile extends Sprite{
 
     private Vector2 getTargetPos(){
         //returns what position this tile should have given its current coordinates
-        int x = tileMargin*((int)coords.y+1) + tileSize*(int)coords.y;
-        int y = tileMargin*((int)coords.x+1) + tileSize*(int)coords.x;
+        float x = tileMargin*((int)coords.y+1) + tileSize*(int)coords.y;
+        float y = tileMargin*((int)coords.x+1) + tileSize*(int)coords.x;
 
         return(new Vector2(x, y));
     }

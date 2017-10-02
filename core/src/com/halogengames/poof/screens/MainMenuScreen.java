@@ -1,6 +1,7 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -8,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -45,7 +48,6 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(Poof game){
         this.game = game;
 
-
         //start music
         SoundManager.mainMenuMusic.play();
 
@@ -77,7 +79,7 @@ public class MainMenuScreen implements Screen {
         Label title = new Label("Poof", labelStyle);
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
 
-        //Adding play button
+        //Adding buttons
         playButton = new TextButton("Play", buttonStyle);
         fameButton = new TextButton("Hall of Fame", buttonStyle);
         optionsButton = new TextButton("Options", buttonStyle);
@@ -120,22 +122,35 @@ public class MainMenuScreen implements Screen {
                 openOptions();
             }
         });
+
+        stage.addListener(new InputListener(){
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if(keycode == Input.Keys.BACK){
+                    Gdx.app.exit();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void startGame(){
         Gdx.input.setInputProcessor(null);
         SoundManager.mainMenuMusic.stop();
+        dispose();
         game.setScreen(new PlayScreen(game));
     }
 
     private void openHallOfFame(){
         Gdx.input.setInputProcessor(null);
+        dispose();
         game.setScreen(new FameScreen(game));
     }
 
     private void openOptions(){
         Gdx.input.setInputProcessor(null);
-        game.setScreen(new OptionsScreen(game));
+        game.setScreen(new OptionsScreen(game, this));
     }
 
     @Override
@@ -172,7 +187,8 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resume() {
-
+        Gdx.input.setInputProcessor(stage);
+        game.setScreen(this);
     }
 
     @Override
@@ -182,6 +198,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
+        System.out.println("Main Menu Screen Disposed");
         titleFont.dispose();
         stage.dispose();
     }

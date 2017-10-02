@@ -1,12 +1,21 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
@@ -28,9 +37,13 @@ class PlayScreen implements Screen {
 
     private final Stage stage;
 
+    private final ImageButton pauseButton;
+
     PlayScreen(Poof game){
         this.game = game;
         GameData.resetData();
+
+        SoundManager.playMusic.play();
 
         //stage
         stage = new Stage(Poof.VIEW_PORT, game.batch);
@@ -40,14 +53,21 @@ class PlayScreen implements Screen {
         table.bottom();
         table.setFillParent(true);
 
-        SoundManager.playMusic.play();
-
         hud = new Hud(game.batch);
+
         board = new GameBoard();
+
+        //Pause Button
+        Texture buttonTex = new Texture("buttons/pause.png");
+        buttonTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        pauseButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(buttonTex)));
 
         addUIListeners();
 
-        table.add(board).width(Poof.V_WIDTH*0.9f).padBottom(Poof.V_HEIGHT*0.2f);
+        table.add(pauseButton).align(Align.right).size(Poof.V_HEIGHT*0.05f);
+        table.row();
+        //Todo: Make the height dependent on numRows
+        table.add(board).size(Poof.V_WIDTH*0.9f).padBottom(Poof.V_HEIGHT*0.2f);
         stage.addActor(table);
 
         //handle input events
@@ -71,6 +91,24 @@ class PlayScreen implements Screen {
                 board.boardTouchDragged(x, y);
             }
         });
+
+        pauseButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                pause();
+            }
+        });
+
+        stage.addListener(new InputListener(){
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if(keycode == Input.Keys.BACK){
+                    pause();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -90,6 +128,7 @@ class PlayScreen implements Screen {
     private void endGame() {
         Gdx.input.setInputProcessor(null);
         SoundManager.playMusic.stop();
+        dispose();
         game.setScreen(new GameOverScreen(game));
     }
 
@@ -111,13 +150,17 @@ class PlayScreen implements Screen {
 
     @Override
     public void pause() {
+        Gdx.input.setInputProcessor(null);
+        SoundManager.playButtonTap();
         SoundManager.playMusic.pause();
-        game.setScreen(new PauseScreen(this, game));
+        game.setScreen(new PauseScreen(game, this));
     }
 
     @Override
     public void resume() {
-
+        SoundManager.playMusic.play();
+        game.setScreen(this);
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -127,7 +170,9 @@ class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
+        System.out.println("Play Screen Disposed");
         board.dispose();
         hud.dispose();
+        stage.dispose();
     }
 }

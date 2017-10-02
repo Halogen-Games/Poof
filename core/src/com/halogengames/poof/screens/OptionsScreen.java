@@ -1,6 +1,7 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -32,6 +35,8 @@ class OptionsScreen implements Screen {
 
     private final Poof game;
 
+    private final Screen prevScreen;
+
     //Sliders
     private final Slider musicSlider;
     private final Slider soundSlider;
@@ -44,8 +49,10 @@ class OptionsScreen implements Screen {
     private final Stage stage;
     private final TextButton backButton;
 
-    OptionsScreen(Poof game){
+    OptionsScreen(Poof game, Screen prevScr){
         this.game = game;
+
+        this.prevScreen = prevScr;
 
         //stage
         stage = new Stage(Poof.VIEW_PORT, game.batch);
@@ -115,9 +122,7 @@ class OptionsScreen implements Screen {
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.input.setInputProcessor(null);
-                SoundManager.playButtonTap();
-                game.setScreen(new MainMenuScreen(game));
+                returnToPrevScreen();
             }
         });
 
@@ -143,6 +148,24 @@ class OptionsScreen implements Screen {
                 SoundManager.playButtonTap();
             }
         });
+
+        stage.addListener(new InputListener(){
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if(keycode == Input.Keys.BACK){
+                    returnToPrevScreen();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    public void returnToPrevScreen(){
+        Gdx.input.setInputProcessor(null);
+        SoundManager.playButtonTap();
+        dispose();
+        prevScreen.resume();
     }
 
     @Override
@@ -177,6 +200,8 @@ class OptionsScreen implements Screen {
 
     @Override
     public void dispose() {
+        System.out.println("Options Screen Disposed");
         titleFont.dispose();
+        stage.dispose();
     }
 }
