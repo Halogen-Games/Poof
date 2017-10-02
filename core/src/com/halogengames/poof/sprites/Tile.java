@@ -16,19 +16,17 @@ import java.util.Random;
 
 public class Tile extends Sprite{
 
-    private String color;
+    private final String color;
 
     public boolean isSelected;
 
     private Vector2 coords;
 
-    private int tileSize;
-    private int tileMargin;
+    private final int tileSize;
+    private final int tileMargin;
     //velocity and acceleration with which tiles move to their target location
     private int vel;
-    private int acc;
-    //pos where a new tile is placed (from where it falls to its correct location)
-    private int startingYPos;
+    private final int acc;
 
     public Tile(int i, int j, int tileSize, int tileMargin, int numRows) {
         Random rand = new Random();
@@ -38,7 +36,7 @@ public class Tile extends Sprite{
         this.tileMargin = tileMargin;
 
         //setting animation related vars
-        this.startingYPos = tileMargin*(numRows+1) + tileSize*numRows;
+        int startingYPos = tileMargin * (numRows + 1) + tileSize * numRows;
         this.vel = 0;
         this.acc = -startingYPos * 3;
 

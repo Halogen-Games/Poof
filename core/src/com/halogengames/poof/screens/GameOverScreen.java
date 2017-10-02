@@ -1,11 +1,9 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -31,18 +29,18 @@ import com.halogengames.poof.Poof;
 
 class GameOverScreen implements Screen{
     //the game for sprite batch
-    private Poof game;
+    private final Poof game;
 
     //To add the buttons on the screen
     //Todo: Use a texture atlas for the buttons
-    private Stage stage;
-    private BitmapFont buttonFont;
-    private BitmapFont textLabelFont;
-    private BitmapFont valLabelFont;
+    private final Stage stage;
+    private final BitmapFont buttonFont;
+    private final BitmapFont textLabelFont;
+    private final BitmapFont valLabelFont;
 
     //Buttons
-    TextButton replayButton;
-    TextButton mainMenuButton;
+    private final TextButton replayButton;
+    private final TextButton mainMenuButton;
 
     //Constructor
     GameOverScreen(Poof game){
@@ -92,7 +90,7 @@ class GameOverScreen implements Screen{
             scoreTable.add(highScoreMsg).expandX();
         }else{
             Label highScoreText = new Label("Highest Score", new LabelStyle(textLabelFont, Color.DARK_GRAY));
-            Label highScoreVal = new Label(String.valueOf(highScore), new LabelStyle(valLabelFont, Color.DARK_GRAY));;
+            Label highScoreVal = new Label(String.valueOf(highScore), new LabelStyle(valLabelFont, Color.DARK_GRAY));
             scoreTable.row();
             scoreTable.add(highScoreText).expandX();
             scoreTable.row();
@@ -121,7 +119,6 @@ class GameOverScreen implements Screen{
     }
 
     private void addUIListeners(){
-
         replayButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -156,17 +153,8 @@ class GameOverScreen implements Screen{
         Gdx.input.setInputProcessor(stage);
     }
 
-    private void handleInput(float dt) {
-    }
-
-    private void update(float dt) {
-        handleInput(dt);
-    }
-
     @Override
     public void render(float delta){
-        update(delta);
-
         Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -202,6 +190,7 @@ class GameOverScreen implements Screen{
         textLabelFont.dispose();
         valLabelFont.dispose();
         buttonFont.dispose();
+
         stage.dispose();
     }
 }

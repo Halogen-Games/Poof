@@ -1,46 +1,38 @@
 package com.halogengames.poof.scenes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.Poof;
 
 /**
- * Created by Rohit on 30-09-2017.
+ * renders a dynamic background which is shared between menu screen, options screen etc.
  */
 
 public class Background {
 
-    private Poof game;
-    private Array<Sprite> boxes;
-    private int maxNumObj;
+    private final Poof game;
     private int x,y;
+    private int vel;
 
     public Background(Poof game){
         this.game = game;
-        x =0;
+        x=0;
         y=0;
-        maxNumObj = 10;
+        vel = 30;
     }
 
     private void update(float dt){
-
+        x += dt*vel;
+        y += dt*vel;
     }
 
     public void render(float delta) {
         update(delta);
 
-        x++;
-        y++;
-
         game.renderer.setProjectionMatrix(Poof.CAM.combined);
-
         game.renderer.begin(ShapeRenderer.ShapeType.Filled);
         game.renderer.setColor(Color.GREEN);
-        game.renderer.rect(x,y,100,100,Color.GREEN, Color.BLUE, Color.YELLOW, Color.RED);
+        game.renderer.rect(x,y,100,100);
         game.renderer.end();
     }
 }

@@ -1,20 +1,10 @@
 package com.halogengames.poof.scenes;
 
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
-import com.halogengames.poof.Poof;
 import com.halogengames.poof.sprites.Tile;
 
 import java.util.ArrayList;
@@ -27,13 +17,13 @@ import java.util.ArrayList;
  */
 public class GameBoard extends Widget {
 
-    private int numCols;
-    private int numRows;
+    private final int numCols;
+    private final int numRows;
     private Array<Array<Tile>> tiles;
     private int tileMargin;
     private int tileSize;
     //tile margin = tile size * factor
-    private float tileMarginFactor;
+    private final float tileMarginFactor;
 
     private ArrayList<Tile> selectedTiles;
 
@@ -116,11 +106,13 @@ public class GameBoard extends Widget {
                     selectedTiles = new ArrayList<Tile>();
                     t.setSelected();
                     selectedTiles.add(t);
-                    break;
+
+                    //return true declaring input is handled
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     public void boardTouchedUp() {

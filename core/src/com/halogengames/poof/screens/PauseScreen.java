@@ -4,16 +4,16 @@ import com.badlogic.gdx.Screen;
 import com.halogengames.poof.Poof;
 
 /**
- * Created by Rohit on 30-09-2017.
+ * Defines the pause screen
  */
 
-public class PauseScreen implements Screen {
+class PauseScreen implements Screen {
 
     //for renderer handles
-    private Poof game;
+    private final Poof game;
 
     //to return back to the game
-    private PlayScreen playScr;
+    private final PlayScreen playScr;
 
     PauseScreen(PlayScreen scr, Poof game){
         this.playScr = scr;

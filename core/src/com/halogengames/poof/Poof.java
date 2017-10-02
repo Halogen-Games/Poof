@@ -58,11 +58,12 @@ public class Poof extends Game {
 		setScreen(new MainMenuScreen(this));
 	}
 
-	@Override
-	public void render () {
-		//Game class delegates to the current screen hence using super
-		super.render();
-	}
+//	@Override
+//	public void render () {
+//		//Game class delegates to the current screen hence using super
+//		//since the func only uses super call, no need for this func as in absence of Poof.render, super.render will get called in place if exists
+//		super.render();
+//	}
 
 	@Override
 	public void dispose () {

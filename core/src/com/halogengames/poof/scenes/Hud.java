@@ -22,13 +22,13 @@ import com.halogengames.poof.Poof;
 public class Hud {
 
     //Font
-    private BitmapFont textLabelFont;
-    private BitmapFont valLabelFont;
+    private final BitmapFont textLabelFont;
+    private final BitmapFont valLabelFont;
 
-    private Stage stage;
+    private final Stage stage;
 
-    private Label timeLabel;
-    private Label scoreLabel;
+    private final Label timeLabel;
+    private final Label scoreLabel;
 
     public Hud(SpriteBatch sb){
 

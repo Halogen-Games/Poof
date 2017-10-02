@@ -1,7 +1,6 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -26,24 +25,24 @@ import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
 
 /**
- * Created by Rohit on 30-09-2017.
+ * Defined the options screen
  */
 
 class OptionsScreen implements Screen {
 
-    private Poof game;
+    private final Poof game;
 
     //Sliders
-    private Slider musicSlider;
-    private Slider soundSlider;
+    private final Slider musicSlider;
+    private final Slider soundSlider;
 
     //Font
-    private BitmapFont titleFont;
+    private final BitmapFont titleFont;
 
     //To add the buttons on the screen
     //Todo: Use a texture atlas for the buttons
-    private Stage stage;
-    private TextButton backButton;
+    private final Stage stage;
+    private final TextButton backButton;
 
     OptionsScreen(Poof game){
         this.game = game;
@@ -146,22 +145,12 @@ class OptionsScreen implements Screen {
         });
     }
 
-    private void handleInput(float dt){
-
-    }
-
-    private void update(float dt){
-        handleInput(dt);
-    }
-
     @Override
     public void render(float delta) {
-        update(delta);
-
         Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        game.bg.render(delta);
+        Poof.bg.render(delta);
 
         stage.draw();
     }
@@ -188,6 +177,6 @@ class OptionsScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        titleFont.dispose();
     }
 }

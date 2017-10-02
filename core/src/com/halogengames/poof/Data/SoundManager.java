@@ -1,30 +1,28 @@
 package com.halogengames.poof.Data;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 /**
- * Created by Rohit on 29-09-2017.
+ * Creates one instance of each sound,music and these are shared across all the app elements
  */
 
 public class SoundManager {
     //Music
     public static Music mainMenuMusic;
     public static Music playMusic;
-    public static float musicVolume;
 
     //Sound
-    public static Sound blockTouched;
-    public static Sound wrongMove;
-    public static Sound blocksRemoved;
-    public static Sound buttonTap;
+    private static Sound blockTouched;
+    private static Sound wrongMove;
+    private static Sound blocksRemoved;
+    private static Sound buttonTap;
     public static float soundVolume;
 
     public static void init(){
         soundVolume = GameData.prefs.getFloat("soundVolume", 1.0f);
-        musicVolume = GameData.prefs.getFloat("musicVolume", 1.0f);
+        float musicVolume = GameData.prefs.getFloat("musicVolume", 1.0f);
 
         mainMenuMusic = Gdx.audio.newMusic(Gdx.files.internal("music/cute.mp3"));
         mainMenuMusic.setVolume(musicVolume);

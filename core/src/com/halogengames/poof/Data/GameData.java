@@ -16,9 +16,8 @@ public class GameData {
     public static int score;
     private static int numColors;
 
-    //things like font size are sized based on this ideal wodth and height and then scaled appropriately
+    //things like font size are hardcoded according to this base width and then scaled appropriately based on actual width of screen
     public static float baseWidth;
-    public static float baseHeight;
 
     public static int numBoardCols;
     public static int numBoardRows;
@@ -30,7 +29,6 @@ public class GameData {
         prefs = Gdx.app.getPreferences("preferences");
 
         baseWidth = 540;
-        baseHeight = 960;
 
         maxTime = 60;
 

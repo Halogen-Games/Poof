@@ -29,17 +29,17 @@ import com.halogengames.poof.Poof;
 public class MainMenuScreen implements Screen {
 
     //the game for sprite batch
-    private Poof game;
+    private final Poof game;
 
     //Font
-    private BitmapFont titleFont;
+    private final BitmapFont titleFont;
 
     //To add the buttons on the screen
     //Todo: Use a texture atlas for the buttons
-    private Stage stage;
-    private TextButton playButton;
-    private TextButton fameButton;
-    private TextButton optionsButton;
+    private final Stage stage;
+    private final TextButton playButton;
+    private final TextButton fameButton;
+    private final TextButton optionsButton;
 
     //Constructor
     public MainMenuScreen(Poof game){
@@ -143,18 +143,14 @@ public class MainMenuScreen implements Screen {
 
     }
 
-    private void handleInput(float dt) {
-
-    }
-
-    private void update(float dt) {
-        handleInput(dt);
-        Poof.CAM.update();
-    }
+//    public void update(float dt){
+//        Poof.CAM.update();
+//    }
 
     @Override
     public void render(float delta){
-        update(delta);
+//        //no need for below as cam not moving
+//        update(delta);
 
         Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
