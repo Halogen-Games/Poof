@@ -45,7 +45,7 @@ public class Hud {
         FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
         fontParam.minFilter = TextureFilter.Linear;
         fontParam.magFilter = TextureFilter.Linear;
-        fontParam.size = 20;
+        fontParam.size = (int)(20 * Poof.V_WIDTH/GameData.baseWidth);
         textLabelFont = Poof.valueFontGenerator.generateFont(fontParam);
         valLabelFont = Poof.labelFontGenerator.generateFont(fontParam);
 
@@ -58,12 +58,12 @@ public class Hud {
         timeLabel = new Label(String.valueOf((int)Math.ceil(GameData.levelTimer)), valLabelStyle);
         Label scoreTextLabel = new Label("SCORE", textLabelStyle);
         scoreLabel = new Label(String.valueOf(GameData.score), valLabelStyle);
-        Label highscoreTextLabel = new Label("High Score", textLabelStyle);
+        Label highscoreTextLabel = new Label("Best", textLabelStyle);
         Label highscoreLabel = new Label(String.valueOf(GameData.prefs.getInteger("highScore", 0)), valLabelStyle);
 
-        table.add(highscoreTextLabel).expandX().padTop(10);
-        table.add(scoreTextLabel).expandX().padTop(10);
-        table.add(timeTextLabel).expandX().padTop(10);
+        table.add(highscoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
+        table.add(scoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
+        table.add(timeTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
         table.row();
         table.add(highscoreLabel).expandX();
         table.add(scoreLabel).expandX();

@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
 
@@ -62,19 +63,19 @@ public class MainMenuScreen implements Screen {
         fontParam.minFilter = TextureFilter.Linear;
         fontParam.magFilter = TextureFilter.Linear;
         //Title Font
-        fontParam.size = 100;
+        fontParam.size = (int)(100 * Poof.V_WIDTH/GameData.baseWidth);
         titleFont = Poof.labelFontGenerator.generateFont(fontParam);
 
         //Button Font
-        fontParam.size = 50;
-        fontParam.color = Color.GRAY;
+        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
+        fontParam.color = Color.DARK_GRAY;
         TextButtonStyle buttonStyle = new TextButtonStyle();
         buttonStyle.font = Poof.labelFontGenerator.generateFont(fontParam);
 
         //Title Label
         LabelStyle labelStyle = new LabelStyle(titleFont, Color.DARK_GRAY);
         Label title = new Label("Poof", labelStyle);
-        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight() - title.getHeight()-100, Align.center);
+        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
 
         //Adding play button
         playButton = new TextButton("Play", buttonStyle);

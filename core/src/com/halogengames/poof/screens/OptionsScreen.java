@@ -62,7 +62,7 @@ class OptionsScreen implements Screen {
         fontParam.minFilter = Texture.TextureFilter.Linear;
         fontParam.magFilter = Texture.TextureFilter.Linear;
         //Title Font
-        fontParam.size = 80;
+        fontParam.size = (int)(80 * Poof.V_WIDTH/GameData.baseWidth);
         titleFont = Poof.labelFontGenerator.generateFont(fontParam);
 
         //Title Label
@@ -71,8 +71,8 @@ class OptionsScreen implements Screen {
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
 
         //Button Font
-        fontParam.size = 50;
-        fontParam.color = Color.GRAY;
+        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
+        fontParam.color = Color.DARK_GRAY;
         TextButtonStyle buttonStyle = new TextButtonStyle();
         buttonStyle.font = Poof.labelFontGenerator.generateFont(fontParam);
 
@@ -83,21 +83,21 @@ class OptionsScreen implements Screen {
         SliderStyle musicSliderStyle = new SliderStyle();
         musicSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(new Texture("slider/musicKnob.png")));
         musicSliderStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture("slider/musicBG.png")));
-        musicSlider = new Slider(0,100,1,false, musicSliderStyle);
-        musicSlider.setValue(musicSlider.getMaxValue());
+        musicSlider = new Slider(0,1,0.01f,false, musicSliderStyle);
+        musicSlider.setValue(GameData.prefs.getFloat("musicVolume", 1.0f));
 
         SliderStyle soundSliderStyle = new SliderStyle();
         soundSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(new Texture("slider/soundKnob.png")));
         soundSliderStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture("slider/soundBG.png")));
-        soundSlider = new Slider(0,100,1,false, soundSliderStyle);
-        soundSlider.setValue(soundSlider.getMaxValue());
+        soundSlider = new Slider(0,1,0.2f,false, soundSliderStyle);
+        soundSlider.setValue(GameData.prefs.getFloat("soundVolume", 1.0f));
 
         addUIListeners();
 
         //adding buttons to table and table to stage
-        table.add(musicSlider).width(300).padBottom(Poof.V_HEIGHT/10);
+        table.add(musicSlider).width(Poof.V_WIDTH*0.65f).padBottom(Poof.V_HEIGHT/10);
         table.row();
-        table.add(soundSlider).width(300).padBottom(Poof.V_HEIGHT/10);
+        table.add(soundSlider).width(Poof.V_WIDTH*0.65f).padBottom(Poof.V_HEIGHT/10);
         table.row();
         table.add(backButton);
         stage.addActor(title);
@@ -125,10 +125,10 @@ class OptionsScreen implements Screen {
         musicSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.mainMenuMusic.setVolume(musicSlider.getValue()/100);
-                SoundManager.playMusic.setVolume(musicSlider.getValue()/100);
+                SoundManager.mainMenuMusic.setVolume(musicSlider.getValue());
+                SoundManager.playMusic.setVolume(musicSlider.getValue());
 
-                GameData.prefs.putFloat("musicVolume", musicSlider.getValue()/100);
+                GameData.prefs.putFloat("musicVolume", musicSlider.getValue());
                 GameData.prefs.flush();
             }
         });
@@ -136,10 +136,12 @@ class OptionsScreen implements Screen {
         soundSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.soundVolume = soundSlider.getValue()/100;
+                SoundManager.soundVolume = soundSlider.getValue();
 
-                GameData.prefs.putFloat("soundVolume", soundSlider.getValue()/100);
+                GameData.prefs.putFloat("soundVolume", soundSlider.getValue());
                 GameData.prefs.flush();
+
+                SoundManager.playButtonTap();
             }
         });
     }

@@ -14,8 +14,11 @@ public class GameData {
     public static double levelTimer;
     private static int maxTime;
     public static int score;
-    public static int levelNumber;
-    public static int worldNumber;
+    private static int numColors;
+
+    //things like font size are sized based on this ideal wodth and height and then scaled appropriately
+    public static float baseWidth;
+    public static float baseHeight;
 
     public static int numBoardCols;
     public static int numBoardRows;
@@ -26,11 +29,14 @@ public class GameData {
     public static void init(){
         prefs = Gdx.app.getPreferences("preferences");
 
+        baseWidth = 540;
+        baseHeight = 960;
+
         maxTime = 60;
-        score = 0;
 
         numBoardCols = 6;
         numBoardRows = 6;
+        numColors = 3;
     }
 
     public static void resetData(){
@@ -39,12 +45,13 @@ public class GameData {
         score = 0;
 
         validTileColors = new Array<String>();
-        validTileColors.add("yellow");
-        validTileColors.add("green");
-        validTileColors.add("red");
         validTileColors.add("blue");
-        validTileColors.add("purple");
-        validTileColors.removeIndex((int)Math.floor(Math.random()*5));
-        validTileColors.removeIndex((int)Math.floor(Math.random()*4));
+        validTileColors.add("green");
+        validTileColors.add("indigo");
+        validTileColors.add("red");
+        validTileColors.add("yellow");
+        while(validTileColors.size>numColors){
+            validTileColors.removeIndex((int)Math.floor(Math.random()*validTileColors.size));
+        }
     }
 }

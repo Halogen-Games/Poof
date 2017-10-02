@@ -61,5 +61,8 @@ public class SoundManager {
         playMusic.dispose();
 
         blockTouched.dispose();
+        wrongMove.dispose();
+        blocksRemoved.dispose();
+        buttonTap.dispose();
     }
 }

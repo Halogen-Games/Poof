@@ -61,12 +61,12 @@ class GameOverScreen implements Screen{
         fontParam.magFilter = TextureFilter.Linear;
 
         //Label Font
-        fontParam.size = 30;
+        fontParam.size = (int)(30 * Poof.V_WIDTH/GameData.baseWidth);
         textLabelFont = Poof.valueFontGenerator.generateFont(fontParam);
         valLabelFont = Poof.labelFontGenerator.generateFont(fontParam);
 
         //Button Font
-        fontParam.size = 50;
+        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
         fontParam.borderWidth = 0;
         fontParam.color = Color.DARK_GRAY;
         buttonFont = Poof.valueFontGenerator.generateFont(fontParam);
@@ -78,7 +78,7 @@ class GameOverScreen implements Screen{
         Label scoreLabel = new Label(String.valueOf(GameData.score), new LabelStyle(valLabelFont, Color.DARK_GRAY));
 
         //add the labels to the table
-        scoreTable.add(scoreTextLabel).expandX().padTop(10);
+        scoreTable.add(scoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.05f);
         scoreTable.row();
         scoreTable.add(scoreLabel).expandX();
 
@@ -105,7 +105,6 @@ class GameOverScreen implements Screen{
         //create a table to position Buttons on stage
         Table table = new Table();
         table.bottom();
-        table.setPosition(0, 100);
         table.setFillParent(true);
 
         //Add buttons
@@ -117,7 +116,7 @@ class GameOverScreen implements Screen{
         //Add buttons to table and table to stage
         table.add(replayButton);
         table.row();
-        table.add(mainMenuButton);
+        table.add(mainMenuButton).padBottom(Poof.V_HEIGHT*0.1f);
         stage.addActor(table);
     }
 

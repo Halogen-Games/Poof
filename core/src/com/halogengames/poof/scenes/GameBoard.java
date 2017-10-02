@@ -1,8 +1,16 @@
 package com.halogengames.poof.scenes;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
@@ -17,14 +25,15 @@ import java.util.ArrayList;
  * Class representing the game board
  * Also houses game board generation logic
  */
-
-public class GameBoard implements InputProcessor{
+public class GameBoard extends Widget {
 
     private int numCols;
     private int numRows;
     private Array<Array<Tile>> tiles;
     private int tileMargin;
     private int tileSize;
+    //tile margin = tile size * factor
+    private float tileMarginFactor;
 
     private ArrayList<Tile> selectedTiles;
 
@@ -32,8 +41,12 @@ public class GameBoard implements InputProcessor{
         numCols = GameData.numBoardCols;
         numRows = GameData.numBoardRows;
 
-        tileMargin = 0;
-        tileSize = ((int)Poof.VIEW_PORT.getWorldWidth() - (numCols + 1)*tileMargin )/numCols;
+        tileMarginFactor = 0.07f;
+        tileSize = (int)(getWidth()/(tileMarginFactor*numCols + numCols + tileMarginFactor));
+        tileMargin = (int)(tileSize*tileMarginFactor);
+        System.out.println(tileMargin);
+        //set Height based on num rows
+        setHeight(tileSize*GameData.numBoardRows);
 
         tiles = new Array<Array<Tile>>();
         for(int i=0; i<numRows; i++){
@@ -47,19 +60,36 @@ public class GameBoard implements InputProcessor{
         selectedTiles = new ArrayList<Tile>();
     }
 
-    public void render(SpriteBatch sb){
-        sb.begin();
+    @Override
+    protected void sizeChanged() {
+        tileSize = (int)(getWidth()/(tileMarginFactor*numCols + numCols + tileMarginFactor));
+        tileMargin = (int)(tileSize*tileMarginFactor);
+
+        //adjust height based on num Rows
+        setHeight(tileSize*GameData.numBoardRows);
+
+        tiles = new Array<Array<Tile>>();
+        for(int i=0; i<numRows; i++){
+            Array<Tile> tileColumn = new Array<Tile>();
+            for(int j=0; j<numCols; j++) {
+                tileColumn.add(new Tile(i, j, tileSize, tileMargin, numRows));
+            }
+            tiles.add(tileColumn);
+        }
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
         for(int i=0; i<numRows; i++){
             for(int j=0;j<numCols; j++){
                 Tile t = tiles.get(i).get(j);
-                sb.draw(t.getTexture(), t.getX(), t.getY(), tileSize, tileSize);
+                batch.draw(t.getTexture(), getX() + t.getX(), getY() + t.getY(), tileSize, tileSize);
             }
         }
-        sb.end();
-    }
 
-    public void handleInput(float dt){
 
+
+        setBounds(getX(), getY(), getWidth(), getHeight());
     }
 
     public void update(float dt){
@@ -78,29 +108,11 @@ public class GameBoard implements InputProcessor{
         }
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector3 pos = Poof.CAM.unproject(new Vector3(screenX, screenY, 0));
-
+    public boolean boardTouchedDown(float screenX, float screenY) {
         for(int i=0; i<numRows; i++){
             for(int j=0;j<numCols; j++) {
                 Tile t = tiles.get(i).get(j);
-                if (t.getBoundingRectangle().contains(pos.x, pos.y)) {
+                if (t.getBoundingRectangle().contains(screenX, screenY)) {
                     selectedTiles = new ArrayList<Tile>();
                     t.setSelected();
                     selectedTiles.add(t);
@@ -111,8 +123,7 @@ public class GameBoard implements InputProcessor{
         return true;
     }
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    public void boardTouchedUp() {
         if(selectedTiles.size()<3) {
             SoundManager.playWrongMove();
             for (int t = selectedTiles.size() - 1; t >= 0; t--) {
@@ -138,23 +149,18 @@ public class GameBoard implements InputProcessor{
         }
 
         selectedTiles = new ArrayList<Tile>();
-        return true;
     }
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        //Map screen coordinates to world coordinates
-        Vector3 pos = Poof.CAM.unproject(new Vector3(screenX, screenY, 0));
-
+    public void boardTouchDragged(float screenX, float screenY) {
         if(selectedTiles.size() == 0){
-            return true;
+            return;
         }
 
         //Selection Logic
         for(int i=0; i<numRows; i++){
             for(int j=0;j<numCols;j++) {
                 Tile tile = tiles.get(i).get(j);
-                if (tile.getBoundingRectangle().contains(pos.x, pos.y)) {
+                if (tile.getBoundingRectangle().contains(screenX, screenY)) {
                     if (tile.isSelected) {
                         for (int t = selectedTiles.size() - 1; t >= 0; t--) {
                             if (selectedTiles.get(t) == tile) {
@@ -171,16 +177,5 @@ public class GameBoard implements InputProcessor{
                 }
             }
         }
-        return true;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
     }
 }

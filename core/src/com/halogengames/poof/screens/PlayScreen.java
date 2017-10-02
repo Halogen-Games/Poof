@@ -4,7 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
@@ -33,36 +36,49 @@ class PlayScreen implements Screen {
         //stage
         stage = new Stage(Poof.VIEW_PORT, game.batch);
 
+        //Table for board, Buttons and Labels
+        Table table = new Table();
+        table.bottom();
+        table.setFillParent(true);
+
         SoundManager.playMusic.play();
 
         hud = new Hud(game.batch);
-
         board = new GameBoard();
 
-        //handle input events
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(board);
-        inputMultiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(inputMultiplexer);
-
         addUIListeners();
+
+        table.add(board).width(Poof.V_WIDTH*0.9f).padBottom(Poof.V_HEIGHT*0.2f);
+        stage.addActor(table);
+
+        //handle input events
+        Gdx.input.setInputProcessor(stage);
     }
 
     private void addUIListeners(){
+        board.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return board.boardTouchedDown(x, y);
+            }
 
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                board.boardTouchedUp();
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                board.boardTouchDragged(x, y);
+            }
+        });
     }
 
     @Override
     public void show() {
     }
 
-    private void handleInput(float dt) {
-        board.handleInput(dt);
-    }
-
     private void update(float dt) {
-        handleInput(dt);
-
         board.update(dt);
 
         GameData.levelTimer -= dt;
@@ -85,8 +101,8 @@ class PlayScreen implements Screen {
         Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        board.render(game.batch);
         hud.draw();
+        stage.draw();
     }
 
     @Override

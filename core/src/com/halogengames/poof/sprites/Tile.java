@@ -42,7 +42,7 @@ public class Tile extends Sprite{
         this.vel = 0;
         this.acc = -startingYPos * 3;
 
-        this.setTexture(new Texture("tile_" + color + ".png"));
+        this.setTexture(new Texture("tiles/tile_" + color + ".png"));
         this.setPosition(tileMargin*(j+1) + tileSize*j, startingYPos);
 
         this.setBounds(this.getX(), this.getY(), tileSize, tileSize);
@@ -65,13 +65,13 @@ public class Tile extends Sprite{
     }
 
     public void setSelected(){
-        this.setTexture(new Texture("tile_" + color + "_touched.png"));
+        this.setTexture(new Texture("tiles/tile_" + color + "_touched.png"));
         SoundManager.playBlockTouched();
         isSelected = true;
     }
 
     public void setDeselected(){
-        this.setTexture(new Texture("tile_" + color + ".png"));
+        this.setTexture(new Texture("tiles/tile_" + color + ".png"));
         isSelected = false;
     }
 

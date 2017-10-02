@@ -15,14 +15,14 @@ import com.halogengames.poof.Poof;
 public class Background {
 
     private Poof game;
-    private Array<Sprite> objects;
+    private Array<Sprite> boxes;
     private int maxNumObj;
     private int x,y;
 
     public Background(Poof game){
         this.game = game;
-        x = 0;
-        y = 0;
+        x =0;
+        y=0;
         maxNumObj = 10;
     }
 
@@ -40,7 +40,7 @@ public class Background {
 
         game.renderer.begin(ShapeRenderer.ShapeType.Filled);
         game.renderer.setColor(Color.GREEN);
-        game.renderer.rect(x,y,30,30);
+        game.renderer.rect(x,y,100,100,Color.GREEN, Color.BLUE, Color.YELLOW, Color.RED);
         game.renderer.end();
     }
 }
