@@ -98,17 +98,6 @@ class PlayScreen implements Screen {
                 pause();
             }
         });
-
-        stage.addListener(new InputListener(){
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if(keycode == Input.Keys.BACK){
-                    pause();
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 
     @Override

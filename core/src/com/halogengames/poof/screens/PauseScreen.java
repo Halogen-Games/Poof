@@ -96,7 +96,6 @@ class PauseScreen implements Screen {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-
                 resumeGame();
             }
         });
@@ -104,7 +103,6 @@ class PauseScreen implements Screen {
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
                 openOptions();
             }
         });
@@ -112,19 +110,7 @@ class PauseScreen implements Screen {
         mainMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
                 openMainMenu();
-            }
-        });
-
-        stage.addListener(new InputListener(){
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if(keycode == Input.Keys.BACK){
-                    resumeGame();
-                    return true;
-                }
-                return false;
             }
         });
     }

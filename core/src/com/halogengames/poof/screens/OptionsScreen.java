@@ -148,20 +148,9 @@ class OptionsScreen implements Screen {
                 SoundManager.playButtonTap();
             }
         });
-
-        stage.addListener(new InputListener(){
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if(keycode == Input.Keys.BACK){
-                    returnToPrevScreen();
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 
-    public void returnToPrevScreen(){
+    private void returnToPrevScreen(){
         Gdx.input.setInputProcessor(null);
         SoundManager.playButtonTap();
         dispose();

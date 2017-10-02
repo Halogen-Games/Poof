@@ -27,12 +27,12 @@ public class Background {
     }
 
     public void render(float delta) {
-        update(delta);
-
-        game.renderer.setProjectionMatrix(Poof.CAM.combined);
-        game.renderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.renderer.setColor(Color.GREEN);
-        game.renderer.rect(x,y,100,100);
-        game.renderer.end();
+//        update(delta);
+//
+//        game.renderer.setProjectionMatrix(Poof.CAM.combined);
+//        game.renderer.begin(ShapeRenderer.ShapeType.Filled);
+//        game.renderer.setColor(Color.GREEN);
+//        game.renderer.rect(x,y,100,100);
+//        game.renderer.end();
     }
 }

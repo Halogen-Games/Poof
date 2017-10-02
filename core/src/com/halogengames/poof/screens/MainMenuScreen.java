@@ -88,8 +88,8 @@ public class MainMenuScreen implements Screen {
         //adding buttons to table and table to stage
         table.add(playButton);
         table.row();
-        table.add(fameButton);
-        table.row();
+        //table.add(fameButton);
+        //table.row();
         table.add(optionsButton);
         stage.addActor(title);
         stage.addActor(table);

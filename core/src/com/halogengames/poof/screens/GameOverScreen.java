@@ -138,17 +138,6 @@ class GameOverScreen implements Screen{
                 openMainMenu();
             }
         });
-
-        stage.addListener(new InputListener(){
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if(keycode == Input.Keys.BACK){
-                    openMainMenu();
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 
     private void startGame(){
