@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
@@ -58,9 +59,8 @@ class PlayScreen implements Screen {
         board = new GameBoard();
 
         //Pause Button
-        Texture buttonTex = new Texture("buttons/pause.png");
-        buttonTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        pauseButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(buttonTex)));
+
+        pauseButton = new ImageButton(AssetManager.playScreenPauseButtonDrawable);
 
         addUIListeners();
 

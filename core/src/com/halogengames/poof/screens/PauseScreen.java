@@ -1,24 +1,16 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.halogengames.poof.Data.GameData;
+import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
 
@@ -35,10 +27,9 @@ class PauseScreen implements Screen {
     private final Screen playScr;
 
     //Font
-    private final BitmapFont titleFont;
-
-    //buttons and fonts
     private final Stage stage;
+
+    //buttons
     private final TextButton resumeButton;
     private final TextButton optionsButton;
     private final TextButton mainMenuButton;
@@ -54,29 +45,14 @@ class PauseScreen implements Screen {
         table.setPosition(0, Poof.V_HEIGHT/10);
         table.setFillParent(true);
 
-        //Defining Fonts
-        FreeTypeFontGenerator.FreeTypeFontParameter fontParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        fontParam.minFilter = Texture.TextureFilter.Linear;
-        fontParam.magFilter = Texture.TextureFilter.Linear;
-        //Title Font
-        fontParam.size = (int)(80 * Poof.V_WIDTH/GameData.baseWidth);
-        titleFont = Poof.labelFontGenerator.generateFont(fontParam);
-
-        //Button Font
-        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
-        fontParam.color = Color.DARK_GRAY;
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = Poof.labelFontGenerator.generateFont(fontParam);
-
         //Title Label
-        LabelStyle labelStyle = new LabelStyle(titleFont, Color.DARK_GRAY);
-        Label title = new Label("Paused!!!", labelStyle);
+        Label title = new Label("Paused!!!", AssetManager.pauseTitleStyle);
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
 
         //Adding buttons
-        resumeButton = new TextButton("Resume", buttonStyle);
-        optionsButton = new TextButton("Options", buttonStyle);
-        mainMenuButton = new TextButton("Main Menu", buttonStyle);
+        resumeButton = new TextButton("Resume", AssetManager.pauseButtonStyle);
+        optionsButton = new TextButton("Options", AssetManager.pauseButtonStyle);
+        mainMenuButton = new TextButton("Main Menu", AssetManager.pauseButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
@@ -173,7 +149,6 @@ class PauseScreen implements Screen {
     @Override
     public void dispose() {
         System.out.println("Pause Screen Disposed");
-        titleFont.dispose();
         stage.dispose();
     }
 }

@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
@@ -42,7 +43,7 @@ class OptionsScreen implements Screen {
     private final Slider soundSlider;
 
     //Font
-    private final BitmapFont titleFont;
+
 
     //To add the buttons on the screen
     //Todo: Use a texture atlas for the buttons
@@ -63,39 +64,18 @@ class OptionsScreen implements Screen {
         table.setPosition(0, Poof.V_HEIGHT/10);
         table.setFillParent(true);
 
-        //Defining Fonts
-        FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
-        fontParam.minFilter = Texture.TextureFilter.Linear;
-        fontParam.magFilter = Texture.TextureFilter.Linear;
-        //Title Font
-        fontParam.size = (int)(80 * Poof.V_WIDTH/GameData.baseWidth);
-        titleFont = Poof.labelFontGenerator.generateFont(fontParam);
-
-        //Title Label
-        LabelStyle labelStyle = new LabelStyle(titleFont, Color.DARK_GRAY);
-        Label title = new Label("Options", labelStyle);
+        //Add Label
+        Label title = new Label("Options", AssetManager.optionsTitleStyle);
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
 
-        //Button Font
-        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
-        fontParam.color = Color.DARK_GRAY;
-        TextButtonStyle buttonStyle = new TextButtonStyle();
-        buttonStyle.font = Poof.labelFontGenerator.generateFont(fontParam);
-
         //adding back button
-        backButton = new TextButton("Back", buttonStyle);
+        backButton = new TextButton("Back", AssetManager.optionsButtonStyle);
 
         //adding sliders
-        SliderStyle musicSliderStyle = new SliderStyle();
-        musicSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(new Texture("slider/musicKnob.png")));
-        musicSliderStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture("slider/musicBG.png")));
-        musicSlider = new Slider(0,1,0.01f,false, musicSliderStyle);
+        musicSlider = new Slider(0,1,0.01f,false, AssetManager.optionsMusicSliderStyle);
         musicSlider.setValue(GameData.prefs.getFloat("musicVolume", 1.0f));
 
-        SliderStyle soundSliderStyle = new SliderStyle();
-        soundSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(new Texture("slider/soundKnob.png")));
-        soundSliderStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture("slider/soundBG.png")));
-        soundSlider = new Slider(0,1,0.2f,false, soundSliderStyle);
+        soundSlider = new Slider(0,1,0.2f,false, AssetManager.optionsSoundSliderStyle);
         soundSlider.setValue(GameData.prefs.getFloat("soundVolume", 1.0f));
 
         addUIListeners();
@@ -190,7 +170,6 @@ class OptionsScreen implements Screen {
     @Override
     public void dispose() {
         System.out.println("Options Screen Disposed");
-        titleFont.dispose();
         stage.dispose();
     }
 }

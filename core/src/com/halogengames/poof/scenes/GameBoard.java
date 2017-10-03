@@ -82,14 +82,6 @@ public class GameBoard extends Widget {
         }
     }
 
-    public void dispose(){
-        for(int i=0; i<numRows; i++){
-            for(int j=0;j<numCols; j++) {
-                tiles.get(i).get(j).dispose();
-            }
-        }
-    }
-
     public boolean boardTouchedDown(float screenX, float screenY) {
         for(int i=0; i<numRows; i++){
             for(int j=0;j<numCols; j++) {
@@ -159,6 +151,14 @@ public class GameBoard extends Widget {
                     }
                     break;
                 }
+            }
+        }
+    }
+
+    public void dispose(){
+        for(int i=0; i<numRows; i++){
+            for(int j=0;j<numCols; j++) {
+                tiles.get(i).get(j).dispose();
             }
         }
     }

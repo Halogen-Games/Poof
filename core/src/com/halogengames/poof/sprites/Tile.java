@@ -3,6 +3,7 @@ package com.halogengames.poof.sprites;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 
@@ -40,7 +41,7 @@ public class Tile extends Sprite{
         this.vel = 0;
         this.acc = -startingYPos * 3;
 
-        this.setTexture(new Texture("tiles/tile_" + color + ".png"));
+        this.setTexture(AssetManager.tileTextures.get(color+"_tile"));
         this.setPosition(tileMargin*(j+1) + tileSize*j, startingYPos);
 
         this.setBounds(this.getX(), this.getY(), tileSize, tileSize);
@@ -63,13 +64,13 @@ public class Tile extends Sprite{
     }
 
     public void setSelected(){
-        this.setTexture(new Texture("tiles/tile_" + color + "_touched.png"));
+        this.setTexture(AssetManager.tileTextures.get(color+"_tile_touched"));
         SoundManager.playBlockTouched();
         isSelected = true;
     }
 
     public void setDeselected(){
-        this.setTexture(new Texture("tiles/tile_" + color + ".png"));
+        this.setTexture(AssetManager.tileTextures.get(color+"_tile"));
         isSelected = false;
     }
 
@@ -96,6 +97,6 @@ public class Tile extends Sprite{
     }
 
     public void dispose(){
-        this.getTexture().dispose();
+
     }
 }

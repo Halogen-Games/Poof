@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Arrays;
+
 /**
  * Created by Rohit on 13-08-2017.
  * All the members should ideally be static
@@ -22,6 +24,7 @@ public class GameData {
     public static int numBoardCols;
     public static int numBoardRows;
     public static Array<String> validTileColors;
+    public static Array<String> allTileColors;
 
     public static Preferences prefs;
 
@@ -35,6 +38,13 @@ public class GameData {
         numBoardCols = 6;
         numBoardRows = 6;
         numColors = 3;
+
+        allTileColors = new Array<String>();
+        allTileColors.add("blue");
+        allTileColors.add("green");
+        allTileColors.add("indigo");
+        allTileColors.add("red");
+        allTileColors.add("yellow");
     }
 
     public static void resetData(){
@@ -42,12 +52,7 @@ public class GameData {
 
         score = 0;
 
-        validTileColors = new Array<String>();
-        validTileColors.add("blue");
-        validTileColors.add("green");
-        validTileColors.add("indigo");
-        validTileColors.add("red");
-        validTileColors.add("yellow");
+        validTileColors = new Array<String>(allTileColors);
         while(validTileColors.size>numColors){
             validTileColors.removeIndex((int)Math.floor(Math.random()*validTileColors.size));
         }

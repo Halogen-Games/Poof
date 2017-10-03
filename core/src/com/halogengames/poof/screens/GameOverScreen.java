@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
@@ -37,9 +38,6 @@ class GameOverScreen implements Screen{
     //To add the buttons on the screen
     //Todo: Use a texture atlas for the buttons
     private final Stage stage;
-    private final BitmapFont buttonFont;
-    private final BitmapFont textLabelFont;
-    private final BitmapFont valLabelFont;
 
     //Buttons
     private final TextButton replayButton;
@@ -56,27 +54,11 @@ class GameOverScreen implements Screen{
         scoreTable.top();
         scoreTable.setFillParent(true);
 
-        //Defining Fonts and Styles
-        FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
-        fontParam.minFilter = TextureFilter.Linear;
-        fontParam.magFilter = TextureFilter.Linear;
 
-        //Label Font
-        fontParam.size = (int)(30 * Poof.V_WIDTH/GameData.baseWidth);
-        textLabelFont = Poof.valueFontGenerator.generateFont(fontParam);
-        valLabelFont = Poof.labelFontGenerator.generateFont(fontParam);
-
-        //Button Font
-        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
-        fontParam.borderWidth = 0;
-        fontParam.color = Color.DARK_GRAY;
-        buttonFont = Poof.valueFontGenerator.generateFont(fontParam);
-        TextButtonStyle buttonStyle = new TextButtonStyle();
-        buttonStyle.font = buttonFont;
 
         //Add score label
-        Label scoreTextLabel = new Label("Score", new LabelStyle(textLabelFont, Color.DARK_GRAY));
-        Label scoreLabel = new Label(String.valueOf(GameData.score), new LabelStyle(valLabelFont, Color.DARK_GRAY));
+        Label scoreTextLabel = new Label("Score", AssetManager.gameOverLabelStyle);
+        Label scoreLabel = new Label(String.valueOf(GameData.score), AssetManager.gameOverLabelStyle);
 
         //add the labels to the table
         scoreTable.add(scoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.05f);
@@ -88,12 +70,12 @@ class GameOverScreen implements Screen{
         if(GameData.score>highScore){
             GameData.prefs.putInteger("highScore", GameData.score);
             GameData.prefs.flush();
-            Label highScoreMsg = new Label("High score made!", new LabelStyle(textLabelFont, Color.DARK_GRAY));
+            Label highScoreMsg = new Label("High score made!", AssetManager.gameOverLabelStyle);
             scoreTable.row();
             scoreTable.add(highScoreMsg).expandX();
         }else{
-            Label highScoreText = new Label("Highest Score", new LabelStyle(textLabelFont, Color.DARK_GRAY));
-            Label highScoreVal = new Label(String.valueOf(highScore), new LabelStyle(valLabelFont, Color.DARK_GRAY));
+            Label highScoreText = new Label("Highest Score", AssetManager.gameOverLabelStyle);
+            Label highScoreVal = new Label(String.valueOf(highScore), AssetManager.gameOverLabelStyle);
             scoreTable.row();
             scoreTable.add(highScoreText).expandX();
             scoreTable.row();
@@ -109,8 +91,8 @@ class GameOverScreen implements Screen{
         table.setFillParent(true);
 
         //Add buttons
-        replayButton = new TextButton("Replay", buttonStyle);
-        mainMenuButton = new TextButton("Main Menu", buttonStyle);
+        replayButton = new TextButton("Replay", AssetManager.gameOverButtonStyle);
+        mainMenuButton = new TextButton("Main Menu", AssetManager.gameOverButtonStyle);
 
         addUIListeners();
 
@@ -193,10 +175,6 @@ class GameOverScreen implements Screen{
     @Override
     public void dispose() {
         System.out.println("Game Over Screen Disposed");
-        textLabelFont.dispose();
-        valLabelFont.dispose();
-        buttonFont.dispose();
-
         stage.dispose();
     }
 }
