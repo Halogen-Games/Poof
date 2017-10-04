@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Align;
 import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
+import com.halogengames.poof.libs.MotionEngine;
 
 /**
  * Defines the pause screen
@@ -101,24 +102,26 @@ class PauseScreen implements Screen {
     private void openOptions(){
         Gdx.input.setInputProcessor(null);
         SoundManager.playButtonTap();
-        game.setScreen(new OptionsScreen(game, this));
+        MotionEngine.fadeOut(stage.getRoot(),this,new OptionsScreen(game,this),false);
     }
 
     private void openMainMenu(){
         Gdx.input.setInputProcessor(null);
         SoundManager.playButtonTap();
         playScr.dispose();
-        this.dispose();
-        game.setScreen(new MainMenuScreen(game));
+        MotionEngine.fadeOut(stage.getRoot(),this,new MainMenuScreen(game),true);
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage);
+        MotionEngine.fadeIn(stage.getRoot());
     }
 
     @Override
     public void render(float delta) {
+        stage.act();
+
         Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -137,8 +140,6 @@ class PauseScreen implements Screen {
 
     @Override
     public void resume() {
-        Gdx.input.setInputProcessor(stage);
-        game.setScreen(this);
     }
 
     @Override

@@ -27,6 +27,7 @@ import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
+import com.halogengames.poof.libs.MotionEngine;
 
 /**
  * Defined the options screen
@@ -95,7 +96,7 @@ class OptionsScreen implements Screen {
 
     @Override
     public void show() {
-
+        MotionEngine.fadeIn(stage.getRoot());
     }
 
     private void addUIListeners(){
@@ -133,12 +134,13 @@ class OptionsScreen implements Screen {
     private void returnToPrevScreen(){
         Gdx.input.setInputProcessor(null);
         SoundManager.playButtonTap();
-        dispose();
-        prevScreen.resume();
+        MotionEngine.fadeOut(stage.getRoot(),this,prevScreen,true);
     }
 
     @Override
     public void render(float delta) {
+        stage.act();
+
         Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -23,6 +25,7 @@ import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
+import com.halogengames.poof.libs.MotionEngine;
 
 /**
  * Created by Rohit on 01-08-2017.
@@ -36,7 +39,7 @@ public class MainMenuScreen implements Screen {
     private final Poof game;
 
     //To add the buttons on the screen
-    private final Stage stage;
+    public final Stage stage;
     private final TextButton playButton;
     private final TextButton quitButton;
     private final TextButton optionsButton;
@@ -120,24 +123,23 @@ public class MainMenuScreen implements Screen {
     private void startGame(){
         Gdx.input.setInputProcessor(null);
         SoundManager.mainMenuMusic.stop();
-        dispose();
-        game.setScreen(new PlayScreen(game));
+        MotionEngine.fadeOut(stage.getRoot(), this, new PlayScreen(game), true);
     }
 
     private void openHallOfFame(){
         Gdx.input.setInputProcessor(null);
-        dispose();
-        game.setScreen(new FameScreen(game));
+        MotionEngine.fadeOut(stage.getRoot(), this, new FameScreen(game), true);
     }
 
     private void openOptions(){
         Gdx.input.setInputProcessor(null);
-        game.setScreen(new OptionsScreen(game, this));
+        MotionEngine.fadeOut(stage.getRoot(), this, new OptionsScreen(game,this), false);
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage);
+        MotionEngine.fadeIn(stage.getRoot());
     }
 
 //    public void update(float dt){
@@ -148,6 +150,8 @@ public class MainMenuScreen implements Screen {
     public void render(float delta){
 //        //no need for below as cam not moving
 //        update(delta);
+
+        stage.act(delta);
 
         Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -168,10 +172,7 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void resume() {
-        Gdx.input.setInputProcessor(stage);
-        game.setScreen(this);
-    }
+    public void resume() {}
 
     @Override
     public void hide() {

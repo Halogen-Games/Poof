@@ -22,6 +22,7 @@ import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
+import com.halogengames.poof.libs.MotionEngine;
 
 /**
  * Created by Rohit on 13-08-2017.
@@ -124,24 +125,26 @@ class GameOverScreen implements Screen{
 
     private void startGame(){
         Gdx.input.setInputProcessor(null);
-        dispose();
-        game.setScreen(new PlayScreen(game));
+        MotionEngine.fadeOut(stage.getRoot(), this, new PlayScreen(game),true);
     }
 
     private void openMainMenu(){
         Gdx.input.setInputProcessor(null);
-        dispose();
-        game.setScreen(new MainMenuScreen(game));
+        MotionEngine.fadeOut(stage.getRoot(), this, new MainMenuScreen(game),true);
     }
 
     @Override
     public void show() {
         //to allow stage to identify events
         Gdx.input.setInputProcessor(stage);
+        MotionEngine.fadeIn(stage.getRoot());
     }
 
     @Override
     public void render(float delta){
+
+        stage.act(delta);
+
         Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

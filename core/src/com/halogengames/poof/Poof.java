@@ -2,6 +2,7 @@ package com.halogengames.poof;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
+import com.halogengames.poof.libs.MotionEngine;
 import com.halogengames.poof.scenes.Background;
 import com.halogengames.poof.screens.MainMenuScreen;
 
@@ -57,6 +59,9 @@ public class Poof extends Game {
 
 		//Init Asset manager
 		AssetManager.init();
+
+		//Init MotionEngine
+		MotionEngine.init(this);
 
 		//Catch the back nav button
 		Gdx.input.setCatchBackKey(true);

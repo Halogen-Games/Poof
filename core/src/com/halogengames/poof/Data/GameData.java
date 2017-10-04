@@ -33,7 +33,7 @@ public class GameData {
 
         baseWidth = 540;
 
-        maxTime = 60;
+        maxTime = 2;
 
         numBoardCols = 6;
         numBoardRows = 6;
