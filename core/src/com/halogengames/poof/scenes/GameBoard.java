@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
+import com.halogengames.poof.Data.TilePower;
 import com.halogengames.poof.sprites.Tile;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class GameBoard extends Widget {
         for(int i=0; i<numRows; i++){
             for(int j=0;j<numCols; j++){
                 Tile t = tiles.get(i).get(j);
-                batch.draw(t.getTexture(), getX() + t.getX(), getY() + t.getY(), tileSize, tileSize);
+                t.draw(batch, getX(), getY());
             }
         }
 
@@ -107,7 +108,21 @@ public class GameBoard extends Widget {
             }
         }else{
             SoundManager.playBlocksRemoved();
-            GameData.score += selectedTiles.size();
+            //Execute powers
+            for(int i=numRows-1;i>=0;i--){
+                for(int j=0;j<numCols;j++){
+                    if(tiles.get(i).get(j).isSelected){
+                        TilePower.unleashPower(tiles.get(i).get(j).tilePower);
+                        //need to remove this tile
+                        for(int k=i;k<numRows-1;k++){
+                            tiles.get(k).set(j, tiles.get(k+1).get(j));
+                            tiles.get(k).get(j).setCoordinates(k,j);
+                        }
+                        //will always add one at the top
+                        tiles.get(numRows-1).set(j, new Tile(numRows-1, j, tileSize, tileMargin, numRows));
+                    }
+                }
+            }
 
             for(int i=numRows-1;i>=0;i--){
                 for(int j=0;j<numCols;j++){

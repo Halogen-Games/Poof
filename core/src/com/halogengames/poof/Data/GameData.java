@@ -11,7 +11,6 @@ import java.util.Arrays;
  * All the members should ideally be static
  */
 
-
 public class GameData {
     public static double levelTimer;
     private static int maxTime;
@@ -19,12 +18,14 @@ public class GameData {
     private static int numColors;
 
     //things like font size are hardcoded according to this base width and then scaled appropriately based on actual width of screen
-    public static float baseWidth;
+    static float baseWidth;
 
     public static int numBoardCols;
     public static int numBoardRows;
+
+    //Valid Colors
+    static Array<String> allTileColors;
     public static Array<String> validTileColors;
-    public static Array<String> allTileColors;
 
     public static Preferences prefs;
 
@@ -33,7 +34,7 @@ public class GameData {
 
         baseWidth = 540;
 
-        maxTime = 2;
+        maxTime = 60;
 
         numBoardCols = 6;
         numBoardRows = 6;

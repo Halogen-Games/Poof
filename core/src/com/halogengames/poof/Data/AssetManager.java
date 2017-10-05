@@ -50,6 +50,7 @@ public class AssetManager {
 
     //Tile Assets
     public static ArrayMap<String, Texture> tileTextures;
+    public static ArrayMap<String, Texture> powerTextures;
 
     //HUD Assets
     public static LabelStyle hudLabelStyle;
@@ -148,12 +149,27 @@ public class AssetManager {
     }
 
     private static void generateTileAssets(){
+        //Tile Texs
         tileTextures = new ArrayMap<String, Texture>();
         for(int i=0;i<GameData.allTileColors.size;i++){
             String color = GameData.allTileColors.get(i);
 
             tileTextures.put(color+"_tile", new Texture("tiles/tile_" + color + ".png"));
             tileTextures.put(color+"_tile_touched", new Texture("tiles/tile_" + color + "_touched.png"));
+        }
+
+        for (String key:tileTextures.keys()){
+            tileTextures.get(key).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        }
+
+        //Power Texs
+        powerTextures = new ArrayMap<String, Texture>();
+        for (String power:TilePower.powerProbs.keys()){
+            if(power != null)
+            powerTextures.put(power, new Texture("tiles/tile_" + power + ".png"));
+        }
+        for (String key:powerTextures.keys()){
+            powerTextures.get(key).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         }
     }
 

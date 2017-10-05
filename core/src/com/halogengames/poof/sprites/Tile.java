@@ -1,11 +1,13 @@
 package com.halogengames.poof.sprites;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
+import com.halogengames.poof.Data.TilePower;
 
 import java.util.Random;
 
@@ -18,7 +20,7 @@ import java.util.Random;
 public class Tile extends Sprite{
 
     private final String color;
-
+    public String tilePower;
     public boolean isSelected;
 
     private Vector2 coords;
@@ -32,6 +34,7 @@ public class Tile extends Sprite{
     public Tile(int i, int j, float tileSize, float tileMargin, int numRows) {
         Random rand = new Random();
         color = GameData.validTileColors.get(rand.nextInt(GameData.validTileColors.size));
+        tilePower = TilePower.generatePower();
 
         this.tileSize = tileSize;
         this.tileMargin = tileMargin;
@@ -61,6 +64,13 @@ public class Tile extends Sprite{
         float y = tileMargin*((int)coords.x+1) + tileSize*(int)coords.x;
 
         return(new Vector2(x, y));
+    }
+
+    public void draw(Batch batch, float parentXPos, float parentYPos){
+        batch.draw(getTexture(), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
+        if(tilePower != null ){
+            batch.draw(AssetManager.powerTextures.get(tilePower), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
+        }
     }
 
     public void setSelected(){

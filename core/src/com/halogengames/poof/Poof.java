@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
+import com.halogengames.poof.Data.TilePower;
 import com.halogengames.poof.libs.MotionEngine;
 import com.halogengames.poof.scenes.Background;
 import com.halogengames.poof.screens.MainMenuScreen;
@@ -52,12 +53,9 @@ public class Poof extends Game {
 		valueFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));
 
 		//Init GameData
+		TilePower.init();
 		GameData.init();
-
-		//Init Sound Manager
 		SoundManager.init();
-
-		//Init Asset manager
 		AssetManager.init();
 
 		//Init MotionEngine
