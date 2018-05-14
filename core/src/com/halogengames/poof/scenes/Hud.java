@@ -21,10 +21,10 @@ import com.halogengames.poof.Poof;
  */
 
 public class Hud {
-    private final Stage stage;
+    private Stage stage;
 
-    private final Label timeLabel;
-    private final Label scoreLabel;
+    private Label timeLabel;
+    private Label scoreLabel;
 
     public Hud(SpriteBatch sb){
 

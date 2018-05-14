@@ -22,7 +22,6 @@ import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.libs.MotionEngine;
 import com.halogengames.poof.scenes.GameBoard;
 import com.halogengames.poof.scenes.Hud;
 
@@ -33,17 +32,17 @@ import com.halogengames.poof.scenes.Hud;
  * This contains a Hud, an options menu and a game board
  */
 
-class PlayScreen implements Screen {
+public class PlayScreen implements Screen {
 
-    private final Poof game;
-    private final Hud hud;
-    private final GameBoard board;
+    private Poof game;
+    private Hud hud;
+    private GameBoard board;
 
-    private final Stage stage;
+    private Stage stage;
 
-    private final ImageButton pauseButton;
+    private ImageButton pauseButton;
 
-    PlayScreen(Poof game){
+    public PlayScreen(Poof game){
         this.game = game;
         GameData.resetData();
 
@@ -59,7 +58,7 @@ class PlayScreen implements Screen {
 
         hud = new Hud(game.batch);
 
-        board = new GameBoard();
+        board = new GameBoard(game);
 
         //Pause Button
 
@@ -105,7 +104,8 @@ class PlayScreen implements Screen {
 
     @Override
     public void show() {
-        MotionEngine.fadeIn(stage.getRoot());
+        stage.getRoot().setColor(1,1,1,0);
+        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     private void update(float dt) {
@@ -132,7 +132,9 @@ class PlayScreen implements Screen {
         stage.act(delta);
 
         Gdx.gl.glClearColor(1,1,1,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling?GL20.GL_COVERAGE_BUFFER_BIT_NV:0));
+
+        Poof.bg.render(delta);
 
         hud.draw();
         stage.draw();

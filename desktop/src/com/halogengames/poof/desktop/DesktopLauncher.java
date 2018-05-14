@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.title = "Poof";
 		config.width = Poof.V_WIDTH;
 		config.height = Poof.V_HEIGHT;
+//		config.samples = 3;
 		new LwjglApplication(new Poof(), config);
 	}
 }

@@ -27,6 +27,10 @@ public class GameData {
     static Array<String> allTileColors;
     public static Array<String> validTileColors;
 
+    //Inventory
+    public static int coins;
+    public static int gems;
+
     public static Preferences prefs;
 
     public static void init(){
@@ -35,6 +39,9 @@ public class GameData {
         baseWidth = 540;
 
         maxTime = 60;
+
+        coins = prefs.getInteger("coins", 0);
+        gems = prefs.getInteger("gems", 0);
 
         numBoardCols = 6;
         numBoardRows = 6;

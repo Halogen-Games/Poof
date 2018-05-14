@@ -27,9 +27,18 @@ public class AssetManager {
     private static FreeTypeFontGenerator valueFontGenerator;
     private static FreeTypeFontParameter fontParam;
 
+    //Common Assets
+    public static Texture commonBG;
+
     //Main Menu Assets
     public static LabelStyle mainMenuTitleStyle;
     public static TextButtonStyle mainMenuButtonStyle;
+    public static Texture mainMenuButtonDockTex;
+    public static Drawable mainMenuPlayButtonDrawable;
+    public static Drawable mainMenuOptionsButtonDrawable;
+    public static Drawable mainMenuUpgradeButtonDrawable;
+    public static Drawable mainMenuShopButtonDrawable;
+    public static Drawable mainMenuExitButtonDrawable;
 
     //Options Screen Assets
     public static LabelStyle optionsTitleStyle;
@@ -48,7 +57,8 @@ public class AssetManager {
     //Play Screen Assets
     public static Drawable playScreenPauseButtonDrawable;
 
-    //Tile Assets
+    //Board Assets
+    public static Texture boardBG;
     public static ArrayMap<String, Texture> tileTextures;
     public static ArrayMap<String, Texture> powerTextures;
 
@@ -68,13 +78,18 @@ public class AssetManager {
         fontParam.magFilter = TextureFilter.Linear;
 
         //generate assets
+        generateCommonAssets();
         generateMainMenuAssets();
         generateOptionsAssets();
         generateGameOverAssets();
         generatePauseScreenAssets();
         generatePlayScreenAssets();
-        generateTileAssets();
+        generateBoardAssets();
         generateHUDAssets();
+    }
+
+    private static void generateCommonAssets(){
+        commonBG = new Texture("common/bg.png");
     }
 
     private static void generateMainMenuAssets(){
@@ -89,6 +104,30 @@ public class AssetManager {
         fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
         mainMenuButtonStyle = new TextButtonStyle();
         mainMenuButtonStyle.font = labelFontGenerator.generateFont(fontParam);
+
+        //textures
+        mainMenuButtonDockTex = new Texture("main_menu/button_dock.png");
+
+        //Drawables
+        Texture playTex = new Texture("main_menu/play_button.png");
+        playTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        mainMenuPlayButtonDrawable = new TextureRegionDrawable(new TextureRegion(playTex));
+
+        Texture optionsTex = new Texture("main_menu/options_button.png");
+        optionsTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        mainMenuOptionsButtonDrawable = new TextureRegionDrawable(new TextureRegion(optionsTex));
+
+        Texture exitTex = new Texture("main_menu/exit_button.png");
+        exitTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        mainMenuExitButtonDrawable = new TextureRegionDrawable(new TextureRegion(exitTex));
+
+        Texture shopTex = new Texture("main_menu/shop_button.png");
+        shopTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        mainMenuShopButtonDrawable = new TextureRegionDrawable(new TextureRegion(shopTex));
+
+        Texture upgradeTex = new Texture("main_menu/upgrade_button.png");
+        upgradeTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        mainMenuUpgradeButtonDrawable = new TextureRegionDrawable(new TextureRegion(upgradeTex));
     }
 
     private static void generateOptionsAssets(){
@@ -148,7 +187,11 @@ public class AssetManager {
         playScreenPauseButtonDrawable = new TextureRegionDrawable(new TextureRegion(pauseButtonTex));
     }
 
-    private static void generateTileAssets(){
+    private static void generateBoardAssets(){
+        boardBG = new Texture("common/board_bg.png");
+
+        boardBG.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
         //Tile Texs
         tileTextures = new ArrayMap<String, Texture>();
         for(int i=0;i<GameData.allTileColors.size;i++){
@@ -159,7 +202,7 @@ public class AssetManager {
         }
 
         for (String key:tileTextures.keys()){
-            tileTextures.get(key).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            tileTextures.get(key).setFilter(TextureFilter.Linear, TextureFilter.Linear);
         }
 
         //Power Texs
@@ -169,7 +212,7 @@ public class AssetManager {
             powerTextures.put(power, new Texture("tiles/tile_" + power + ".png"));
         }
         for (String key:powerTextures.keys()){
-            powerTextures.get(key).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            powerTextures.get(key).setFilter(TextureFilter.Linear, TextureFilter.Linear);
         }
     }
 
@@ -180,5 +223,14 @@ public class AssetManager {
         fontParam.size = (int)(20 * Poof.V_WIDTH/GameData.baseWidth);
         hudLabelStyle = new LabelStyle();
         hudLabelStyle.font = Poof.valueFontGenerator.generateFont(fontParam);
+    }
+
+    public static void dispose(){
+        System.out.println("Assets disposed");
+        for(String col:tileTextures.keys()){
+            tileTextures.get(col).dispose();
+        }
+
+        mainMenuButtonDockTex.dispose();
     }
 }

@@ -1,11 +1,16 @@
 package com.halogengames.poof.scenes;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Array;
+import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Data.TilePower;
+import com.halogengames.poof.Poof;
 import com.halogengames.poof.sprites.Tile;
 
 import java.util.ArrayList;
@@ -18,39 +23,35 @@ import java.util.ArrayList;
  */
 public class GameBoard extends Widget {
 
-    private final int numCols;
-    private final int numRows;
+    Poof game;
+
+    private int numCols;
+    private int numRows;
     private Array<Array<Tile>> tiles;
     private float tileMargin;
     private float tileSize;
-    //tile margin = tile size * factor
-    private final float tileMarginFactor;
+    private float tileGutter;
+
+    //tile margin is (tile size X factor)
+    private float tileMarginFactor;
 
     private ArrayList<Tile> selectedTiles;
 
-    public GameBoard(){
+    public GameBoard(Poof game){
+        this.game = game;
         numCols = GameData.numBoardCols;
         numRows = GameData.numBoardRows;
 
+        tileGutter = 10.0f;
         tileMarginFactor = 0.07f;
-        tileSize = getWidth()/(tileMarginFactor*numCols + numCols + tileMarginFactor);
-        tileMargin = tileSize*tileMarginFactor;
 
         tiles = new Array<Array<Tile>>();
-        for(int i=0; i<numRows; i++){
-            Array<Tile> tileColumn = new Array<Tile>();
-            for(int j=0; j<numCols; j++) {
-                tileColumn.add(new Tile(i, j, tileSize, tileMargin, numRows));
-            }
-            tiles.add(tileColumn);
-        }
-
         selectedTiles = new ArrayList<Tile>();
     }
 
     @Override
     protected void sizeChanged() {
-        tileSize = getWidth()/(tileMarginFactor*numCols + numCols + tileMarginFactor);
+        tileSize = (getWidth() - 2*tileGutter)/(tileMarginFactor*numCols + numCols + tileMarginFactor);
         tileMargin = tileSize*tileMarginFactor;
 
         tiles = new Array<Array<Tile>>();
@@ -65,10 +66,15 @@ public class GameBoard extends Widget {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        for(int i=0; i<numRows; i++){
-            for(int j=0;j<numCols; j++){
+
+        //draw board BG
+        batch.draw(AssetManager.boardBG, getX(), getY(), getWidth(), getHeight());
+
+        //draw tiles using batch
+        for(int i=0; i<tiles.size; i++){
+            for(int j=0;j<tiles.get(0).size; j++){
                 Tile t = tiles.get(i).get(j);
-                t.draw(batch, getX(), getY());
+                t.draw(batch, getX() + tileGutter, getY() + tileGutter);
             }
         }
 
@@ -76,16 +82,16 @@ public class GameBoard extends Widget {
     }
 
     public void update(float dt){
-        for(int i=0; i<numRows; i++){
-            for(int j=0;j<numCols; j++) {
+        for(int i=0; i<tiles.size; i++){
+            for(int j=0;j<tiles.get(0).size; j++) {
                 tiles.get(i).get(j).update(dt);
             }
         }
     }
 
     public boolean boardTouchedDown(float screenX, float screenY) {
-        for(int i=0; i<numRows; i++){
-            for(int j=0;j<numCols; j++) {
+        for(int i=0; i<tiles.size; i++){
+            for(int j=0;j<tiles.get(0).size; j++) {
                 Tile t = tiles.get(i).get(j);
                 if (t.getBoundingRectangle().contains(screenX, screenY)) {
                     selectedTiles = new ArrayList<Tile>();
@@ -109,8 +115,8 @@ public class GameBoard extends Widget {
         }else{
             SoundManager.playBlocksRemoved();
             //Execute powers
-            for(int i=numRows-1;i>=0;i--){
-                for(int j=0;j<numCols;j++){
+            for(int i=tiles.size-1;i>=0;i--){
+                for(int j=0;j<tiles.get(0).size;j++){
                     if(tiles.get(i).get(j).isSelected){
                         TilePower.unleashPower(tiles.get(i).get(j).tilePower);
                         //need to remove this tile
@@ -124,8 +130,8 @@ public class GameBoard extends Widget {
                 }
             }
 
-            for(int i=numRows-1;i>=0;i--){
-                for(int j=0;j<numCols;j++){
+            for(int i=tiles.size-1;i>=0;i--){
+                for(int j=0;j<tiles.get(0).size;j++){
                     if(tiles.get(i).get(j).isSelected){
                         //need to remove this tile
                         for(int k=i;k<numRows-1;k++){
@@ -148,8 +154,8 @@ public class GameBoard extends Widget {
         }
 
         //Selection Logic
-        for(int i=0; i<numRows; i++){
-            for(int j=0;j<numCols;j++) {
+        for(int i=0; i<tiles.size; i++){
+            for(int j=0;j<tiles.get(0).size;j++) {
                 Tile tile = tiles.get(i).get(j);
                 if (tile.getBoundingRectangle().contains(screenX, screenY)) {
                     if (tile.isSelected) {
@@ -171,8 +177,8 @@ public class GameBoard extends Widget {
     }
 
     public void dispose(){
-        for(int i=0; i<numRows; i++){
-            for(int j=0;j<numCols; j++) {
+        for(int i=0; i<tiles.size; i++){
+            for(int j=0;j<tiles.get(0).size; j++) {
                 tiles.get(i).get(j).dispose();
             }
         }

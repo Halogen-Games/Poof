@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.utils.Align;
 import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.libs.MotionEngine;
 
 /**
  * Defines the pause screen
@@ -22,18 +22,18 @@ import com.halogengames.poof.libs.MotionEngine;
 class PauseScreen implements Screen {
 
     //for renderer handles
-    private final Poof game;
+    private Poof game;
 
     //to return back to the game
-    private final Screen playScr;
+    private Screen playScr;
 
     //Font
-    private final Stage stage;
+    private Stage stage;
 
     //buttons
-    private final TextButton resumeButton;
-    private final TextButton optionsButton;
-    private final TextButton mainMenuButton;
+    private TextButton resumeButton;
+    private TextButton optionsButton;
+    private TextButton mainMenuButton;
 
     PauseScreen(Poof game, PlayScreen scr){
         this.playScr = scr;
@@ -102,20 +102,22 @@ class PauseScreen implements Screen {
     private void openOptions(){
         Gdx.input.setInputProcessor(null);
         SoundManager.playButtonTap();
-        MotionEngine.fadeOut(stage.getRoot(),this,new OptionsScreen(game,this),false);
+        game.setScreen(new OptionsScreen(game,this));
     }
 
     private void openMainMenu(){
         Gdx.input.setInputProcessor(null);
         SoundManager.playButtonTap();
         playScr.dispose();
-        MotionEngine.fadeOut(stage.getRoot(),this,new MainMenuScreen(game),true);
+        dispose();
+        game.setScreen(new MainMenuScreen(game));
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        MotionEngine.fadeIn(stage.getRoot());
+        stage.getRoot().setColor(1,1,1,0);
+        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     @Override
@@ -125,12 +127,14 @@ class PauseScreen implements Screen {
         Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        Poof.bg.render(delta);
+
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-
+        Poof.VIEW_PORT.update( width, height);
     }
 
     @Override

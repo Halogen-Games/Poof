@@ -19,17 +19,17 @@ import java.util.Random;
 
 public class Tile extends Sprite{
 
-    private final String color;
+    private String color;
     public String tilePower;
     public boolean isSelected;
 
     private Vector2 coords;
 
-    private final float tileSize;
-    private final float tileMargin;
+    private float tileSize;
+    private float tileMargin;
     //velocity and acceleration with which tiles move to their target location
     private float vel;
-    private final float acc;
+    private float acc;
 
     public Tile(int i, int j, float tileSize, float tileMargin, int numRows) {
         Random rand = new Random();

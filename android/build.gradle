@@ -1,5 +1,11 @@
+/*
+
+Changed Task Run() to Task RunAndroid() below
+
+ */
+
 android {
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "26.0.2"
     compileSdkVersion 24
     sourceSets {
         main {
@@ -60,7 +66,7 @@ task copyAndroidNatives() {
     }
 }
 
-task run(type: Exec) {
+task runAndroid(type: Exec) {
     def path
     def localProperties = project.file("../local.properties")
     if (localProperties.exists()) {

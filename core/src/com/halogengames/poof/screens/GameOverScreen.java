@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,7 +23,6 @@ import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.libs.MotionEngine;
 
 /**
  * Created by Rohit on 13-08-2017.
@@ -34,15 +34,15 @@ import com.halogengames.poof.libs.MotionEngine;
 
 class GameOverScreen implements Screen{
     //the game for sprite batch
-    private final Poof game;
+    private Poof game;
 
     //To add the buttons on the screen
     //Todo: Use a texture atlas for the buttons
-    private final Stage stage;
+    private Stage stage;
 
     //Buttons
-    private final TextButton replayButton;
-    private final TextButton mainMenuButton;
+    private TextButton replayButton;
+    private TextButton mainMenuButton;
 
     //Constructor
     GameOverScreen(Poof game){
@@ -125,19 +125,22 @@ class GameOverScreen implements Screen{
 
     private void startGame(){
         Gdx.input.setInputProcessor(null);
-        MotionEngine.fadeOut(stage.getRoot(), this, new PlayScreen(game),true);
+        stage.getRoot().setColor(1,1,1,0);
+        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     private void openMainMenu(){
         Gdx.input.setInputProcessor(null);
-        MotionEngine.fadeOut(stage.getRoot(), this, new MainMenuScreen(game),true);
+        dispose();
+        game.setScreen(new MainMenuScreen(game));
     }
 
     @Override
     public void show() {
         //to allow stage to identify events
         Gdx.input.setInputProcessor(stage);
-        MotionEngine.fadeIn(stage.getRoot());
+        stage.getRoot().setColor(1,1,1,0);
+        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     @Override

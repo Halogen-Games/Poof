@@ -4,15 +4,13 @@ import com.badlogic.gdx.Screen;
 import com.halogengames.poof.Poof;
 
 /**
- * Created by Rohit on 01-08-2017.
- *
- * Shows a table of top 10 scores
+ * Created by Rohit on 22-10-2017.
  */
 
-class FameScreen implements Screen {
+public class UpgradeScreen implements Screen {
 
-    FameScreen(Poof game){
-
+    public UpgradeScreen(Poof game, Screen prevScr){
+        
     }
 
     @Override

@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -25,7 +27,6 @@ import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.libs.MotionEngine;
 
 /**
  * Created by Rohit on 01-08-2017.
@@ -36,13 +37,13 @@ import com.halogengames.poof.libs.MotionEngine;
 public class MainMenuScreen implements Screen {
 
     //the game for sprite batch
-    private final Poof game;
+    private  Poof game;
 
     //To add the buttons on the screen
-    public final Stage stage;
-    private final TextButton playButton;
-    private final TextButton quitButton;
-    private final TextButton optionsButton;
+    private Stage stage;
+    private TextButton playButton;
+    private TextButton exitButton;
+    private TextButton optionsButton;
 
     //Constructor
     public MainMenuScreen(Poof game){
@@ -67,7 +68,7 @@ public class MainMenuScreen implements Screen {
         //Adding buttons
         playButton = new TextButton("Play", AssetManager.mainMenuButtonStyle);
         optionsButton = new TextButton("Options", AssetManager.mainMenuButtonStyle);
-        quitButton = new TextButton("Quit", AssetManager.mainMenuButtonStyle);
+        exitButton = new TextButton("Quit", AssetManager.mainMenuButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
@@ -75,7 +76,8 @@ public class MainMenuScreen implements Screen {
         table.row();
         table.add(optionsButton);
         table.row();
-        table.add(quitButton);
+        table.add(exitButton);
+
         stage.addActor(title);
         stage.addActor(table);
 
@@ -100,10 +102,11 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        quitButton.addListener(new ChangeListener() {
+        exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 SoundManager.playButtonTap();
+                AssetManager.dispose();
                 Gdx.app.exit();
             }
         });
@@ -123,23 +126,26 @@ public class MainMenuScreen implements Screen {
     private void startGame(){
         Gdx.input.setInputProcessor(null);
         SoundManager.mainMenuMusic.stop();
-        MotionEngine.fadeOut(stage.getRoot(), this, new PlayScreen(game), true);
+        dispose();
+        game.setScreen(new PlayScreen(game));
     }
 
-    private void openHallOfFame(){
-        Gdx.input.setInputProcessor(null);
-        MotionEngine.fadeOut(stage.getRoot(), this, new FameScreen(game), true);
-    }
 
     private void openOptions(){
         Gdx.input.setInputProcessor(null);
-        MotionEngine.fadeOut(stage.getRoot(), this, new OptionsScreen(game,this), false);
+        game.setScreen(new OptionsScreen(game,this));
+    }
+
+    private void openUpgrades(){
+        Gdx.input.setInputProcessor(null);
+        game.setScreen(new UpgradeScreen(game,this));
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        MotionEngine.fadeIn(stage.getRoot());
+        stage.getRoot().setColor(1,1,1,0);
+        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
 //    public void update(float dt){
@@ -150,7 +156,6 @@ public class MainMenuScreen implements Screen {
     public void render(float delta){
 //        //no need for below as cam not moving
 //        update(delta);
-
         stage.act(delta);
 
         Gdx.gl.glClearColor(1,1,1,1);
