@@ -30,7 +30,7 @@ public class SplashScreen implements Screen {
         this.game = game;
 
         //display splash screen and load assets
-        logo = new Texture("common/com_logo.png");
+        logo = new Texture("common/splash.png");
         margin = Poof.VIEW_PORT.getWorldWidth()/6;
         logoWidth = Poof.VIEW_PORT.getWorldWidth() - 2*margin;
         logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
@@ -52,8 +52,10 @@ public class SplashScreen implements Screen {
         if(elapsed > splashDuration){
             game.setScreen(new MainMenuScreen(game));
         }
-        Gdx.gl.glClearColor(1,1,1,1);
+        Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        game.batch.setProjectionMatrix(Poof.CAM.combined);
 
         game.batch.begin();
         game.batch.draw(logo,margin,Poof.VIEW_PORT.getWorldHeight()/2 - logoHeight/2,logoWidth,logoHeight);
@@ -66,6 +68,10 @@ public class SplashScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         Poof.VIEW_PORT.update(width, height);
+        margin = Poof.VIEW_PORT.getWorldWidth()/6;
+        logoWidth = Poof.VIEW_PORT.getWorldWidth() - 2*margin;
+        logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
+        System.out.print( "Called from splash\n" );
     }
 
     @Override

@@ -4,6 +4,11 @@
 
     <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="24" />
 
+    <supports-screens android:smallScreens="false"
+        android:normalScreens="false"
+        android:largeScreens="true"
+        android:xlargeScreens="true"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"

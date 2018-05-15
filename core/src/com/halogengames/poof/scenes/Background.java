@@ -15,7 +15,7 @@ import com.halogengames.poof.Poof;
 
 public class Background {
 
-    private  Poof game;
+    private Poof game;
 
     public Background(Poof game){
         this.game = game;
