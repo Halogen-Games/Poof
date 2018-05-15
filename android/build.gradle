@@ -27,7 +27,7 @@ android {
         applicationId "com.halogengames.poof"
         minSdkVersion 9
         targetSdkVersion 26
-        versionCode 2
+        versionCode 3
         versionName "1.01"
     }
     buildTypes {

@@ -125,8 +125,8 @@ class GameOverScreen implements Screen{
 
     private void startGame(){
         Gdx.input.setInputProcessor(null);
-        stage.getRoot().setColor(1,1,1,0);
-        stage.getRoot().addAction(Actions.fadeIn(0.2f));
+        dispose();
+        game.setScreen(new PlayScreen(game));
     }
 
     private void openMainMenu(){
