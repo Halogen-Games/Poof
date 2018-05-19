@@ -2,8 +2,11 @@ package com.halogengames.poof.Data;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
+import com.halogengames.poof.sprites.Tile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -23,13 +26,12 @@ public class GameData {
     public static int numBoardCols;
     public static int numBoardRows;
 
+    //GL Clear Color
+    public static Color clearColor;
+
     //Valid Colors
     static Array<String> allTileColors;
     public static Array<String> validTileColors;
-
-    //Inventory
-    public static int coins;
-    public static int gems;
 
     public static Preferences prefs;
 
@@ -40,12 +42,11 @@ public class GameData {
 
         maxTime = 60;
 
-        coins = prefs.getInteger("coins", 0);
-        gems = prefs.getInteger("gems", 0);
-
         numBoardCols = 6;
         numBoardRows = 6;
-        numColors = 3;
+        numColors = 3 ;
+
+        clearColor = new Color(1,1,1,1);
 
         allTileColors = new Array<String>();
         allTileColors.add("blue");
@@ -53,6 +54,13 @@ public class GameData {
         allTileColors.add("indigo");
         allTileColors.add("red");
         allTileColors.add("yellow");
+    }
+
+    public static void updateScore(ArrayList<Tile> selectedTiles){
+        score += selectedTiles.size();
+        if( selectedTiles.size() > 5){
+            score += Math.pow(selectedTiles.size()-5,1.2);
+        }
     }
 
     public static void resetData(){

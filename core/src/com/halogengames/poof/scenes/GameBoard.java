@@ -23,11 +23,11 @@ import java.util.ArrayList;
  */
 public class GameBoard extends Widget {
 
-    Poof game;
+    private Poof game;
 
     private int numCols;
     private int numRows;
-    private Array<Array<Tile>> tiles;
+
     private float tileMargin;
     private float tileSize;
     private float tileGutter;
@@ -35,7 +35,10 @@ public class GameBoard extends Widget {
     //tile margin is (tile size X factor)
     private float tileMarginFactor;
 
+    private Array<Array<Tile>> tiles;
     private ArrayList<Tile> selectedTiles;
+
+    private boolean boardInitialized;
 
     public GameBoard(Poof game){
         this.game = game;
@@ -47,6 +50,95 @@ public class GameBoard extends Widget {
 
         tiles = new Array<Array<Tile>>();
         selectedTiles = new ArrayList<Tile>();
+
+        boardInitialized = false;
+    }
+
+    private int movesLeftHelper(int i, int j, int compSize, boolean[][] checked){
+        //return if already checked
+        if(checked[i][j]){
+            return compSize;
+        }
+
+        checked[i][j] = true;
+
+        compSize++;
+
+        //check up
+        if( i>0 && !checked[i-1][j] && tiles.get(i-1).get(j).isConnectedTo(tiles.get(i).get(j))){
+            compSize = movesLeftHelper(i-1,j,compSize,checked);
+        }
+
+        //check down
+        if( i<numRows-1 && !checked[i+1][j] && tiles.get(i+1).get(j).isConnectedTo(tiles.get(i).get(j))){
+            compSize = movesLeftHelper(i+1,j,compSize,checked);
+        }
+
+        //check left
+        if( j>0 && !checked[i][j-1] && tiles.get(i).get(j-1).isConnectedTo(tiles.get(i).get(j))){
+            compSize = movesLeftHelper(i,j-1,compSize,checked);
+        }
+
+        //check right
+        if( j<numCols-1 && !checked[i][j+1] && tiles.get(i).get(j+1).isConnectedTo(tiles.get(i).get(j))){
+            compSize = movesLeftHelper(i,j+1,compSize,checked);
+        }
+
+        return compSize;
+    }
+
+    private boolean movesLeft(){
+        if(!boardInitialized || !isBoardIdle()){
+            return true;
+        }
+
+        boolean[][] checked = new boolean[numRows][numCols];
+
+        //iterate on each block and see if it comes in a group of three or more
+        for(int i=0; i<numRows; i++){
+            for(int j=0; j<numCols; j++){
+                if(!checked[i][j]){
+                    int componentSize = movesLeftHelper(i, j, 0, checked);
+                    if( componentSize>=3){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void shuffleBoard(){
+        tileSize = (getWidth() - 2*tileGutter)/(tileMarginFactor*numCols + numCols + tileMarginFactor);
+        tileMargin = tileSize*tileMarginFactor;
+
+        //get all tiles
+        Array<Tile> allTiles = new Array<Tile>();
+        for(int i=0; i<numRows; i++){
+            allTiles.addAll(tiles.get(i));
+        }
+
+        allTiles.shuffle();
+
+        for(int i=0; i<numRows; i++){
+            for(int j=0; j<numCols; j++) {
+                //set new position for each tile
+                allTiles.get(i*numCols + j).setCoordinates(i,j);
+                allTiles.get(i*numCols + j).setState("shuffle");
+                tiles.get(i).set(j,allTiles.get(i*numCols + j));
+            }
+        }
+    }
+
+    private boolean isBoardIdle(){
+        for(int i=0; i<numRows; i++){
+            for(int j=0; j<numCols; j++) {
+                if(!tiles.get(i).get(j).getState().equals("idle")){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -62,6 +154,8 @@ public class GameBoard extends Widget {
             }
             tiles.add(tileColumn);
         }
+
+        boardInitialized = true;
     }
 
     @Override
@@ -82,6 +176,10 @@ public class GameBoard extends Widget {
     }
 
     public void update(float dt){
+        if(!movesLeft()) {
+            shuffleBoard();
+        }
+
         for(int i=0; i<tiles.size; i++){
             for(int j=0;j<tiles.get(0).size; j++) {
                 tiles.get(i).get(j).update(dt);
@@ -114,11 +212,12 @@ public class GameBoard extends Widget {
             }
         }else{
             SoundManager.playBlocksRemoved();
+            //todo: remove loop and use selectedTiles array so as to use powers like bomb chaining
             //Execute powers
             for(int i=tiles.size-1;i>=0;i--){
                 for(int j=0;j<tiles.get(0).size;j++){
                     if(tiles.get(i).get(j).isSelected){
-                        TilePower.unleashPower(tiles.get(i).get(j).tilePower);
+                        TilePower.unleashPower(this, tiles.get(i).get(j).tilePower);
                         //need to remove this tile
                         for(int k=i;k<numRows-1;k++){
                             tiles.get(k).set(j, tiles.get(k+1).get(j));
@@ -130,6 +229,7 @@ public class GameBoard extends Widget {
                 }
             }
 
+            //fixme: why is this loop added?
             for(int i=tiles.size-1;i>=0;i--){
                 for(int j=0;j<tiles.get(0).size;j++){
                     if(tiles.get(i).get(j).isSelected){
@@ -143,6 +243,7 @@ public class GameBoard extends Widget {
                     }
                 }
             }
+            GameData.updateScore(selectedTiles);
         }
 
         selectedTiles = new ArrayList<Tile>();
@@ -150,6 +251,8 @@ public class GameBoard extends Widget {
 
     public void boardTouchDragged(float screenX, float screenY) {
         if(selectedTiles.size() == 0){
+            //fixme: remove this if(), it causes touch to not get registered if initial touchdown doesn't select anything
+            //possible need to add touchdown code here but not sure
             return;
         }
 

@@ -5,12 +5,15 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.halogengames.poof.Data.AssetManager;
+import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Poof;
 
 import sun.rmi.runtime.Log;
 
 /**
  * Created by Rohit on 22-10-2017.
+ *
+ * Defines the splash screen with company logo
  */
 
 public class SplashScreen implements Screen {
@@ -29,11 +32,8 @@ public class SplashScreen implements Screen {
     public SplashScreen(Poof game){
         this.game = game;
 
-        //display splash screen and load assets
+        //load assets
         logo = new Texture("common/splash.png");
-        margin = Poof.VIEW_PORT.getWorldWidth()/6;
-        logoWidth = Poof.VIEW_PORT.getWorldWidth() - 2*margin;
-        logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
 
         isRendered = false;
         isInit = false;
@@ -52,10 +52,15 @@ public class SplashScreen implements Screen {
         if(elapsed > splashDuration){
             game.setScreen(new MainMenuScreen(game));
         }
-        Gdx.gl.glClearColor(0,0,0,1);
+
+        Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.setProjectionMatrix(Poof.CAM.combined);
+
+        margin = Poof.VIEW_PORT.getWorldWidth()/6;
+        logoWidth = Poof.VIEW_PORT.getWorldWidth() - 2*margin;
+        logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
 
         game.batch.begin();
         game.batch.draw(logo,margin,Poof.VIEW_PORT.getWorldHeight()/2 - logoHeight/2,logoWidth,logoHeight);
@@ -68,10 +73,7 @@ public class SplashScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         Poof.VIEW_PORT.update(width, height);
-        margin = Poof.VIEW_PORT.getWorldWidth()/6;
-        logoWidth = Poof.VIEW_PORT.getWorldWidth() - 2*margin;
-        logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
-        System.out.print( "Called from splash\n" );
+        System.out.println(width);
     }
 
     @Override

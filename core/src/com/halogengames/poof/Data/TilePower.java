@@ -11,12 +11,14 @@ import java.util.Random;
 
 /**
  * Created by Rohit on 05-10-2017.
+ * Handles effects of powerups when used in a match
  */
 
 public class TilePower {
-    public static ArrayMap<String,Float> powerProbs;
+    static ArrayMap<String,Float> powerProbs;
 
     public static void init(){
+        //todo: check if below ArrayMap.keys call stays ordered
         powerProbs = new ArrayMap<String, Float>();
         powerProbs.put("timer", 0.03f);
         //powerProbs.put("coin", 0.01f);
@@ -45,15 +47,14 @@ public class TilePower {
         throw new Error("rand is larger than total cumulative prob of powers");
     }
 
-    public static void unleashPower(String power){
-        if(power == "timer"){
-            GameData.levelTimer += 5;
-        }else if(power == "coin"){
-            GameData.coins += 5;
-        }else if (power == "gem"){
-            GameData.gems++;
+    //todo: make it board dependent (for ex in bombs)
+    public static void unleashPower(GameBoard board, String power){
+        if( power == null ){
+            return;
         }
 
-        GameData.score++;
+        if(power.equals("timer")){
+            GameData.levelTimer += 5;
+        }
     }
 }

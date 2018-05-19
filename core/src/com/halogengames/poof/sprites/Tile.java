@@ -26,9 +26,13 @@ public class Tile extends Sprite{
 
     private float tileSize;
     private float tileMargin;
+
     //velocity and acceleration with which tiles move to their target location
     private float vel;
     private float acc;
+
+    //state of tile
+    private String state;
 
     public Tile(int i, int j, float tileSize, float tileMargin, int numRows) {
         Random rand = new Random();
@@ -51,10 +55,26 @@ public class Tile extends Sprite{
         this.setCoordinates(i, j);
 
         isSelected = false;
+
+        setState("falling");
     }
 
     public void setCoordinates(int i, int j){
         coords = new Vector2(i, j);
+    }
+
+    public void setState(String st){
+        if(st.equals("idle")){
+            state = st;
+        }else if(st.equals("falling")){
+            state = st;
+        }else if(st.equals("shuffle")){
+            state = st;
+        }
+    }
+
+    public String getState() {
+        return state;
     }
 
     private Vector2 getTargetPos(){
@@ -95,12 +115,32 @@ public class Tile extends Sprite{
     }
 
     public void update(double dt){
-        if(this.getY() > getTargetPos().y) {
-            vel += acc * dt;
-            this.setPosition(this.getX(), this.getY() + vel * (float) dt);
+        if(state.equals("falling") || state.equals("idle")) {
+            //normal tile behavior
+            if (this.getY() > getTargetPos().y) {
+                vel += acc * dt;
+                this.setPosition(this.getX(), this.getY() + vel * (float) dt);
+                setState("falling");
+            }
+
             if (this.getY() < getTargetPos().y) {
                 this.setPosition(getTargetPos().x, getTargetPos().y);
+                setState("idle");
                 vel = 0;
+            }
+        }else if(state.equals("shuffle")){
+            //tiles shuffling
+            //find velX and velY from vel, acc and pos
+            float dx = this.getX() - getTargetPos().x;
+            float dy = this.getY() - getTargetPos().y;
+            float velX = 5*dx;
+            float velY = 5*dy;
+
+            if(Math.abs(dx)< Math.max(0.1, velX*dt) && Math.abs(dy)< Math.max(0.1, velY*dt)){
+                this.setPosition(getTargetPos().x, getTargetPos().y);
+                setState("idle");
+            }else {
+                this.setPosition(this.getX() - velX * (float) dt, this.getY() - velY * (float) dt);
             }
         }
     }

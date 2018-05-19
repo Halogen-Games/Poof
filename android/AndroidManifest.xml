@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.halogengames.poof" >
 
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="24" />
+    <!--<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="26" />-->
 
     <supports-screens android:smallScreens="true"
         android:normalScreens="true"

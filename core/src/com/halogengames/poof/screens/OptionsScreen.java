@@ -132,7 +132,7 @@ class OptionsScreen implements Screen {
     public void render(float delta) {
         stage.act();
 
-        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         Poof.bg.render(delta);

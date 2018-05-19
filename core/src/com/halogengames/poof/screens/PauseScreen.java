@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.halogengames.poof.Data.AssetManager;
+import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
 
@@ -32,6 +33,7 @@ class PauseScreen implements Screen {
 
     //buttons
     private TextButton resumeButton;
+    private TextButton restartButton;
     private TextButton optionsButton;
     private TextButton mainMenuButton;
 
@@ -52,12 +54,15 @@ class PauseScreen implements Screen {
 
         //Adding buttons
         resumeButton = new TextButton("Resume", AssetManager.pauseButtonStyle);
+        restartButton = new TextButton("Restart", AssetManager.pauseButtonStyle);
         optionsButton = new TextButton("Options", AssetManager.pauseButtonStyle);
         mainMenuButton = new TextButton("Main Menu", AssetManager.pauseButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
         table.add(resumeButton);
+        table.row();
+        table.add(restartButton);
         table.row();
         table.add(optionsButton);
         table.row();
@@ -74,6 +79,13 @@ class PauseScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 resumeGame();
+            }
+        });
+
+        restartButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                restartGame();
             }
         });
 
@@ -99,6 +111,16 @@ class PauseScreen implements Screen {
         playScr.resume();
     }
 
+    private void restartGame(){
+        //todo: add confirmation dialogue
+        Gdx.input.setInputProcessor(null);
+        SoundManager.playButtonTap();
+        SoundManager.playMusic.stop();
+        playScr.dispose();
+        dispose();
+        game.setScreen(new PlayScreen(game));
+    }
+
     private void openOptions(){
         Gdx.input.setInputProcessor(null);
         SoundManager.playButtonTap();
@@ -108,6 +130,7 @@ class PauseScreen implements Screen {
     private void openMainMenu(){
         Gdx.input.setInputProcessor(null);
         SoundManager.playButtonTap();
+        SoundManager.playMusic.stop();
         playScr.dispose();
         dispose();
         game.setScreen(new MainMenuScreen(game));
@@ -124,7 +147,7 @@ class PauseScreen implements Screen {
     public void render(float delta) {
         stage.act();
 
-        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         Poof.bg.render(delta);

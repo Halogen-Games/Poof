@@ -19,6 +19,7 @@ import com.halogengames.poof.scenes.Background;
 import com.halogengames.poof.screens.MainMenuScreen;
 import com.halogengames.poof.screens.PlayScreen;
 import com.halogengames.poof.screens.SplashScreen;
+import com.halogengames.poof.screens.TestScreen;
 
 public class Poof extends Game {
 	//virtual screen sizes
@@ -66,7 +67,7 @@ public class Poof extends Game {
 		Gdx.input.setCatchBackKey(true);
 
 		//using "this" so that the main menu screen can use sprite batch
-		setScreen(new MainMenuScreen(this));
+		setScreen(new SplashScreen(this));
 	}
 
 	@Override
