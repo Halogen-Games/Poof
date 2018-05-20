@@ -38,16 +38,9 @@ public class AssetManager {
     //Main Menu Assets
     public static LabelStyle mainMenuTitleStyle;
     public static TextButtonStyle mainMenuButtonStyle;
-    public static Texture mainMenuButtonDockTex;
-    public static Drawable mainMenuPlayButtonDrawable;
-    public static Drawable mainMenuOptionsButtonDrawable;
-    public static Drawable mainMenuUpgradeButtonDrawable;
-    public static Drawable mainMenuShopButtonDrawable;
-    public static Drawable mainMenuExitButtonDrawable;
 
     //help Screen Assets
     public static BitmapFont helpTextFont;
-    public static TextureAtlas helpAtlas;
     public static Animation<TextureRegion> helpAnim;
 
     //Options Screen Assets
@@ -55,6 +48,10 @@ public class AssetManager {
     public static TextButtonStyle optionsButtonStyle;
     public static SliderStyle optionsMusicSliderStyle;
     public static SliderStyle optionsSoundSliderStyle;
+
+    //Level Screen Assets
+    public static LabelStyle levelSelectTitleStyle;
+    public static TextButtonStyle levelSelectButtonStyle;
 
     //Game Over Screen Assets
     public static LabelStyle gameOverLabelStyle;
@@ -75,8 +72,6 @@ public class AssetManager {
     //HUD Assets
     public static LabelStyle hudLabelStyle;
 
-    //Screen Handles
-
     public static void init(){
         //Font Generators
         labelFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));
@@ -92,6 +87,7 @@ public class AssetManager {
         generateMainMenuAssets();
         generateHelpScreenAssets();
         generateOptionsAssets();
+        generateLevelSelectAssets();
         generateGameOverAssets();
         generatePauseScreenAssets();
         generatePlayScreenAssets();
@@ -115,30 +111,30 @@ public class AssetManager {
         fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
         mainMenuButtonStyle = new TextButtonStyle();
         mainMenuButtonStyle.font = labelFontGenerator.generateFont(fontParam);
-
-        //textures
-        mainMenuButtonDockTex = new Texture("main_menu/button_dock.png");
-
-        //Drawables
-        Texture playTex = new Texture("main_menu/play_button.png");
-        playTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        mainMenuPlayButtonDrawable = new TextureRegionDrawable(new TextureRegion(playTex));
-
-        Texture optionsTex = new Texture("main_menu/options_button.png");
-        optionsTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        mainMenuOptionsButtonDrawable = new TextureRegionDrawable(new TextureRegion(optionsTex));
-
-        Texture exitTex = new Texture("main_menu/exit_button.png");
-        exitTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        mainMenuExitButtonDrawable = new TextureRegionDrawable(new TextureRegion(exitTex));
-
-        Texture shopTex = new Texture("main_menu/shop_button.png");
-        shopTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        mainMenuShopButtonDrawable = new TextureRegionDrawable(new TextureRegion(shopTex));
-
-        Texture upgradeTex = new Texture("main_menu/upgrade_button.png");
-        upgradeTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        mainMenuUpgradeButtonDrawable = new TextureRegionDrawable(new TextureRegion(upgradeTex));
+//
+//        //textures
+//        mainMenuButtonDockTex = new Texture("main_menu/button_dock.png");
+//
+//        //Drawables
+//        Texture playTex = new Texture("main_menu/play_button.png");
+//        playTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//        mainMenuPlayButtonDrawable = new TextureRegionDrawable(new TextureRegion(playTex));
+//
+//        Texture optionsTex = new Texture("main_menu/options_button.png");
+//        optionsTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//        mainMenuOptionsButtonDrawable = new TextureRegionDrawable(new TextureRegion(optionsTex));
+//
+//        Texture exitTex = new Texture("main_menu/exit_button.png");
+//        exitTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//        mainMenuExitButtonDrawable = new TextureRegionDrawable(new TextureRegion(exitTex));
+//
+//        Texture shopTex = new Texture("main_menu/shop_button.png");
+//        shopTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//        mainMenuShopButtonDrawable = new TextureRegionDrawable(new TextureRegion(shopTex));
+//
+//        Texture upgradeTex = new Texture("main_menu/upgrade_button.png");
+//        upgradeTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//        mainMenuUpgradeButtonDrawable = new TextureRegionDrawable(new TextureRegion(upgradeTex));
     }
 
     private static void generateHelpScreenAssets(){
@@ -147,7 +143,7 @@ public class AssetManager {
         helpTextFont = valueFontGenerator.generateFont(fontParam);
 
         //load assets
-        helpAtlas = new TextureAtlas("manual/animation/slide_anim.txt");
+        TextureAtlas helpAtlas = new TextureAtlas("manual/animation/slide_anim.txt");
         helpAnim = new Animation<TextureRegion>(0.033f, helpAtlas.findRegions("slide"), Animation.PlayMode.LOOP);
     }
 
@@ -172,6 +168,20 @@ public class AssetManager {
         optionsSoundSliderStyle = new SliderStyle();
         optionsSoundSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(new Texture("slider/soundKnob.png")));
         optionsSoundSliderStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture("slider/soundBG.png")));
+    }
+
+    private static void generateLevelSelectAssets(){
+        fontParam.color = Color.DARK_GRAY;
+
+        //Title Style
+        fontParam.size = (int)(65 * Poof.V_WIDTH/GameData.baseWidth);
+        levelSelectTitleStyle = new LabelStyle();
+        levelSelectTitleStyle.font = labelFontGenerator.generateFont(fontParam);
+
+        //Button Style
+        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
+        levelSelectButtonStyle = new TextButtonStyle();
+        levelSelectButtonStyle.font = labelFontGenerator.generateFont(fontParam);
     }
 
     private static void generateGameOverAssets(){
@@ -252,6 +262,6 @@ public class AssetManager {
             tileTextures.get(col).dispose();
         }
 
-        mainMenuButtonDockTex.dispose();
+        //mainMenuButtonDockTex.dispose();
     }
 }

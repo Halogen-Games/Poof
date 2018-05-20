@@ -1,9 +1,12 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -17,56 +20,58 @@ import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
 
 /**
- * Defines the pause screen
+ * Created by Rohit on 20-05-2018.
+ *
+ * Screen to select the difficulty
  */
 
-class PauseScreen implements Screen {
-
-    //for renderer handles
+class LevelSelectScreen implements Screen{
+    //the game for sprite batch
     private Poof game;
+    private Screen prevScreen;
 
-    //to return back to the game
-    private Screen playScr;
-
-    //Font
+    //To add the buttons on the screen
     private Stage stage;
+    private TextButton easyButton;
+    private TextButton mediumButton;
+    private TextButton hardButton;
+    private TextButton backButton;
 
-    //buttons
-    private TextButton resumeButton;
-    private TextButton restartButton;
-    private TextButton optionsButton;
-    private TextButton mainMenuButton;
-
-    PauseScreen(Poof game, PlayScreen scr){
-        this.playScr = scr;
+    //Constructor
+    LevelSelectScreen(Poof game, Screen prevScr){
         this.game = game;
+        this.prevScreen = prevScr;
 
+        //stage
         stage = new Stage(Poof.VIEW_PORT, game.batch);
 
+        //create a table to position objects on stage
         Table table = new Table();
         table.bottom();
         table.setPosition(0, Poof.V_HEIGHT/10);
         table.setFillParent(true);
 
         //Title Label
-        Label title = new Label("Paused!!!", AssetManager.pauseTitleStyle);
+        Label title = new Label("Select\nDifficulty", AssetManager.levelSelectTitleStyle);
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
+        title.setAlignment(Align.center);
 
         //Adding buttons
-        resumeButton = new TextButton("Resume", AssetManager.pauseButtonStyle);
-        restartButton = new TextButton("Restart", AssetManager.pauseButtonStyle);
-        optionsButton = new TextButton("Options", AssetManager.pauseButtonStyle);
-        mainMenuButton = new TextButton("Main Menu", AssetManager.pauseButtonStyle);
+        easyButton = new TextButton("Easy", AssetManager.levelSelectButtonStyle);
+        mediumButton = new TextButton("Medium", AssetManager.levelSelectButtonStyle);
+        hardButton = new TextButton("Hard", AssetManager.levelSelectButtonStyle);
+        backButton = new TextButton("Back", AssetManager.levelSelectButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
-        table.add(resumeButton);
+        table.add(easyButton);
         table.row();
-        table.add(restartButton);
+        table.add(mediumButton);
         table.row();
-        table.add(optionsButton);
+        table.add(hardButton);
         table.row();
-        table.add(mainMenuButton);
+        table.add(backButton).padTop(Poof.V_HEIGHT/10);
+
         stage.addActor(title);
         stage.addActor(table);
 
@@ -75,65 +80,49 @@ class PauseScreen implements Screen {
     }
 
     private void addUIListeners(){
-        resumeButton.addListener(new ChangeListener() {
+        easyButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 SoundManager.playButtonTap();
-                resumeGame();
+                GameData.setLevel("easy");
+                startGame();
             }
         });
 
-        restartButton.addListener(new ChangeListener() {
+        mediumButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 SoundManager.playButtonTap();
-                restartGame();
+                GameData.setLevel("medium");
+                startGame();
             }
         });
 
-        optionsButton.addListener(new ChangeListener() {
+        hardButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 SoundManager.playButtonTap();
-                openOptions();
+                GameData.setLevel("hard");
+                startGame();
             }
         });
 
-        mainMenuButton.addListener(new ChangeListener() {
+        backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                Gdx.input.setInputProcessor(null);
                 SoundManager.playButtonTap();
-                openMainMenu();
+                dispose();
+                game.setScreen(prevScreen);
             }
         });
     }
 
-    private void resumeGame(){
+    private void startGame(){
         Gdx.input.setInputProcessor(null);
-        dispose();
-        playScr.resume();
-    }
-
-    private void restartGame(){
-        //todo: add confirmation dialogue
-        Gdx.input.setInputProcessor(null);
-        SoundManager.playMusic.stop();
-        playScr.dispose();
+        SoundManager.mainMenuMusic.stop();
         dispose();
         game.setScreen(new PlayScreen(game));
-    }
-
-    private void openOptions(){
-        Gdx.input.setInputProcessor(null);
-        game.setScreen(new OptionsScreen(game,this));
-    }
-
-    private void openMainMenu(){
-        Gdx.input.setInputProcessor(null);
-        SoundManager.playMusic.stop();
-        playScr.dispose();
-        dispose();
-        game.setScreen(new MainMenuScreen(game));
     }
 
     @Override
@@ -144,8 +133,8 @@ class PauseScreen implements Screen {
     }
 
     @Override
-    public void render(float delta) {
-        stage.act();
+    public void render(float delta){
+        stage.act(delta);
 
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -166,8 +155,7 @@ class PauseScreen implements Screen {
     }
 
     @Override
-    public void resume() {
-    }
+    public void resume() {}
 
     @Override
     public void hide() {
@@ -176,7 +164,7 @@ class PauseScreen implements Screen {
 
     @Override
     public void dispose() {
-        System.out.println("Pause Screen Disposed");
+        System.out.println("level Select Screen Disposed");
         stage.dispose();
     }
 }

@@ -33,7 +33,7 @@ public class SplashScreen implements Screen {
         logo = new Texture("common/com_logo.png");
         logo.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        splashDuration = 5 ;
+        splashDuration = 4;
         elapsed = 0;
     }
 

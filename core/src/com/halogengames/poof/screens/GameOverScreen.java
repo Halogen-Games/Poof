@@ -58,10 +58,9 @@ class GameOverScreen implements Screen{
         scoreTable.add(scoreLabel).expandX();
 
         //Add highscore label
-        int highScore = GameData.prefs.getInteger("highScore", 0);
+        int highScore = GameData.getHighScore();
         if(GameData.score>highScore){
-            GameData.prefs.putInteger("highScore", GameData.score);
-            GameData.prefs.flush();
+            GameData.setHighScore();
             Label highScoreMsg = new Label("High score made!", AssetManager.gameOverLabelStyle);
             scoreTable.row();
             scoreTable.add(highScoreMsg).expandX();

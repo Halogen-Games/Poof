@@ -38,7 +38,7 @@ public class Hud {
         Label scoreTextLabel = new Label("SCORE", AssetManager.hudLabelStyle);
         scoreLabel = new Label(String.valueOf(GameData.score), AssetManager.hudLabelStyle);
         Label highscoreTextLabel = new Label("Best", AssetManager.hudLabelStyle);
-        Label highscoreLabel = new Label(String.valueOf(GameData.prefs.getInteger("highScore", 0)), AssetManager.hudLabelStyle);
+        Label highscoreLabel = new Label(String.valueOf(GameData.getHighScore()), AssetManager.hudLabelStyle);
 
         table.add(highscoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
         table.add(scoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);

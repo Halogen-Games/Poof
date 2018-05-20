@@ -85,7 +85,7 @@ class MainMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 SoundManager.playButtonTap();
-                startGame();
+                openLevelSelect();
             }
         });
 
@@ -126,11 +126,9 @@ class MainMenuScreen implements Screen {
         });
     }
 
-    private void startGame(){
+    private void openLevelSelect(){
         Gdx.input.setInputProcessor(null);
-        SoundManager.mainMenuMusic.stop();
-        dispose();
-        game.setScreen(new PlayScreen(game));
+        game.setScreen(new LevelSelectScreen(game, this));
     }
 
     private void openHelp(){

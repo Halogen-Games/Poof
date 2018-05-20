@@ -22,9 +22,11 @@ import com.halogengames.poof.Poof;
 
 /**
  * Created by Rohit on 22-10-2017.
+ *
+ * Screen to show help pages
  */
 
-public class HelpScreen implements Screen {
+class HelpScreen implements Screen {
 
     //the game for sprite batch
     private Poof game;
@@ -43,7 +45,7 @@ public class HelpScreen implements Screen {
 
     private float elapsed;
 
-    public HelpScreen(Poof game, Screen prevScr){
+    HelpScreen(Poof game, Screen prevScr){
         this.game = game;
         prevScreen = prevScr;
 
@@ -90,7 +92,7 @@ public class HelpScreen implements Screen {
         stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
-    public void update(float dt){
+    private void update(float dt){
         elapsed += dt;
         animTex = AssetManager.helpAnim.getKeyFrame(elapsed);
 

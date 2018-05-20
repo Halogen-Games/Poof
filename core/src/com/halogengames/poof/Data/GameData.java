@@ -18,6 +18,7 @@ public class GameData {
     private static int maxTime;
     public static int score;
     private static int numColors;
+    private static String levelName;
 
     //things like font size are hardcoded according to this base width and then scaled appropriately based on actual width of screen
     static float baseWidth;
@@ -43,7 +44,7 @@ public class GameData {
 
         numBoardCols = 6;
         numBoardRows = 6;
-        numColors = 3 ;
+        numColors = 3;
 
         clearColor = new Color(1,1,1,1);
 
@@ -53,6 +54,35 @@ public class GameData {
         allTileColors.add("indigo");
         allTileColors.add("red");
         allTileColors.add("yellow");
+    }
+
+    public static int getHighScore(){
+        //back support for the key highscore
+        int defVal = 0;
+        if(levelName.equals("easy")) {
+            defVal = GameData.prefs.getInteger("highScore", 0);
+        }
+        return GameData.prefs.getInteger("highScore_" + levelName, defVal);
+    }
+
+    public static void setHighScore(){
+        GameData.prefs.putInteger("highScore_" + levelName, score);
+        GameData.prefs.flush();
+    }
+
+    public static void setLevel(String level){
+        if(level.equals("easy")){
+            levelName = level;
+            numColors = 3;
+        }else if(level.equals("medium")){
+            levelName = level;
+            numColors = 4;
+        }else if(level.equals("hard")){
+            levelName = level;
+            numColors = 5;
+        }else{
+            throw new Error("unknown level selected: " + level);
+        }
     }
 
     public static void updateScore(ArrayList<Tile> selectedTiles){

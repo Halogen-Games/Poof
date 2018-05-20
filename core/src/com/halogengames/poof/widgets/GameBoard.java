@@ -170,6 +170,7 @@ public class GameBoard extends Widget {
 
     public void update(float dt){
         if(!movesLeft()) {
+            //todo: add a sound for shuffle
             shuffleBoard();
         }
 
