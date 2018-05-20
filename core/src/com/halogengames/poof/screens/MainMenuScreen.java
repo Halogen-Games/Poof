@@ -3,24 +3,15 @@ package com.halogengames.poof.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.halogengames.poof.Data.AssetManager;
@@ -34,7 +25,7 @@ import com.halogengames.poof.Poof;
  * Opening screen for the game
  */
 
-public class MainMenuScreen implements Screen {
+class MainMenuScreen implements Screen {
 
     //the game for sprite batch
     private  Poof game;
@@ -42,6 +33,7 @@ public class MainMenuScreen implements Screen {
     //To add the buttons on the screen
     private Stage stage;
     private TextButton playButton;
+    private TextButton helpButton;
     private TextButton exitButton;
     private TextButton optionsButton;
 
@@ -67,12 +59,15 @@ public class MainMenuScreen implements Screen {
 
         //Adding buttons
         playButton = new TextButton("Play", AssetManager.mainMenuButtonStyle);
+        helpButton = new TextButton("Help", AssetManager.mainMenuButtonStyle);
         optionsButton = new TextButton("Options", AssetManager.mainMenuButtonStyle);
         exitButton = new TextButton("Quit", AssetManager.mainMenuButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
         table.add(playButton);
+        table.row();
+        table.add(helpButton);
         table.row();
         table.add(optionsButton);
         table.row();
@@ -91,6 +86,14 @@ public class MainMenuScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 SoundManager.playButtonTap();
                 startGame();
+            }
+        });
+
+        helpButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                SoundManager.playButtonTap();
+                openHelp();
             }
         });
 
@@ -130,6 +133,10 @@ public class MainMenuScreen implements Screen {
         game.setScreen(new PlayScreen(game));
     }
 
+    private void openHelp(){
+        Gdx.input.setInputProcessor(null);
+        game.setScreen(new HelpScreen(game,this));
+    }
 
     private void openOptions(){
         Gdx.input.setInputProcessor(null);
@@ -138,7 +145,7 @@ public class MainMenuScreen implements Screen {
 
     private void openUpgrades(){
         Gdx.input.setInputProcessor(null);
-        game.setScreen(new UpgradeScreen(game,this));
+        game.setScreen(new HelpScreen(game,this));
     }
 
     @Override

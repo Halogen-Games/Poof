@@ -4,16 +4,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.halogengames.poof.Poof;
+
 
 /**
  * Created by Rohit on 03-10-2017.
@@ -39,6 +44,11 @@ public class AssetManager {
     public static Drawable mainMenuUpgradeButtonDrawable;
     public static Drawable mainMenuShopButtonDrawable;
     public static Drawable mainMenuExitButtonDrawable;
+
+    //help Screen Assets
+    public static BitmapFont helpTextFont;
+    public static TextureAtlas helpAtlas;
+    public static Animation<TextureRegion> helpAnim;
 
     //Options Screen Assets
     public static LabelStyle optionsTitleStyle;
@@ -80,6 +90,7 @@ public class AssetManager {
         //generate assets
         generateCommonAssets();
         generateMainMenuAssets();
+        generateHelpScreenAssets();
         generateOptionsAssets();
         generateGameOverAssets();
         generatePauseScreenAssets();
@@ -128,6 +139,16 @@ public class AssetManager {
         Texture upgradeTex = new Texture("main_menu/upgrade_button.png");
         upgradeTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         mainMenuUpgradeButtonDrawable = new TextureRegionDrawable(new TextureRegion(upgradeTex));
+    }
+
+    private static void generateHelpScreenAssets(){
+        fontParam.color = Color.DARK_GRAY;
+        fontParam.size = (int)(30 * Poof.V_WIDTH/GameData.baseWidth);
+        helpTextFont = valueFontGenerator.generateFont(fontParam);
+
+        //load assets
+        helpAtlas = new TextureAtlas("manual/animation/slide_anim.txt");
+        helpAnim = new Animation<TextureRegion>(0.033f, helpAtlas.findRegions("slide"), Animation.PlayMode.LOOP);
     }
 
     private static void generateOptionsAssets(){

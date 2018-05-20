@@ -2,10 +2,7 @@ package com.halogengames.poof;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -15,11 +12,9 @@ import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Data.TilePower;
-import com.halogengames.poof.scenes.Background;
-import com.halogengames.poof.screens.MainMenuScreen;
-import com.halogengames.poof.screens.PlayScreen;
+import com.halogengames.poof.library.BasicShapes;
 import com.halogengames.poof.screens.SplashScreen;
-import com.halogengames.poof.screens.TestScreen;
+import com.halogengames.poof.widgets.Background;
 
 public class Poof extends Game {
 	//virtual screen sizes
@@ -36,6 +31,7 @@ public class Poof extends Game {
 
 	public SpriteBatch batch;
 	public ShapeRenderer renderer;
+	public BasicShapes shaper;
 
 	public static Background bg;
 
@@ -43,6 +39,7 @@ public class Poof extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
+		shaper = new BasicShapes(this);
 
 		//defining Background
 		bg = new Background(this);
@@ -70,12 +67,12 @@ public class Poof extends Game {
 		setScreen(new SplashScreen(this));
 	}
 
-	@Override
-	public void render () {
-		//Game class delegates to the current screen hence using super
-		//since the func only uses super call, no need for this func as in absence of Poof.render, super.render will get called in place if exists
-		super.render();
-	}
+//	@Override
+//	public void render () {
+//		//Game class delegates to the current screen hence using super
+//		//since the func only uses super call, no need for this func as in absence of Poof.render, super.render will get called in place if exists
+//		super.render();
+//	}
 
 	@Override
 	public void dispose () {

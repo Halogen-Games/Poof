@@ -1,11 +1,5 @@
-package com.halogengames.poof.scenes;
+package com.halogengames.poof.widgets;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Poof;
 

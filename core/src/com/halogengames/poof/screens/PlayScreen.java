@@ -1,12 +1,8 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -14,16 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.scenes.GameBoard;
-import com.halogengames.poof.scenes.Hud;
+import com.halogengames.poof.widgets.GameBoard;
+import com.halogengames.poof.widgets.Hud;
 
 /**
  * Created by Rohit on 14-07-2017.
@@ -32,7 +26,7 @@ import com.halogengames.poof.scenes.Hud;
  * This contains a Hud, an options menu and a game board
  */
 
-public class PlayScreen implements Screen {
+class PlayScreen implements Screen {
 
     private Poof game;
     private Hud hud;
@@ -58,7 +52,7 @@ public class PlayScreen implements Screen {
 
         hud = new Hud(game.batch);
 
-        board = new GameBoard(game);
+        board = new GameBoard();
 
         //Pause Button
 

@@ -1,12 +1,8 @@
 package com.halogengames.poof.Data;
 
 import com.badlogic.gdx.utils.ArrayMap;
-import com.badlogic.gdx.utils.IntFloatMap;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.halogengames.poof.scenes.GameBoard;
+import com.halogengames.poof.widgets.GameBoard;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 /**

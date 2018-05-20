@@ -4,11 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Poof;
-
-import sun.rmi.runtime.Log;
 
 /**
  * Created by Rohit on 22-10-2017.
@@ -20,25 +17,23 @@ public class SplashScreen implements Screen {
 
     private Poof game;
     private Texture logo;
-    private float logoWidth;
-    private float logoHeight;
-    private float margin;
 
-    private boolean isRendered;
-    private boolean isInit;
     private float splashDuration;
     private float elapsed;
+
+    private float margin;
+    private float targetMargin;
+    private float logoWidth;
+    private float logoHeight;
 
     public SplashScreen(Poof game){
         this.game = game;
 
         //load assets
-        logo = new Texture("common/splash.png");
+        logo = new Texture("common/com_logo.png");
+        logo.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        isRendered = false;
-        isInit = false;
-
-        splashDuration = 4 ;
+        splashDuration = 5 ;
         elapsed = 0;
     }
 
@@ -47,8 +42,16 @@ public class SplashScreen implements Screen {
 
     }
 
+    private void update(float dt){
+        margin += (targetMargin-margin)*dt*1/splashDuration;
+        logoWidth = Poof.VIEW_PORT.getWorldWidth() - 2*margin;
+        logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
+    }
+
     @Override
     public void render(float delta) {
+        update(delta);
+
         if(elapsed > splashDuration){
             game.setScreen(new MainMenuScreen(game));
         }
@@ -58,22 +61,21 @@ public class SplashScreen implements Screen {
 
         game.batch.setProjectionMatrix(Poof.CAM.combined);
 
-        margin = Poof.VIEW_PORT.getWorldWidth()/6;
-        logoWidth = Poof.VIEW_PORT.getWorldWidth() - 2*margin;
-        logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
-
         game.batch.begin();
         game.batch.draw(logo,margin,Poof.VIEW_PORT.getWorldHeight()/2 - logoHeight/2,logoWidth,logoHeight);
         game.batch.end();
 
         elapsed += delta;
-        isRendered = true;
     }
 
     @Override
     public void resize(int width, int height) {
         Poof.VIEW_PORT.update(width, height);
-        System.out.println(width);
+
+        margin = 0;
+        targetMargin = Poof.VIEW_PORT.getWorldWidth()/6;
+        logoWidth = Poof.VIEW_PORT.getWorldWidth() - 2*margin;
+        logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
     }
 
     @Override

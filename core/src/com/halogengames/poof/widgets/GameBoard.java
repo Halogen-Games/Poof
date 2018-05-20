@@ -1,16 +1,12 @@
-package com.halogengames.poof.scenes;
+package com.halogengames.poof.widgets;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Data.TilePower;
-import com.halogengames.poof.Poof;
 import com.halogengames.poof.sprites.Tile;
 
 import java.util.ArrayList;
@@ -22,8 +18,6 @@ import java.util.ArrayList;
  * Also houses game board generation logic
  */
 public class GameBoard extends Widget {
-
-    private Poof game;
 
     private int numCols;
     private int numRows;
@@ -40,8 +34,7 @@ public class GameBoard extends Widget {
 
     private boolean boardInitialized;
 
-    public GameBoard(Poof game){
-        this.game = game;
+    public GameBoard(){
         numCols = GameData.numBoardCols;
         numRows = GameData.numBoardRows;
 
