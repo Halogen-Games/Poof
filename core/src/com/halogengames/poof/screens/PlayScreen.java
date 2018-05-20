@@ -3,6 +3,7 @@ package com.halogengames.poof.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,6 +19,8 @@ import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Poof;
 import com.halogengames.poof.widgets.GameBoard;
 import com.halogengames.poof.widgets.Hud;
+
+import java.util.ArrayList;
 
 /**
  * Created by Rohit on 14-07-2017.
@@ -45,26 +48,35 @@ class PlayScreen implements Screen {
         //stage
         stage = new Stage(Poof.VIEW_PORT, game.batch);
 
-        //Table for board, Buttons and Labels
-        Table table = new Table();
-        table.bottom();
-        table.setFillParent(true);
-
         hud = new Hud(game.batch);
 
-        board = new GameBoard();
+        ArrayList<ImageButton> buttons = new ArrayList<ImageButton>();
 
-        //Pause Button
-
+        //Create Buttons
         pauseButton = new ImageButton(AssetManager.playScreenPauseButtonDrawable);
+        buttons.add(pauseButton);
+
+        //Create Board
+        float boardSize = Poof.V_WIDTH*0.9f;
+        Vector2 boardPos = new Vector2(Poof.VIEW_PORT.getWorldWidth()/2 - boardSize/2,Poof.VIEW_PORT.getWorldHeight()*0.15f);
+        board = new GameBoard(game, boardSize,buttons.size());
+        board.setPosition(boardPos.x, boardPos.y);
+        board.setSize(boardSize,boardSize);
+        stage.addActor(board);
+
+        //Set Button Sizes
+        float buttonSize = board.getButtonSize()-2*board.getButtonMargin();
+
+        //Todo: Make the height dependent on numRows
+        for(int i=0;i<buttons.size();i++){
+            buttons.get(i).setSize(buttonSize, buttonSize);
+            float posX = boardPos.x+board.getCornerRadius()+board.getButtonMargin()+i*(board.getButtonSize()+board.getButtonGutter());
+            float posY = boardPos.y - buttonSize - board.getButtonMargin();
+            buttons.get(i).setPosition(posX,posY);
+            stage.addActor(buttons.get(i));
+        }
 
         addUIListeners();
-
-        table.add(pauseButton).align(Align.right).size(Poof.V_HEIGHT*0.05f);
-        table.row();
-        //Todo: Make the height dependent on numRows
-        table.add(board).size(Poof.V_WIDTH*0.9f).padBottom(Poof.V_HEIGHT*0.2f);
-        stage.addActor(table);
 
         //handle input events
         Gdx.input.setInputProcessor(stage);

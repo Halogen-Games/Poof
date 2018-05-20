@@ -129,6 +129,7 @@ public class Tile extends Sprite{
                 vel = 0;
             }
         }else if(state.equals("shuffle")){
+            //fixme(Very important)(BUG): if player starts playing while tiles are in shuffle mode, they persist for longer and animation slows down as shuffle animation is slower than falling
             //tiles shuffling
             //find velX and velY from vel, acc and pos
             float dx = this.getX() - getTargetPos().x;

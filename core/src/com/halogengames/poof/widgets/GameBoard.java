@@ -1,12 +1,21 @@
 package com.halogengames.poof.widgets;
 
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Data.TilePower;
+import com.halogengames.poof.Poof;
 import com.halogengames.poof.sprites.Tile;
 
 import java.util.ArrayList;
@@ -19,32 +28,78 @@ import java.util.ArrayList;
  */
 public class GameBoard extends Widget {
 
+    //handle to game and screen
+    private Poof game;
+    private Screen playScreen;
+
+    private float boardSize;
     private int numCols;
     private int numRows;
 
     private float tileMargin;
     private float tileSize;
     private float tileGutter;
-
+    private float rad;
     //tile margin is (tile size X factor)
     private float tileMarginFactor;
+
+    private int numButtons;
+    private float buttonMargin;
+    private float buttonGutter;
+    private float buttonSize;
+
+    //colors
+    private Color bgColor;
+    private Color borderColor;
 
     private Array<Array<Tile>> tiles;
     private ArrayList<Tile> selectedTiles;
 
     private boolean boardInitialized;
 
-    public GameBoard(){
+    public GameBoard(Poof game, float boardSize, int numButtons){
+        this.game = game;
+        this.numButtons = numButtons;
+        this.boardSize = boardSize;
+
         numCols = GameData.numBoardCols;
         numRows = GameData.numBoardRows;
 
-        tileGutter = 10.0f;
-        tileMarginFactor = 0.07f;
+        bgColor = new Color(Color.WHITE);
+        borderColor = new Color(Color.GRAY);
 
         tiles = new Array<Array<Tile>>();
         selectedTiles = new ArrayList<Tile>();
 
+        sizeChanged();
+
         boardInitialized = false;
+    }
+
+    @Override
+    public float getHeight(){
+        return boardSize;
+    }
+
+    @Override
+    public float getWidth(){
+        return boardSize;
+    }
+
+    public float getButtonMargin(){
+        return buttonMargin;
+    }
+
+    public float getButtonGutter(){
+        return buttonGutter;
+    }
+
+    public float getCornerRadius(){
+        return rad;
+    }
+
+    public float getButtonSize(){
+        return buttonSize;
     }
 
     private int movesLeftHelper(int i, int j, int compSize, boolean[][] checked){
@@ -134,10 +189,77 @@ public class GameBoard extends Widget {
         return true;
     }
 
+    private Vector2 addButton(float x, float y){
+        float size = buttonSize;
+
+        //Draw BG
+        game.renderer.setColor(bgColor);
+        game.renderer.rect(x,y-rad,size,rad);
+        game.shaper.drawRoundRectFilled(x,y-size,size,size,rad);
+
+        //Draw border
+        game.renderer.setColor(borderColor);
+        game.shaper.drawLine(x,y,x,y-size+rad);
+        game.shaper.drawLineArc(x+rad,y-size+rad,rad,180,90);
+        game.shaper.drawLine(x+rad,y-size,x+size-rad,y-size);
+        game.shaper.drawLineArc(x+size-rad,y-size+rad,rad,270,90);
+        game.shaper.drawLine(x+size,y-size+rad,x+size,y);
+        game.shaper.drawLine(x+size,y,Math.min(x+size+buttonGutter,getX()+getWidth()-rad),y);
+
+        return new Vector2(Math.min(x+size+buttonGutter,getX()+getWidth()-rad),y);
+    }
+
+    private void drawBoardFrame(){
+        game.renderer.setProjectionMatrix(Poof.CAM.combined);
+
+        game.renderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        //add bg color
+        game.renderer.setColor(bgColor);
+        game.shaper.drawRoundRectFilled(getX(),getY(),getWidth(),getHeight(),rad);
+
+        //Draw Board frame starting from lower left arc
+        game.renderer.setColor(borderColor);
+        game.shaper.setLineWidth(5);
+
+        game.shaper.drawLineArc(getX()+rad, getY()+rad, rad, 180, 90);
+        game.shaper.drawLine(getX(),getY()+rad,getX(),getY()+getHeight()-rad);
+
+        game.shaper.drawLineArc(getX()+rad,getY()+getHeight()-rad,rad,90,90);
+        game.shaper.drawLine(getX()+rad, getY()+getHeight(), getX()+getWidth()-rad,getY()+getHeight());
+
+        game.shaper.drawLineArc(getX()+getWidth()-rad,getY()+getHeight()-rad,rad,0,90);
+        game.shaper.drawLine(getX()+getWidth(), getY()+getHeight()-rad, getX()+getWidth(),getY()+rad);
+
+        game.shaper.drawLineArc(getX()+getWidth()-rad,getY()+rad,rad,270,90);
+
+        //add button specific border
+        Vector2 p = new Vector2(getX()+rad, getY());
+        for(int i=0; i<numButtons; i++){
+            p = addButton(p.x, p.y);
+        }
+
+        game.shaper.drawLine(p.x,p.y,getX()+getWidth()-rad,p.y);
+
+        game.renderer.end();
+    }
+
     @Override
     protected void sizeChanged() {
+        tileGutter = 10.0f;
+        tileMarginFactor = 0.07f;
+
         tileSize = (getWidth() - 2*tileGutter)/(tileMarginFactor*numCols + numCols + tileMarginFactor);
         tileMargin = tileSize*tileMarginFactor;
+
+        rad = tileGutter+tileMargin;
+
+        buttonSize = getWidth()/7;
+        buttonGutter = getWidth()-2*rad-numButtons*buttonSize;
+        if( numButtons>1){
+            buttonGutter /= numButtons-1;
+        }
+        buttonMargin = 10;
 
         tiles = new Array<Array<Tile>>();
         for(int i=0; i<numRows; i++){
@@ -154,8 +276,11 @@ public class GameBoard extends Widget {
     @Override
     public void draw(Batch batch, float parentAlpha) {
 
-        //draw board BG
-        batch.draw(AssetManager.boardBG, getX(), getY(), getWidth(), getHeight());
+        //Batch.begin called by parent, so end it
+        batch.end();
+        drawBoardFrame();
+        batch.begin();
+        //batch.draw(AssetManager.boardBG, getX(), getY(), getWidth(), getHeight());
 
         //draw tiles using batch
         for(int i=0; i<tiles.size; i++){
