@@ -136,7 +136,7 @@ public class GameBoard extends Widget {
     }
 
     private boolean movesLeft(){
-        if(!boardInitialized || !isBoardIdle()){
+        if(!boardInitialized || !getBoardState().equals("idle")){
             return true;
         }
 
@@ -178,15 +178,34 @@ public class GameBoard extends Widget {
         }
     }
 
-    private boolean isBoardIdle(){
+    public String getBoardState(){
+        boolean shuffling = false;
+        boolean falling = false;
+
         for(int i=0; i<numRows; i++){
             for(int j=0; j<numCols; j++) {
-                if(!tiles.get(i).get(j).getState().equals("idle")){
-                    return false;
+                if(tiles.get(i).get(j).getState().equals("shuffle")){
+                    shuffling = true;
+                }else if(tiles.get(i).get(j).getState().equals("falling")){
+                    falling = true;
                 }
             }
         }
-        return true;
+
+        if(shuffling){
+            return "shuffle";
+        }else if(falling){
+            return "falling";
+        }
+
+        return "idle";
+    }
+
+    public void setTileAsSelected(int i, int j){
+        if(!selectedTiles.contains(tiles.get(i).get(j))){
+            tiles.get(i).get(j).setSelected();
+            selectedTiles.add(tiles.get(i).get(j));
+        }
     }
 
     private Vector2 addButton(float x, float y){
@@ -294,10 +313,11 @@ public class GameBoard extends Widget {
     }
 
     public void update(float dt){
-        if(!movesLeft()) {
-            //todo: add a sound for shuffle
+        while(!movesLeft()) {
             shuffleBoard();
         }
+
+        //todo: add a sound for shuffle here
 
         for(int i=0; i<tiles.size; i++){
             for(int j=0;j<tiles.get(0).size; j++) {
@@ -306,7 +326,7 @@ public class GameBoard extends Widget {
         }
     }
 
-    public boolean boardTouchedDown(float screenX, float screenY) {
+    public void boardTouchedDown(float screenX, float screenY) {
         for(int i=0; i<tiles.size; i++){
             for(int j=0;j<tiles.get(0).size; j++) {
                 Tile t = tiles.get(i).get(j);
@@ -314,13 +334,10 @@ public class GameBoard extends Widget {
                     selectedTiles = new ArrayList<Tile>();
                     t.setSelected();
                     selectedTiles.add(t);
-
-                    //return true declaring input is handled
-                    return true;
+                    return;
                 }
             }
         }
-        return false;
     }
 
     public void boardTouchedUp() {
@@ -331,30 +348,26 @@ public class GameBoard extends Widget {
             }
         }else{
             SoundManager.playBlocksRemoved();
-            //todo: remove loop and use selectedTiles array so as to use powers like bomb chaining
+
             //Execute powers
-            for(int i=tiles.size-1;i>=0;i--){
-                for(int j=0;j<tiles.get(0).size;j++){
-                    if(tiles.get(i).get(j).isSelected){
-                        TilePower.unleashPower(this, tiles.get(i).get(j).tilePower);
-                        //need to remove this tile
-                        for(int k=i;k<numRows-1;k++){
-                            tiles.get(k).set(j, tiles.get(k+1).get(j));
-                            tiles.get(k).get(j).setCoordinates(k,j);
-                        }
-                        //will always add one at the top
-                        tiles.get(numRows-1).set(j, new Tile(numRows-1, j, tileSize, tileMargin, numRows));
-                    }
-                }
+            for(int i=0; i<selectedTiles.size(); i++){
+                TilePower.unleashPower(this, selectedTiles.get(i));
             }
 
-            //fixme: why is this loop added?
+            //remove and add new tiles
             for(int i=tiles.size-1;i>=0;i--){
                 for(int j=0;j<tiles.get(0).size;j++){
                     if(tiles.get(i).get(j).isSelected){
+
                         //need to remove this tile
+                        tiles.get(i).get(j).removed();
+
+                        //drop tiles
                         for(int k=i;k<numRows-1;k++){
                             tiles.get(k).set(j, tiles.get(k+1).get(j));
+                            //below helps the tiles get in correct column in case they were not ex. during shuffle
+                            tiles.get(k).get(j).setCorrectXPos();
+                            tiles.get(k).get(j).setState("falling");
                             tiles.get(k).get(j).setCoordinates(k,j);
                         }
                         //will always add one at the top
@@ -369,12 +382,6 @@ public class GameBoard extends Widget {
     }
 
     public void boardTouchDragged(float screenX, float screenY) {
-        if(selectedTiles.size() == 0){
-            //fixme: remove this if(), it causes touch to not get registered if initial touchdown doesn't select anything
-            //possible need to add touchdown code here but not sure
-            return;
-        }
-
         //Selection Logic
         for(int i=0; i<tiles.size; i++){
             for(int j=0;j<tiles.get(0).size;j++) {
@@ -388,7 +395,9 @@ public class GameBoard extends Widget {
                             selectedTiles.get(t).setDeselected();
                             selectedTiles.remove(selectedTiles.size() - 1);
                         }
-                    } else if (tile.isConnectedTo(selectedTiles.get(selectedTiles.size() - 1))) {
+                    } else if (selectedTiles.size() == 0 || tile.isConnectedTo(selectedTiles.get(selectedTiles.size() - 1))) {
+                        //NOTE: order matters in above if condition
+                        //select the tile if no tile is selected or if this tile is connected to a selected tile
                         selectedTiles.add(tile);
                         tile.setSelected();
                     }

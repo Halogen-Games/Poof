@@ -58,7 +58,7 @@ class PlayScreen implements Screen {
 
         //Create Board
         float boardSize = Poof.V_WIDTH*0.9f;
-        Vector2 boardPos = new Vector2(Poof.VIEW_PORT.getWorldWidth()/2 - boardSize/2,Poof.VIEW_PORT.getWorldHeight()*0.15f);
+        Vector2 boardPos = new Vector2(Poof.VIEW_PORT.getWorldWidth()/2 - boardSize/2,Poof.VIEW_PORT.getWorldHeight()*0.2f);
         board = new GameBoard(game, boardSize,buttons.size());
         board.setPosition(boardPos.x, boardPos.y);
         board.setSize(boardSize,boardSize);
@@ -67,7 +67,7 @@ class PlayScreen implements Screen {
         //Set Button Sizes
         float buttonSize = board.getButtonSize()-2*board.getButtonMargin();
 
-        //Todo: Make the height dependent on numRows
+        //Todo: (Low Priority) Make the height dependent on numRows
         for(int i=0;i<buttons.size();i++){
             buttons.get(i).setSize(buttonSize, buttonSize);
             float posX = boardPos.x+board.getCornerRadius()+board.getButtonMargin()+i*(board.getButtonSize()+board.getButtonGutter());
@@ -78,6 +78,9 @@ class PlayScreen implements Screen {
 
         addUIListeners();
 
+        stage.getRoot().setColor(1,1,1,0);
+        stage.getRoot().addAction(Actions.fadeIn(0.2f));
+
         //handle input events
         Gdx.input.setInputProcessor(stage);
     }
@@ -86,7 +89,8 @@ class PlayScreen implements Screen {
         board.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return board.boardTouchedDown(x, y);
+                board.boardTouchedDown(x, y);
+                return true;
             }
 
             @Override
@@ -110,14 +114,17 @@ class PlayScreen implements Screen {
 
     @Override
     public void show() {
-        stage.getRoot().setColor(1,1,1,0);
-        stage.getRoot().addAction(Actions.fadeIn(0.2f));
+
     }
 
     private void update(float dt) {
         board.update(dt);
 
-        GameData.levelTimer -= dt;
+        if(!board.getBoardState().equals("shuffle")){
+            //Don't decrease timer during shuffle
+            GameData.levelTimer -= dt;
+        }
+
         if(GameData.levelTimer<=0){
             endGame();
         }

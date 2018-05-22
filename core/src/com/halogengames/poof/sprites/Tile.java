@@ -30,6 +30,7 @@ public class Tile extends Sprite{
     //velocity and acceleration with which tiles move to their target location
     private float vel;
     private float acc;
+    private float shuffleAnimSpeed;
 
     //state of tile
     private String state;
@@ -47,6 +48,9 @@ public class Tile extends Sprite{
         this.vel = 0;
         this.acc = -startingYPos * 3;
 
+        //NOTE: don't make shuffles slow as it allows player to make use of the stopped time
+        this.shuffleAnimSpeed = 5;
+
         this.setTexture(AssetManager.tileTextures.get(color+"_tile"));
         this.setPosition(tileMargin*(j+1) + tileSize*j, startingYPos);
 
@@ -61,6 +65,10 @@ public class Tile extends Sprite{
 
     public void setCoordinates(int i, int j){
         coords = new Vector2(i, j);
+    }
+
+    public Vector2 getCoordinates(){
+        return coords;
     }
 
     public void setState(String st){
@@ -114,6 +122,14 @@ public class Tile extends Sprite{
         return false;
     }
 
+    public void setCorrectXPos(){
+        this.setX(getTargetPos().x);
+    }
+
+    public void removed(){
+
+    }
+
     public void update(double dt){
         if(state.equals("falling") || state.equals("idle")) {
             //normal tile behavior
@@ -129,15 +145,15 @@ public class Tile extends Sprite{
                 vel = 0;
             }
         }else if(state.equals("shuffle")){
-            //fixme(Very important)(BUG): if player starts playing while tiles are in shuffle mode, they persist for longer and animation slows down as shuffle animation is slower than falling
             //tiles shuffling
-            //find velX and velY from vel, acc and pos
+            //set x and y vel based on distance from target location
             float dx = this.getX() - getTargetPos().x;
             float dy = this.getY() - getTargetPos().y;
+
             float velX = 5*dx;
             float velY = 5*dy;
 
-            if(Math.abs(dx)< Math.max(0.1, velX*dt) && Math.abs(dy)< Math.max(0.1, velY*dt)){
+            if(Math.abs(dx)<= Math.max(0.1, velX*dt) && Math.abs(dy)<= Math.max(0.1, velY*dt)){
                 this.setPosition(getTargetPos().x, getTargetPos().y);
                 setState("idle");
             }else {

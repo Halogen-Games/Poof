@@ -32,7 +32,6 @@ class OptionsScreen implements Screen {
     private Slider soundSlider;
 
     //To add the buttons on the screen
-    //Todo: Use a texture atlas for the buttons
     private Stage stage;
     private TextButton backButton;
 

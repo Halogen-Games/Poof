@@ -113,7 +113,7 @@ class HelpScreen implements Screen {
         Poof.bg.render(delta);
 
         game.batch.begin();
-        //todo: remove below hardcoded animWidth/15 and make animations such that their center is centered at screen as well
+        //todo: (Low Priority) remove below hardcoded animWidth/15 and make animations such that their center is centered at screen as well
         game.batch.draw(
                 animTex,
                 Poof.VIEW_PORT.getWorldWidth()/2 - animWidth/2 + animWidth/15,

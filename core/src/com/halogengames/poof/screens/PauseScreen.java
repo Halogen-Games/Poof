@@ -115,7 +115,7 @@ class PauseScreen implements Screen {
     }
 
     private void restartGame(){
-        //todo: add confirmation dialogue
+        //todo: add confirmation dialogue (Possibly needs sprite queue)
         Gdx.input.setInputProcessor(null);
         SoundManager.playMusic.stop();
         playScr.dispose();
