@@ -3,10 +3,10 @@ package com.halogengames.poof.sprites;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.halogengames.poof.Data.AssetManager;
-import com.halogengames.poof.Data.GameData;
-import com.halogengames.poof.Data.SoundManager;
-import com.halogengames.poof.Data.TilePower;
+import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.GameData;
+import com.halogengames.poof.dataLoaders.SoundManager;
+import com.halogengames.poof.dataLoaders.TilePower;
 
 import java.util.Random;
 

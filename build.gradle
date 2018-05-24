@@ -47,8 +47,6 @@ allprojects {
     }
 }
 
-
-
 project(":desktop") {
     apply plugin: "java"
 

@@ -14,9 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.halogengames.poof.Data.AssetManager;
-import com.halogengames.poof.Data.GameData;
-import com.halogengames.poof.Data.SoundManager;
+import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.GameData;
+import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
 
 /**

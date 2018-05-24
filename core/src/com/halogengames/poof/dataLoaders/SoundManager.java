@@ -1,4 +1,4 @@
-package com.halogengames.poof.Data;
+package com.halogengames.poof.dataLoaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;

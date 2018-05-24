@@ -1,6 +1,6 @@
 package com.halogengames.poof.widgets;
 
-import com.halogengames.poof.Data.AssetManager;
+import com.halogengames.poof.dataLoaders.AssetManager;
 import com.halogengames.poof.Poof;
 
 /**

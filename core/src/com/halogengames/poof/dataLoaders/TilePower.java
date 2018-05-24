@@ -1,11 +1,10 @@
-package com.halogengames.poof.Data;
+package com.halogengames.poof.dataLoaders;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.halogengames.poof.sprites.Tile;
 import com.halogengames.poof.widgets.GameBoard;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
