@@ -2,6 +2,7 @@ package com.halogengames.poof;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -12,6 +13,7 @@ import com.halogengames.poof.Data.AssetManager;
 import com.halogengames.poof.Data.GameData;
 import com.halogengames.poof.Data.SoundManager;
 import com.halogengames.poof.Data.TilePower;
+import com.halogengames.poof.database.TableCreator;
 import com.halogengames.poof.library.BasicShapes;
 import com.halogengames.poof.screens.SplashScreen;
 import com.halogengames.poof.widgets.Background;
@@ -37,6 +39,8 @@ public class Poof extends Game {
 
 	@Override
 	public void create () {
+		TableCreator creator = new TableCreator();
+
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
 		shaper = new BasicShapes(this);
@@ -68,11 +72,11 @@ public class Poof extends Game {
 	}
 
 //	@Override
-//	public void render () {
-//		//Game class delegates to the current screen hence using super
-//		//since the func only uses super call, no need for this func as in absence of Poof.render, super.render will get called in place if exists
-//		super.render();
-//	}
+	public void render () {
+		//Game class delegates to the current screen hence using super
+		//since the func only uses super call, no need for this func as in absence of Poof.render, super.render will get called in place if exists
+		super.render();
+	}
 
 	@Override
 	public void dispose () {

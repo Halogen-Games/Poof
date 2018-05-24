@@ -5,7 +5,7 @@ Changed Task Run() to Task RunAndroid() below
  */
 
 android {
-    buildToolsVersion "26.0.2"
+    buildToolsVersion '27.0.3'
     compileSdkVersion 26
     sourceSets {
         main {
@@ -18,14 +18,15 @@ android {
             jniLibs.srcDirs = ['libs']
         }
 
-        instrumentTest.setRoot('tests')
+        androidTest.setRoot('tests')
     }
     packagingOptions {
         exclude 'META-INF/robovm/ios/robovm.xml'
+        exclude 'META-INF/DEPENDENCIES'
     }
     defaultConfig {
         applicationId "com.halogengames.poof"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 26
         versionCode 5
         versionName "0.05"

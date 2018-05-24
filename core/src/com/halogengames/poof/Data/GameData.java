@@ -85,10 +85,10 @@ public class GameData {
         }
     }
 
-    public static void updateScore(ArrayList<Tile> selectedTiles){
+    public static void updateScore(int chainLength, ArrayList<Tile> selectedTiles){
         score += selectedTiles.size();
         if( selectedTiles.size() > 5){
-            score += Math.pow(selectedTiles.size()-5,1.2);
+            score += Math.pow(chainLength-5,1.2);
         }
     }
 

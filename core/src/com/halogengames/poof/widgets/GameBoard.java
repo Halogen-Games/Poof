@@ -36,6 +36,8 @@ public class GameBoard extends Widget {
     private int numCols;
     private int numRows;
 
+    //todo: send this tile data to game data class
+    //TODO:(Very Important) Separate game board from play mechanics (maybe mechanics can extend the gameboard)
     private float tileMargin;
     private float tileSize;
     private float tileGutter;
@@ -208,7 +210,36 @@ public class GameBoard extends Widget {
         }
     }
 
-    private Vector2 addButton(float x, float y){
+    @Override
+    protected void sizeChanged() {
+        tileGutter = 10.0f;
+        tileMarginFactor = 0.07f;
+
+        tileSize = (getWidth() - 2*tileGutter)/(tileMarginFactor*numCols + numCols + tileMarginFactor);
+        tileMargin = tileSize*tileMarginFactor;
+
+        rad = tileGutter+tileMargin;
+
+        buttonSize = getWidth()/7;
+        buttonGutter = getWidth()-2*rad-numButtons*buttonSize;
+        if( numButtons>1){
+            buttonGutter /= numButtons-1;
+        }
+        buttonMargin = 10;
+
+        tiles = new Array<Array<Tile>>();
+        for(int i=0; i<numRows; i++){
+            Array<Tile> tileColumn = new Array<Tile>();
+            for(int j=0; j<numCols; j++) {
+                tileColumn.add(new Tile(i, j, tileSize, tileMargin, numRows));
+            }
+            tiles.add(tileColumn);
+        }
+
+        boardInitialized = true;
+    }
+
+    private Vector2 drawButtonBorder(float x, float y){
         float size = buttonSize;
 
         //Draw BG
@@ -255,41 +286,12 @@ public class GameBoard extends Widget {
         //add button specific border
         Vector2 p = new Vector2(getX()+rad, getY());
         for(int i=0; i<numButtons; i++){
-            p = addButton(p.x, p.y);
+            p = drawButtonBorder(p.x, p.y);
         }
 
         game.shaper.drawLine(p.x,p.y,getX()+getWidth()-rad,p.y);
 
         game.renderer.end();
-    }
-
-    @Override
-    protected void sizeChanged() {
-        tileGutter = 10.0f;
-        tileMarginFactor = 0.07f;
-
-        tileSize = (getWidth() - 2*tileGutter)/(tileMarginFactor*numCols + numCols + tileMarginFactor);
-        tileMargin = tileSize*tileMarginFactor;
-
-        rad = tileGutter+tileMargin;
-
-        buttonSize = getWidth()/7;
-        buttonGutter = getWidth()-2*rad-numButtons*buttonSize;
-        if( numButtons>1){
-            buttonGutter /= numButtons-1;
-        }
-        buttonMargin = 10;
-
-        tiles = new Array<Array<Tile>>();
-        for(int i=0; i<numRows; i++){
-            Array<Tile> tileColumn = new Array<Tile>();
-            for(int j=0; j<numCols; j++) {
-                tileColumn.add(new Tile(i, j, tileSize, tileMargin, numRows));
-            }
-            tiles.add(tileColumn);
-        }
-
-        boardInitialized = true;
     }
 
     @Override
@@ -349,6 +351,8 @@ public class GameBoard extends Widget {
         }else{
             SoundManager.playBlocksRemoved();
 
+            int chainLength = selectedTiles.size();
+
             //Execute powers
             for(int i=0; i<selectedTiles.size(); i++){
                 TilePower.unleashPower(this, selectedTiles.get(i));
@@ -375,7 +379,7 @@ public class GameBoard extends Widget {
                     }
                 }
             }
-            GameData.updateScore(selectedTiles);
+            GameData.updateScore(chainLength,selectedTiles);
         }
 
         selectedTiles = new ArrayList<Tile>();

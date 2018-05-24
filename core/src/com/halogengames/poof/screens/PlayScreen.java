@@ -131,13 +131,6 @@ class PlayScreen implements Screen {
         Poof.CAM.update();
     }
 
-    private void endGame() {
-        Gdx.input.setInputProcessor(null);
-        SoundManager.playMusic.stop();
-        dispose();
-        game.setScreen(new GameOverScreen(game));
-    }
-
     @Override
     public void render(float delta){
         update(delta);
@@ -171,6 +164,13 @@ class PlayScreen implements Screen {
         SoundManager.playMusic.play();
         game.setScreen(this);
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private void endGame() {
+        Gdx.input.setInputProcessor(null);
+        SoundManager.playMusic.stop();
+        dispose();
+        game.setScreen(new GameOverScreen(game));
     }
 
     @Override
