@@ -12,7 +12,7 @@ import com.halogengames.poof.dataLoaders.AssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
-import com.halogengames.poof.database.TableCreator;
+import com.halogengames.poof.database.CoreDB;
 import com.halogengames.poof.library.BasicShapes;
 import com.halogengames.poof.screens.SplashScreen;
 import com.halogengames.poof.widgets.Background;
@@ -30,15 +30,24 @@ public class Poof extends Game {
 	public static FreeTypeFontGenerator labelFontGenerator;
 	public static FreeTypeFontGenerator valueFontGenerator;
 
+	//Drawing Objects
 	public SpriteBatch batch;
 	public ShapeRenderer renderer;
 	public BasicShapes shaper;
 
+	//DB object
+    public CoreDB db;
+
+	//todo: why is this here and not in asset manager
 	public static Background bg;
+
+	public Poof(CoreDB db){
+        this.db = db;
+	}
 
 	@Override
 	public void create () {
-		TableCreator creator = new TableCreator();
+		//TableCreator creator = new TableCreator();
 
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
