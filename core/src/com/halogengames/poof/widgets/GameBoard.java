@@ -45,9 +45,13 @@ public class GameBoard extends Widget {
     private float buttonGutter;
     private float buttonSize;
 
-    //colors
+    //colors/graphics
     private Color bgColor;
     private Color borderColor;
+    private Color normalColor;
+    private Color flashColor;
+    private int flashStartTime;
+    private float flashFreq;
 
     private Array<Array<Tile>> tiles;
     private ArrayList<Tile> selectedTiles;
@@ -64,6 +68,10 @@ public class GameBoard extends Widget {
 
         bgColor = new Color(Color.WHITE);
         borderColor = new Color(Color.GRAY);
+        normalColor = new Color(Color.GRAY);
+        flashColor = new Color(Color.RED);
+        flashStartTime = 10;
+        flashFreq = 2;
 
         tiles = new Array<Array<Tile>>();
         selectedTiles = new ArrayList<Tile>();
@@ -315,6 +323,18 @@ public class GameBoard extends Widget {
         }
 
         //todo: add a sound for shuffle here
+
+        //flash board if time left is less than threshold
+        if(GameData.levelTimer<=flashStartTime){
+            float timeSegments = (float)GameData.levelTimer*flashFreq*2;
+            if(Math.round(timeSegments)%2 == 0){
+                borderColor = flashColor;
+            }else{
+                borderColor = normalColor;
+            }
+        }else{
+            borderColor = normalColor;
+        }
 
         for(int i=0; i<tiles.size; i++){
             for(int j=0;j<tiles.get(0).size; j++) {

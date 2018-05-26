@@ -30,6 +30,9 @@ class GameOverScreen implements Screen{
     //To add the buttons on the screen
     private Stage stage;
 
+    //Labels
+    private Label rankVal;
+
     //Buttons
     private TextButton replayButton;
     private TextButton mainMenuButton;
@@ -44,8 +47,6 @@ class GameOverScreen implements Screen{
         Table scoreTable = new Table();
         scoreTable.top();
         scoreTable.setFillParent(true);
-
-
 
         //Add score label
         Label scoreTextLabel = new Label("Score", AssetManager.gameOverLabelStyle);
@@ -71,6 +72,16 @@ class GameOverScreen implements Screen{
             scoreTable.row();
             scoreTable.add(highScoreVal).expandX();
         }
+
+        //Add world rank label
+        GameData.getPlayerRank();
+        GameData.getNumPlayers();
+        Label rankText = new Label("World Rank", AssetManager.gameOverLabelStyle);
+        rankVal = new Label("Calculating", AssetManager.gameOverLabelStyle);
+        scoreTable.row();
+        scoreTable.add(rankText).expandX();
+        scoreTable.row();
+        scoreTable.add(rankVal).expandX();
 
         //Add table to stage
         stage.addActor(scoreTable);
@@ -102,7 +113,6 @@ class GameOverScreen implements Screen{
             }
         });
 
-
         mainMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -132,8 +142,20 @@ class GameOverScreen implements Screen{
         stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
+    private void update(float dt){
+        if(GameData.worldRank[0]>0 && GameData.numGlobalPlayers[0]>0) {
+            rankVal.setText(String.valueOf(GameData.worldRank[0])+" of "+String.valueOf(GameData.numGlobalPlayers[0]));
+        }
+
+        if(GameData.worldRank[0]==GameData.NO_NETWORK || GameData.numGlobalPlayers[0]==GameData.NO_NETWORK) {
+            rankVal.setText("No Internet!");
+        }
+    }
+
     @Override
     public void render(float delta){
+
+        update(delta);
 
         stage.act(delta);
 

@@ -1,7 +1,6 @@
 package com.halogengames.poof;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
@@ -11,7 +10,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-import amazonDB.AndroidDB;
+import amazonDB.AndroidScoreDB;
 
 public class AndroidLauncher extends AndroidApplication {
 
@@ -27,7 +26,7 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
 		config.numSamples = 3;
-		initialize(new Poof(new AndroidDB()), config);
+		initialize(new Poof(new AndroidScoreDB()), config);
 	}
 
 	private void initAWS(){

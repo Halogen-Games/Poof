@@ -12,12 +12,13 @@ import com.halogengames.poof.dataLoaders.AssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
-import com.halogengames.poof.database.CoreDB;
+import com.halogengames.poof.database.CoreScoreDB;
 import com.halogengames.poof.library.BasicShapes;
 import com.halogengames.poof.screens.SplashScreen;
 import com.halogengames.poof.widgets.Background;
 
 public class Poof extends Game {
+	//Todo: Convert static to non static wherever possible
 	//virtual screen sizes
 	public static final int V_WIDTH = 540;
 	public static final int V_HEIGHT = 960;
@@ -36,12 +37,12 @@ public class Poof extends Game {
 	public BasicShapes shaper;
 
 	//DB object
-    public CoreDB db;
+    public CoreScoreDB db;
 
 	//todo: why is this here and not in asset manager
 	public static Background bg;
 
-	public Poof(CoreDB db){
+	public Poof(CoreScoreDB db){
         this.db = db;
 	}
 
@@ -68,7 +69,7 @@ public class Poof extends Game {
 
 		//Init GameData
 		TilePower.init();
-		GameData.init();
+		GameData.init(this);
 		AssetManager.init();
 		SoundManager.init();
 
