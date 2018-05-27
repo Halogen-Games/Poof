@@ -159,7 +159,7 @@ class PauseScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        Poof.VIEW_PORT.update( width, height);
+        game.resize(width,height);
     }
 
     @Override

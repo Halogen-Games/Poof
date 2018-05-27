@@ -27,9 +27,9 @@ android {
     defaultConfig {
         applicationId "com.halogengames.poof"
         minSdkVersion 15
-        targetSdkVersion 26
-        versionCode 5
-        versionName "0.05"
+        targetSdkVersion 27
+        versionCode 6
+        versionName "0.06"
     }
     buildTypes {
         release {

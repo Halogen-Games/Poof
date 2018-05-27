@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.halogengames.poof.advertisement.AdInterface;
@@ -29,7 +30,7 @@ public class Poof extends Game {
 	//Cam and viewport
 	public static OrthographicCamera CAM;
 	public static Viewport VIEW_PORT;
-
+	public static ExtendViewport EXTEND_VIEW_PORT;
 	//Fonts
 	public static FreeTypeFontGenerator labelFontGenerator;
 	public static FreeTypeFontGenerator valueFontGenerator;
@@ -71,6 +72,7 @@ public class Poof extends Game {
 		CAM = new OrthographicCamera(Poof.V_WIDTH, Poof.V_HEIGHT);
 		CAM.setToOrtho(false, Poof.V_WIDTH, Poof.V_HEIGHT);
 		VIEW_PORT = new FitViewport( Poof.V_WIDTH, Poof.V_HEIGHT, CAM);
+		EXTEND_VIEW_PORT = new ExtendViewport(Poof.V_WIDTH, Poof.V_HEIGHT, CAM);
 		CAM.position.set( VIEW_PORT.getWorldWidth()/2, VIEW_PORT.getWorldHeight()/2, 0);
 
 		//Font
@@ -106,7 +108,8 @@ public class Poof extends Game {
 
 	@Override
 	public void resize(int width, int height) {
-		Poof.VIEW_PORT.update( width, height);
+		Poof.VIEW_PORT.update(width,height);
+		Poof.EXTEND_VIEW_PORT.update(width,height);
 	}
 }
 
