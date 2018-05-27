@@ -49,6 +49,9 @@ public class GameData {
     public static int[] worldRank;
     public static int[] numGlobalPlayers;
 
+    public static int gamesPlayed;
+    public static boolean showTutorial;
+
     public static void init(Poof game_handle){
         game = game_handle;
 
@@ -63,11 +66,15 @@ public class GameData {
             prefs.flush();
         }
 
+        showTutorial = prefs.getBoolean("showTutorial", true);
+
         gameMode = "classic";
         worldRank = new int[1];
         worldRank[0] = -1;
         numGlobalPlayers = new int[1];
         numGlobalPlayers[0] = -1;
+
+        gamesPlayed = 0;
 
         baseWidth = 540;
 
@@ -87,10 +94,17 @@ public class GameData {
         allTileColors.add("yellow");
     }
 
+    public static void tutorialShown(){
+        showTutorial = false;
+        prefs.putBoolean("showTutorial", false);
+        prefs.flush();
+    }
+
     public static int getHighScore(){
+        int highScore = prefs.getInteger("highScore_" + levelName, 0);
         //Todo: remove this update high score in db (added for back support)
-        game.db.writeHighScoreToDB(playerID,gameMode+"_"+levelName,score);
-        return prefs.getInteger("highScore_" + levelName, 0);
+        game.db.writeHighScoreToDB(playerID,gameMode+"_"+levelName,highScore);
+        return highScore;
     }
 
     public static void setHighScore(){

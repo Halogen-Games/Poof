@@ -120,6 +120,8 @@ class PauseScreen implements Screen {
         SoundManager.playMusic.stop();
         playScr.dispose();
         dispose();
+        //don't show ad on restart
+        //game.adInterface.showInterstitialAd();
         game.setScreen(new PlayScreen(game));
     }
 

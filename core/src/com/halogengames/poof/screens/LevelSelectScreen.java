@@ -119,6 +119,7 @@ class LevelSelectScreen implements Screen{
         Gdx.input.setInputProcessor(null);
         SoundManager.mainMenuMusic.stop();
         dispose();
+        //only show ad if at least three games played completely
         game.setScreen(new PlayScreen(game));
     }
 

@@ -247,19 +247,19 @@ public class GameBoard extends Widget {
 
         //Draw BG
         game.renderer.setColor(bgColor);
-        game.renderer.rect(x,y-rad,size,rad);
-        game.shaper.drawRoundRectFilled(x,y-size,size,size,rad);
+        game.renderer.rect(x-size,y-rad,size,rad);
+        game.shaper.drawRoundRectFilled(x-size,y-size,size,size,rad);
 
         //Draw border
         game.renderer.setColor(borderColor);
         game.shaper.drawLine(x,y,x,y-size+rad);
-        game.shaper.drawLineArc(x+rad,y-size+rad,rad,180,90);
-        game.shaper.drawLine(x+rad,y-size,x+size-rad,y-size);
-        game.shaper.drawLineArc(x+size-rad,y-size+rad,rad,270,90);
-        game.shaper.drawLine(x+size,y-size+rad,x+size,y);
-        game.shaper.drawLine(x+size,y,Math.min(x+size+buttonGutter,getX()+getWidth()-rad),y);
+        game.shaper.drawLineArc(x-rad,y-size+rad,rad,270,90);
+        game.shaper.drawLine(x-rad,y-size,x-size+rad,y-size);
+        game.shaper.drawLineArc(x-size+rad,y-size+rad,rad,180,90);
+        game.shaper.drawLine(x-size,y-size+rad,x-size,y);
+        game.shaper.drawLine(x-size,y,Math.max(x-size-buttonGutter,getX()+rad),y);
 
-        return new Vector2(Math.min(x+size+buttonGutter,getX()+getWidth()-rad),y);
+        return new Vector2(Math.max(x-size-buttonGutter,getX()+rad),y);
     }
 
     private void drawBoardFrame(){
@@ -287,12 +287,12 @@ public class GameBoard extends Widget {
         game.shaper.drawLineArc(getX()+getWidth()-rad,getY()+rad,rad,270,90);
 
         //add button specific border
-        Vector2 p = new Vector2(getX()+rad, getY());
+        Vector2 p = new Vector2(getX()+getWidth()-rad, getY());
         for(int i=0; i<numButtons; i++){
             p = drawButtonBorder(p.x, p.y);
         }
 
-        game.shaper.drawLine(p.x,p.y,getX()+getWidth()-rad,p.y);
+        game.shaper.drawLine(p.x,p.y,getX()+rad,p.y);
 
         game.renderer.end();
     }

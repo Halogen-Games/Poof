@@ -19,7 +19,7 @@ public class TilePower {
     public static void init(){
         powerProbs = new ArrayMap<String, Float>();
         powerProbs.put("timer", 0.03f);
-        powerProbs.put("bomb", 0.01f);
+        //powerProbs.put("bomb", 0.0f);
         //powerProbs.put("gem", 0.001f);
 
         float probSum = 0;
@@ -53,7 +53,7 @@ public class TilePower {
             return;
         }
 
-        if(power.equals("timer")){
+        if(power.equals("hourglass")){
             GameData.levelTimer += 5;
         }
 

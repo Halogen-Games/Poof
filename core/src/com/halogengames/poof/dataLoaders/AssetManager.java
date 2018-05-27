@@ -64,7 +64,6 @@ public class AssetManager {
     public static Drawable playScreenPauseButtonDrawable;
 
     //Board Assets
-    public static Texture boardBG;
     public static ArrayMap<String, Texture> tileTextures;
     public static ArrayMap<String, Texture> powerTextures;
 
@@ -110,30 +109,6 @@ public class AssetManager {
         fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
         mainMenuButtonStyle = new TextButtonStyle();
         mainMenuButtonStyle.font = labelFontGenerator.generateFont(fontParam);
-//
-//        //textures
-//        mainMenuButtonDockTex = new Texture("main_menu/button_dock.png");
-//
-//        //Drawables
-//        Texture playTex = new Texture("main_menu/play_button.png");
-//        playTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-//        mainMenuPlayButtonDrawable = new TextureRegionDrawable(new TextureRegion(playTex));
-//
-//        Texture optionsTex = new Texture("main_menu/options_button.png");
-//        optionsTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-//        mainMenuOptionsButtonDrawable = new TextureRegionDrawable(new TextureRegion(optionsTex));
-//
-//        Texture exitTex = new Texture("main_menu/exit_button.png");
-//        exitTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-//        mainMenuExitButtonDrawable = new TextureRegionDrawable(new TextureRegion(exitTex));
-//
-//        Texture shopTex = new Texture("main_menu/shop_button.png");
-//        shopTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-//        mainMenuShopButtonDrawable = new TextureRegionDrawable(new TextureRegion(shopTex));
-//
-//        Texture upgradeTex = new Texture("main_menu/upgrade_button.png");
-//        upgradeTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-//        mainMenuUpgradeButtonDrawable = new TextureRegionDrawable(new TextureRegion(upgradeTex));
     }
 
     private static void generateHelpScreenAssets(){
@@ -218,10 +193,6 @@ public class AssetManager {
     }
 
     private static void generateBoardAssets(){
-        boardBG = new Texture("common/board_bg.png");
-
-        boardBG.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-
         //Tile Texs
         tileTextures = new ArrayMap<String, Texture>();
         for(int i=0;i<GameData.allTileColors.size;i++){
@@ -235,7 +206,7 @@ public class AssetManager {
             tileTextures.get(key).setFilter(TextureFilter.Linear, TextureFilter.Linear);
         }
 
-        //Power Texs
+        //Power Textures
         powerTextures = new ArrayMap<String, Texture>();
         for (String power:TilePower.powerProbs.keys()){
             if(power != null)
@@ -260,7 +231,5 @@ public class AssetManager {
         for(String col:tileTextures.keys()){
             tileTextures.get(col).dispose();
         }
-
-        //mainMenuButtonDockTex.dispose();
     }
 }

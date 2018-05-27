@@ -3,11 +3,14 @@ package com.halogengames.poof;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.halogengames.poof.advertisement.AdInterface;
 import com.halogengames.poof.dataLoaders.AssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
@@ -36,23 +39,30 @@ public class Poof extends Game {
 	public ShapeRenderer renderer;
 	public BasicShapes shaper;
 
+	//Sprite Queue
+	public Queue<Sprite> spriteQueue;
+
 	//DB object
     public CoreScoreDB db;
+
+    //Ad object
+	public AdInterface adInterface;
 
 	//todo: why is this here and not in asset manager
 	public static Background bg;
 
-	public Poof(CoreScoreDB db){
+	public Poof(CoreScoreDB db, AdInterface adInterface){
         this.db = db;
+        this.adInterface = adInterface;
 	}
 
 	@Override
 	public void create () {
-		//TableCreator creator = new TableCreator();
-
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
 		shaper = new BasicShapes(this);
+
+		spriteQueue = new Queue<Sprite>();
 
 		//defining Background
 		bg = new Background(this);

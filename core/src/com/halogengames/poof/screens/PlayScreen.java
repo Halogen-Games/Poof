@@ -40,7 +40,7 @@ class PlayScreen implements Screen {
     PlayScreen(Poof game){
         this.game = game;
         GameData.resetData();
-
+        System.out.println(GameData.gamesPlayed);
         SoundManager.playMusic.play();
 
         //stage
@@ -56,7 +56,7 @@ class PlayScreen implements Screen {
 
         //Create Board
         float boardSize = Poof.V_WIDTH*0.9f;
-        Vector2 boardPos = new Vector2(Poof.VIEW_PORT.getWorldWidth()/2 - boardSize/2,Poof.VIEW_PORT.getWorldHeight()*0.2f);
+        Vector2 boardPos = new Vector2(Poof.VIEW_PORT.getWorldWidth()/2 - boardSize/2,Poof.VIEW_PORT.getWorldHeight()*0.25f);
         board = new GameBoard(game, boardSize,buttons.size());
         board.setPosition(boardPos.x, boardPos.y);
         board.setSize(boardSize,boardSize);
@@ -68,7 +68,7 @@ class PlayScreen implements Screen {
         //Todo: (Low Priority) Make the height dependent on numRows
         for(int i=0;i<buttons.size();i++){
             buttons.get(i).setSize(buttonSize, buttonSize);
-            float posX = boardPos.x+board.getCornerRadius()+board.getButtonMargin()+i*(board.getButtonSize()+board.getButtonGutter());
+            float posX = boardPos.x+board.getWidth()-board.getCornerRadius()-board.getButtonSize()+board.getButtonMargin()-i*(board.getButtonSize()+board.getButtonGutter());
             float posY = boardPos.y - buttonSize - board.getButtonMargin();
             buttons.get(i).setPosition(posX,posY);
             stage.addActor(buttons.get(i));
@@ -112,7 +112,14 @@ class PlayScreen implements Screen {
 
     @Override
     public void show() {
-
+        //handle input events
+        if(GameData.showTutorial){
+            Gdx.input.setInputProcessor(null);
+            GameData.tutorialShown();
+            game.setScreen(new HelpScreen(game,this));
+        }else{
+            Gdx.input.setInputProcessor(stage);
+        }
     }
 
     private void update(float dt) {
@@ -168,7 +175,13 @@ class PlayScreen implements Screen {
         Gdx.input.setInputProcessor(null);
         SoundManager.playMusic.stop();
         dispose();
-        game.setScreen(new GameOverScreen(game));
+        GameData.gamesPlayed++;
+        //show ad if three games played
+        if(GameData.gamesPlayed<3){
+            game.setScreen(new GameOverScreen(game));
+        }else {
+            game.adInterface.showInterstitialAd();
+        }
     }
 
     @Override

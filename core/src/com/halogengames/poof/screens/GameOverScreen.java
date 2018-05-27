@@ -23,7 +23,7 @@ import com.halogengames.poof.Poof;
  *
  */
 
-class GameOverScreen implements Screen{
+public class GameOverScreen implements Screen{
     //the game for sprite batch
     private Poof game;
 
@@ -38,7 +38,7 @@ class GameOverScreen implements Screen{
     private TextButton mainMenuButton;
 
     //Constructor
-    GameOverScreen(Poof game){
+    public GameOverScreen(Poof game){
         this.game = game;
 
         stage = new Stage(Poof.VIEW_PORT, game.batch);
