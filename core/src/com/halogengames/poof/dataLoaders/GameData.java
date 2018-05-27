@@ -68,6 +68,13 @@ public class GameData {
 
         showTutorial = prefs.getBoolean("showTutorial", true);
 
+        //Todo:make this sync better
+        //Sync highscore with dynamoDB
+        String[] levelNamesList = {"easy","medium","hard"};
+        for(String level:levelNamesList){
+            game.db.writeHighScoreToDB(playerID,"classic"+"_"+level,getHighScore());
+        }
+
         gameMode = "classic";
         worldRank = new int[1];
         worldRank[0] = -1;
@@ -101,10 +108,7 @@ public class GameData {
     }
 
     public static int getHighScore(){
-        int highScore = prefs.getInteger("highScore_" + levelName, 0);
-        //Todo: remove this update high score in db (added for back support)
-        game.db.writeHighScoreToDB(playerID,gameMode+"_"+levelName,highScore);
-        return highScore;
+        return prefs.getInteger("highScore_" + levelName, 0);
     }
 
     public static void setHighScore(){
@@ -115,7 +119,7 @@ public class GameData {
 
     public static void getPlayerRank(){
         worldRank[0] = -1;
-        game.db.getRank(gameMode+"_"+levelName,score,worldRank);
+        game.db.getRank(gameMode+"_"+levelName,getHighScore(),worldRank);
     }
 
     public static void getNumPlayers(){

@@ -102,6 +102,12 @@ public class GameOverScreen implements Screen{
         table.row();
         table.add(mainMenuButton).padBottom(Poof.V_HEIGHT*0.1f);
         stage.addActor(table);
+
+        GameData.gamesPlayed++;
+        if(GameData.gamesPlayed>=3){
+            GameData.gamesPlayed = 0;
+            game.adInterface.showInterstitialAd();
+        }
     }
 
     private void addUIListeners(){

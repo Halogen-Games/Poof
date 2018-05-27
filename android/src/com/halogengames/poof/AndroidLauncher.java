@@ -30,6 +30,7 @@ public class AndroidLauncher extends AndroidApplication {
     public static InterstitialAd mInterstitialAd;
 
     private Poof gameInstance;
+    private AndroidAd androidAd;
 
 
     @Override
@@ -38,14 +39,7 @@ public class AndroidLauncher extends AndroidApplication {
 
 		this.initAWS();
 
-        //init admob
-        MobileAds.initialize(this, "ca-app-pub-8345561730745636~6055051977");
-
-        //init interstitial ad
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        AndroidLauncher.mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        setupInterstitialAdEvents();
+        MobileAds.initialize(this, "ca-app-pub-5290404360165098~4502722187");
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
@@ -58,7 +52,10 @@ public class AndroidLauncher extends AndroidApplication {
         View gameView = initializeForView(gameInstance, config);
         layout.addView(gameView);
 
-        AndroidAd.addBannerViewToLayout(this, layout);
+        androidAd = new AndroidAd();
+        //androidAd.getEEAConsent(this);
+        androidAd.addBannerViewToLayout(this, layout);
+        androidAd.setupInterstitialAds(this);
 
         setContentView(layout);
 	}
@@ -81,37 +78,5 @@ public class AndroidLauncher extends AndroidApplication {
                 .awsConfiguration(
                         AWSMobileClient.getInstance().getConfiguration())
                 .build();
-    }
-
-    private void setupInterstitialAdEvents(){
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when the ad is displayed.
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when when the interstitial ad is closed.
-                GameData.gamesPlayed = 0;
-                gameInstance.setScreen(new GameOverScreen(gameInstance));
-                AndroidLauncher.mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-        });
     }
 }

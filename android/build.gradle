@@ -6,7 +6,7 @@ Changed Task Run() to Task RunAndroid() below
 
 android {
     buildToolsVersion '27.0.3'
-    compileSdkVersion 26
+    compileSdkVersion 27
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -28,8 +28,8 @@ android {
         applicationId "com.halogengames.poof"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 6
-        versionName "0.06"
+        versionCode 9
+        versionName "0.09"
     }
     buildTypes {
         release {

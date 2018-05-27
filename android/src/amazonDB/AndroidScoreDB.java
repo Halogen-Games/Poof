@@ -15,7 +15,6 @@ import java.util.List;
 import amazonAWS.models.nosql.ScoresDO;
 
 public class AndroidScoreDB implements CoreScoreDB {
-
     @Override
     public void writeHighScoreToDB(String user, String gameMode, double score){
         final ScoresDO scoreItem = new ScoresDO();

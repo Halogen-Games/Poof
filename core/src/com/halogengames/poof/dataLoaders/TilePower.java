@@ -53,7 +53,7 @@ public class TilePower {
             return;
         }
 
-        if(power.equals("hourglass")){
+        if(power.equals("timer")){
             GameData.levelTimer += 5;
         }
 

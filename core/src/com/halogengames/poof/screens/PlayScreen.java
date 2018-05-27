@@ -175,13 +175,7 @@ class PlayScreen implements Screen {
         Gdx.input.setInputProcessor(null);
         SoundManager.playMusic.stop();
         dispose();
-        GameData.gamesPlayed++;
-        //show ad if three games played
-        if(GameData.gamesPlayed<3){
-            game.setScreen(new GameOverScreen(game));
-        }else {
-            game.adInterface.showInterstitialAd();
-        }
+        game.setScreen(new GameOverScreen(game));
     }
 
     @Override
