@@ -41,6 +41,9 @@ class MainMenuScreen implements Screen {
     MainMenuScreen(Poof game){
         this.game = game;
 
+        //setup GDPR
+        game.setupGDPR();
+
         //start music
         SoundManager.mainMenuMusic.play();
 

@@ -32,6 +32,8 @@ public class AndroidLauncher extends AndroidApplication {
     private Poof gameInstance;
     private AndroidAd androidAd;
 
+    public RelativeLayout layout;
+
 
     @Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -45,17 +47,17 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useImmersiveMode = true;
 		config.numSamples = 3;
 
-        RelativeLayout layout = new RelativeLayout(this);
+        layout = new RelativeLayout(this);
 
-        //initialize(new Poof(new AndroidScoreDB()), config);
-        gameInstance = new Poof(new AndroidScoreDB(),new AndroidAd());
+        androidAd = new AndroidAd(this, this);
+
+        gameInstance = new Poof(new AndroidScoreDB(), androidAd);
+
+        androidAd.setGameHandle(gameInstance);
         View gameView = initializeForView(gameInstance, config);
         layout.addView(gameView);
 
-        androidAd = new AndroidAd();
-        //androidAd.getEEAConsent(this);
-        androidAd.addBannerViewToLayout(this, layout);
-        androidAd.setupInterstitialAds(this);
+        androidAd.addBannerViewToLayout();
 
         setContentView(layout);
 	}

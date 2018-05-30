@@ -3,11 +3,9 @@ package com.halogengames.poof;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -18,6 +16,7 @@ import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
 import com.halogengames.poof.database.CoreScoreDB;
 import com.halogengames.poof.library.BasicShapes;
+import com.halogengames.poof.screens.PrivacyScreen;
 import com.halogengames.poof.screens.SplashScreen;
 import com.halogengames.poof.widgets.Background;
 
@@ -42,9 +41,6 @@ public class Poof extends Game {
 	public ShapeRenderer renderer;
 	public BasicShapes shaper;
 
-	//Sprite Queue
-	public Queue<Sprite> spriteQueue;
-
 	//DB object
     public CoreScoreDB db;
 
@@ -59,13 +55,20 @@ public class Poof extends Game {
         this.adInterface = adInterface;
 	}
 
+	public void setupGDPR(){
+        adInterface.genConsentFormIfNeeded();
+    }
+
+    public void showGDPRConsentPage(){
+	    this.setScreen(new PrivacyScreen(this,this.getScreen()));
+
+    }
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
 		shaper = new BasicShapes(this);
-
-		spriteQueue = new Queue<Sprite>();
 
 		//defining Background
 		bg = new Background(this);

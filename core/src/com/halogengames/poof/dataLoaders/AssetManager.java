@@ -48,6 +48,11 @@ public class AssetManager {
     public static SliderStyle optionsMusicSliderStyle;
     public static SliderStyle optionsSoundSliderStyle;
 
+    //Privacy Screen Assets
+    public static LabelStyle privacyTitleStyle;
+    public static TextButtonStyle privacyButtonStyle;
+    public static TextButtonStyle privacyPolicyButtonStyle;
+
     //Level Screen Assets
     public static LabelStyle levelSelectTitleStyle;
     public static TextButtonStyle levelSelectButtonStyle;
@@ -85,6 +90,7 @@ public class AssetManager {
         generateMainMenuAssets();
         generateHelpScreenAssets();
         generateOptionsAssets();
+        generatePrivacyScreenAssets();
         generateLevelSelectAssets();
         generateGameOverAssets();
         generatePauseScreenAssets();
@@ -142,6 +148,26 @@ public class AssetManager {
         optionsSoundSliderStyle = new SliderStyle();
         optionsSoundSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(new Texture("slider/soundKnob.png")));
         optionsSoundSliderStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture("slider/soundBG.png")));
+    }
+
+    private static void generatePrivacyScreenAssets(){
+        fontParam.color = Color.DARK_GRAY;
+
+        //Title Style
+        fontParam.size = (int)(70 * Poof.V_WIDTH/GameData.baseWidth);
+        privacyTitleStyle = new LabelStyle();
+        privacyTitleStyle.font = labelFontGenerator.generateFont(fontParam);
+
+        //Button Style
+        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
+        privacyButtonStyle = new TextButtonStyle();
+        privacyButtonStyle.font = Poof.labelFontGenerator.generateFont(fontParam);
+
+        //Button Style
+        fontParam.color = new Color(132f/255f,178f/255f,133f/255f,1);
+        fontParam.size = (int)(30 * Poof.V_WIDTH/GameData.baseWidth);
+        privacyPolicyButtonStyle = new TextButtonStyle();
+        privacyPolicyButtonStyle.font = Poof.labelFontGenerator.generateFont(fontParam);
     }
 
     private static void generateLevelSelectAssets(){

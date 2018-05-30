@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.halogengames.poof.advertisement.AdInterface;
 import com.halogengames.poof.dataLoaders.AssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
@@ -21,22 +22,20 @@ import com.halogengames.poof.Poof;
  * Defined the options screen
  */
 
-class OptionsScreen implements Screen {
+public class PrivacyScreen implements Screen {
 
     private Poof game;
 
     private Screen prevScreen;
 
-    //Sliders
-    private Slider musicSlider;
-    private Slider soundSlider;
-
     //To add the buttons on the screen
     private Stage stage;
-    private TextButton backButton;
-    private TextButton privacyButton;
+    private Label title;
+    private TextButton policyButton;
+    private TextButton personalizedButton;
+    private TextButton nonPersonalizedButton;
 
-    OptionsScreen(Poof game, Screen prevScr){
+    public PrivacyScreen(Poof game, Screen prevScr){
         this.game = game;
 
         this.prevScreen = prevScr;
@@ -51,34 +50,24 @@ class OptionsScreen implements Screen {
         table.setFillParent(true);
 
         //Add Label
-        Label title = new Label("Options", AssetManager.optionsTitleStyle);
+        title = new Label("Privacy", AssetManager.privacyTitleStyle);
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
 
-        //adding back button
-        backButton = new TextButton("Back", AssetManager.optionsButtonStyle);
-        privacyButton = new TextButton("Privacy", AssetManager.optionsButtonStyle);
+        //adding buttons
+        personalizedButton = new TextButton("Yes", AssetManager.privacyButtonStyle);
+        nonPersonalizedButton = new TextButton("No", AssetManager.privacyButtonStyle);
+        policyButton = new TextButton("Privacy Policy", AssetManager.privacyPolicyButtonStyle);
 
-        //adding sliders
-        musicSlider = new Slider(0,1,0.01f,false, AssetManager.optionsMusicSliderStyle);
-        musicSlider.setValue(GameData.prefs.getFloat("musicVolume", 1.0f));
-
-        soundSlider = new Slider(0,1,0.2f,false, AssetManager.optionsSoundSliderStyle);
-        soundSlider.setValue(GameData.prefs.getFloat("soundVolume", 1.0f));
+        personalizedButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/4-personalizedButton.getWidth()/2, Poof.BANNER_AD_SIZE );
+        nonPersonalizedButton.setPosition(3*Poof.VIEW_PORT.getWorldWidth()/4-personalizedButton.getWidth()/2, Poof.BANNER_AD_SIZE );
+        policyButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2-policyButton.getWidth()/2, personalizedButton.getY() + 2*personalizedButton.getHeight() );
 
         addUIListeners();
 
-        //adding buttons to table and table to stage
-        table.add(musicSlider).width(Poof.V_WIDTH*0.65f).padBottom(Poof.V_HEIGHT/15);
-        table.row();
-        table.add(soundSlider).width(Poof.V_WIDTH*0.65f).padBottom(Poof.V_HEIGHT/10);
-        if(game.adInterface.isEURegion()) {
-            table.row();
-            table.add(privacyButton);
-        }
-        table.row();
-        table.add(backButton);
         stage.addActor(title);
-        stage.addActor(table);
+        stage.addActor(personalizedButton);
+        stage.addActor(nonPersonalizedButton);
+        stage.addActor(policyButton);
 
         //to allow stage to identify events
         Gdx.input.setInputProcessor(stage);
@@ -86,53 +75,34 @@ class OptionsScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
         stage.getRoot().setColor(1,1,1,0);
         stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     private void addUIListeners(){
-        backButton.addListener(new ChangeListener() {
+
+        personalizedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.adInterface.setConsentStatus(AdInterface.PERSONALIZED_AD);
                 returnToPrevScreen();
             }
         });
 
-        privacyButton.addListener(new ChangeListener() {
+        nonPersonalizedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                openGDPRScreen();
+                game.adInterface.setConsentStatus(AdInterface.NON_PERSONALIZED_AD);
+                returnToPrevScreen();
             }
         });
 
-        musicSlider.addListener(new ChangeListener() {
+        policyButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.mainMenuMusic.setVolume(musicSlider.getValue());
-                SoundManager.playMusic.setVolume(musicSlider.getValue());
-
-                GameData.prefs.putFloat("musicVolume", musicSlider.getValue());
-                GameData.prefs.flush();
+                Gdx.net.openURI("https://halogengames.wordpress.com/");
             }
         });
-
-        soundSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.soundVolume = soundSlider.getValue();
-
-                GameData.prefs.putFloat("soundVolume", soundSlider.getValue());
-                GameData.prefs.flush();
-
-                SoundManager.playButtonTap();
-            }
-        });
-    }
-
-    private void openGDPRScreen(){
-        Gdx.input.setInputProcessor(null);
-        game.setScreen(new PrivacyScreen(game,this));
     }
 
     private void returnToPrevScreen(){
@@ -151,6 +121,20 @@ class OptionsScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         Poof.bg.render(delta);
+
+        String text = "We use some of your data to improve user experience, save high scores and show ads.\nCan we continue to use your data to tailor ads for you?";
+
+        game.batch.begin();
+        AssetManager.helpTextFont.draw(
+                game.batch,
+                text,
+                Poof.VIEW_PORT.getWorldWidth()*0.05f,
+                title.getY() - title.getHeight(),
+                Poof.VIEW_PORT.getWorldWidth()*0.9f,
+                Align.center,
+                true
+        );
+        game.batch.end();
 
         stage.draw();
     }
