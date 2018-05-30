@@ -31,6 +31,8 @@ public class Poof extends Game {
 	public static OrthographicCamera CAM;
 	public static Viewport VIEW_PORT;
 	public static ExtendViewport EXTEND_VIEW_PORT;
+	public static float BANNER_AD_SIZE;
+
 	//Fonts
 	public static FreeTypeFontGenerator labelFontGenerator;
 	public static FreeTypeFontGenerator valueFontGenerator;
@@ -74,6 +76,9 @@ public class Poof extends Game {
 		VIEW_PORT = new FitViewport( Poof.V_WIDTH, Poof.V_HEIGHT, CAM);
 		EXTEND_VIEW_PORT = new ExtendViewport(Poof.V_WIDTH, Poof.V_HEIGHT, CAM);
 		CAM.position.set( VIEW_PORT.getWorldWidth()/2, VIEW_PORT.getWorldHeight()/2, 0);
+
+		//todo: set this dynamically somehow
+        BANNER_AD_SIZE = 150;
 
 		//Font
 		labelFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));

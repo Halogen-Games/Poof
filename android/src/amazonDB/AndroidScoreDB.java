@@ -10,16 +10,20 @@ import com.halogengames.poof.AndroidLauncher;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.database.CoreScoreDB;
 
+import java.io.IOException;
 import java.util.List;
 
 import amazonAWS.models.nosql.ScoresDO;
 
 public class AndroidScoreDB implements CoreScoreDB {
     @Override
-    public void writeHighScoreToDB(String user, String gameMode, double score){
+    public void writeHighScoreToDB(String user, String gameMode,String level,double score){
+        if(gameMode==null || level==null){
+            throw new RuntimeException("gameMode or level can't be null");
+        }
         final ScoresDO scoreItem = new ScoresDO();
         scoreItem.setUserId(user);
-        scoreItem.setGameMode(gameMode);
+        scoreItem.setGameMode(gameMode+"_"+level);
         scoreItem.setScore(score);
 
         new Thread(new Runnable() {

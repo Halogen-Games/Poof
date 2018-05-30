@@ -50,9 +50,10 @@ public class AndroidAd implements AdInterface{
     }
 
     private MyHandler handler = new MyHandler(this);
+    private AdView adView;
 
     public void addBannerViewToLayout(Context context, RelativeLayout layout) {
-        AdView adView = new AdView(context);
+        adView = new AdView(context);
         adView.setAdSize(AdSize.SMART_BANNER);
 
         String originalBannerID = "ca-app-pub-5290404360165098/6745742149";
@@ -116,6 +117,13 @@ public class AndroidAd implements AdInterface{
         handler.sendEmptyMessage(SHOW_INTERSTITIAL);
     }
 
+    @Override
+    public float getBannerHeight(){
+        if(adView != null) {
+            return adView.getHeight();
+        }
+        return 123;
+    }
 //    public void getEEAConsent(final Context context){
 //        ConsentInformation consentInformation = ConsentInformation.getInstance(context);
 //        consentInformation.setDebugGeography(DebugGeography.DEBUG_GEOGRAPHY_EEA);

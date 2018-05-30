@@ -46,7 +46,7 @@ class OptionsScreen implements Screen {
         //create a table to position objects on stage
         Table table = new Table();
         table.bottom();
-        table.setPosition(0, Poof.V_HEIGHT/10);
+        table.setPosition(0, Poof.BANNER_AD_SIZE);
         table.setFillParent(true);
 
         //Add Label

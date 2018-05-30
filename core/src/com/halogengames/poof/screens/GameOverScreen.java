@@ -89,6 +89,7 @@ public class GameOverScreen implements Screen{
         //create a table to position Buttons on stage
         Table table = new Table();
         table.bottom();
+        table.setPosition(0, Poof.BANNER_AD_SIZE);
         table.setFillParent(true);
 
         //Add buttons
@@ -100,7 +101,7 @@ public class GameOverScreen implements Screen{
         //Add buttons to table and table to stage
         table.add(replayButton);
         table.row();
-        table.add(mainMenuButton).padBottom(Poof.V_HEIGHT*0.1f);
+        table.add(mainMenuButton);
         stage.addActor(table);
 
         GameData.gamesPlayed++;

@@ -56,7 +56,8 @@ class PlayScreen implements Screen {
 
         //Create Board
         float boardSize = Poof.V_WIDTH*0.9f;
-        Vector2 boardPos = new Vector2(Poof.VIEW_PORT.getWorldWidth()/2 - boardSize/2,Poof.VIEW_PORT.getWorldHeight()*0.25f);
+        //todo: make sure the board doesn;t go offscreen on weird resolutions
+        Vector2 boardPos = new Vector2(Poof.VIEW_PORT.getWorldWidth()/2 - boardSize/2,Poof.VIEW_PORT.getWorldHeight()*0.1f + Poof.BANNER_AD_SIZE);
         board = new GameBoard(game, boardSize,buttons.size());
         board.setPosition(boardPos.x, boardPos.y);
         board.setSize(boardSize,boardSize);
