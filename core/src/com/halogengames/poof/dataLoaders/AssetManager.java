@@ -224,8 +224,20 @@ public class AssetManager {
         for(int i=0;i<GameData.allTileColors.size;i++){
             String color = GameData.allTileColors.get(i);
 
-            tileTextures.put(color+"_tile", new Texture("tiles/tile_" + color + ".png"));
-            tileTextures.put(color+"_tile_touched", new Texture("tiles/tile_" + color + "_touched.png"));
+            switch (GameData.theme){
+                case Dark:{
+                    tileTextures.put(color+"_tile", new Texture("tiles/tile_" + color + "_touched.png"));
+                    tileTextures.put(color+"_tile_touched", new Texture("tiles/tile_" + color + ".png"));
+                    break;
+                }
+                case Light:{
+                    tileTextures.put(color+"_tile", new Texture("tiles/tile_" + color + ".png"));
+                    tileTextures.put(color+"_tile_touched", new Texture("tiles/tile_" + color + "_touched.png"));
+                    break;
+                }
+                default:throw(new RuntimeException("Unknown Theme!"));
+            }
+
         }
 
         for (String key:tileTextures.keys()){

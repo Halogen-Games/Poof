@@ -5,10 +5,13 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.Poof;
+import com.halogengames.poof.PoofEnums;
 import com.halogengames.poof.sprites.Tile;
 
 import java.util.ArrayList;
 import java.util.UUID;
+
+import static java.lang.Math.max;
 
 /**
  * Created by Rohit on 13-08-2017.
@@ -16,6 +19,7 @@ import java.util.UUID;
  */
 
 public class GameData {
+
     private static Poof game;
 
     //final vars
@@ -32,6 +36,9 @@ public class GameData {
 
     public static int numBoardCols;
     public static int numBoardRows;
+
+    //Theme
+    public static PoofEnums.Theme theme;
 
     //GL Clear Color
     public static Color clearColor;
@@ -91,6 +98,9 @@ public class GameData {
         numBoardCols = 6;
         numBoardRows = 6;
         numColors = 3;
+
+        //Todo: Dynamic switching of assets based on theme in game(will require storing assets in a hash map with Theme Key so that swapping is easy)
+        theme = PoofEnums.Theme.Light;
 
         clearColor = new Color(1,1,1,1);
 

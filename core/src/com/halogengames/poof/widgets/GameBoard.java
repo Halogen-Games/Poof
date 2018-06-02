@@ -1,16 +1,18 @@
 package com.halogengames.poof.widgets;
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Array;
+import com.halogengames.poof.PoofEnums;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
 import com.halogengames.poof.Poof;
+import com.halogengames.poof.library.AnimatedSprite;
+import com.halogengames.poof.library.Value2D;
 import com.halogengames.poof.sprites.Tile;
 
 import java.util.ArrayList;
@@ -21,11 +23,10 @@ import java.util.ArrayList;
  * Class representing the game board
  * Also houses game board generation logic
  */
-public class GameBoard extends Widget {
+public class GameBoard extends AnimatedSprite {
 
     //handle to game and screen
     private Poof game;
-    private Screen playScreen;
 
     private float boardSize;
     private int numCols;
@@ -45,16 +46,18 @@ public class GameBoard extends Widget {
     private float buttonGutter;
     private float buttonSize;
 
-    //colors/graphics
+    //colors and graphics
     private Color bgColor;
     private Color borderColor;
     private Color normalColor;
     private Color flashColor;
+    private Color tileHighlightColor;
     private int flashStartTime;
     private float flashFreq;
 
     private Array<Array<Tile>> tiles;
     private ArrayList<Tile> selectedTiles;
+    private ArrayList<Tile> fallingTiles;
 
     private boolean boardInitialized;
 
@@ -66,15 +69,28 @@ public class GameBoard extends Widget {
         numCols = GameData.numBoardCols;
         numRows = GameData.numBoardRows;
 
-        bgColor = new Color(Color.WHITE);
+        switch(GameData.theme){
+            case Dark:{
+                bgColor = new Color(2/255f,17/255f,44/255f,1);
+                break;
+            }
+            case Light:{
+                bgColor = new Color(Color.WHITE);
+                break;
+            }
+            default: throw(new RuntimeException("Unknown Theme!"));
+        }
+
         borderColor = new Color(Color.GRAY);
         normalColor = new Color(Color.GRAY);
-        flashColor = new Color(Color.RED);
+        flashColor = new Color(Color.WHITE);
+        tileHighlightColor = new Color(Color.WHITE);
         flashStartTime = 10;
         flashFreq = 2;
 
         tiles = new Array<Array<Tile>>();
         selectedTiles = new ArrayList<Tile>();
+        fallingTiles = new ArrayList<Tile>();
 
         sizeChanged();
 
@@ -141,7 +157,7 @@ public class GameBoard extends Widget {
     }
 
     private boolean movesLeft(){
-        if(!boardInitialized || !getBoardState().equals("idle")){
+        if(!boardInitialized || getBoardState() != PoofEnums.TileState.Idle){
             return true;
         }
 
@@ -177,33 +193,33 @@ public class GameBoard extends Widget {
             for(int j=0; j<numCols; j++) {
                 //set new position for each tile
                 allTiles.get(i*numCols + j).setCoordinates(i,j);
-                allTiles.get(i*numCols + j).setState("shuffle");
+                allTiles.get(i*numCols + j).setState(PoofEnums.TileState.Shuffling);
                 tiles.get(i).set(j,allTiles.get(i*numCols + j));
             }
         }
     }
 
-    public String getBoardState(){
+    public PoofEnums.TileState getBoardState(){
         boolean shuffling = false;
-        boolean falling = false;
+        boolean dropping = false;
 
         for(int i=0; i<numRows; i++){
             for(int j=0; j<numCols; j++) {
-                if(tiles.get(i).get(j).getState().equals("shuffle")){
+                //todo: remove this loop and make fetching state O(1)
+                if(tiles.get(i).get(j).getState() == PoofEnums.TileState.Shuffling ){
                     shuffling = true;
-                }else if(tiles.get(i).get(j).getState().equals("falling")){
-                    falling = true;
+                }else if(tiles.get(i).get(j).getState() == PoofEnums.TileState.Dropping ){
+                    dropping = true;
                 }
             }
         }
 
         if(shuffling){
-            return "shuffle";
-        }else if(falling){
-            return "falling";
+            return PoofEnums.TileState.Shuffling;
+        }else if(dropping){
+            return PoofEnums.TileState.Dropping;
         }
-
-        return "idle";
+        return PoofEnums.TileState.Idle;
     }
 
     public void setTileAsSelected(int i, int j){
@@ -264,7 +280,6 @@ public class GameBoard extends Widget {
 
     private void drawBoardFrame(){
         game.renderer.setProjectionMatrix(Poof.CAM.combined);
-
         game.renderer.begin(ShapeRenderer.ShapeType.Filled);
 
         //add bg color
@@ -297,14 +312,58 @@ public class GameBoard extends Widget {
         game.renderer.end();
     }
 
+    private void drawSelectedTileHighlight(){
+        if(selectedTiles.size()==0){
+            return;
+        }
+
+        game.renderer.setProjectionMatrix(Poof.CAM.combined);
+        game.renderer.begin(ShapeRenderer.ShapeType.Filled);
+        game.renderer.setColor(tileHighlightColor);
+
+        int rad = 7;
+
+        //draw circle on last tile
+        Tile t = selectedTiles.get(selectedTiles.size()-1);
+        float xPos = t.getX()+t.getWidth()/2+this.getX()+tileGutter;
+        float yPos = t.getY()+t.getHeight()/2+this.getY()+tileGutter;
+        game.shaper.drawLineArc(xPos,yPos,rad,0,360);
+
+        for(int i=1;i<selectedTiles.size();i++){
+            Tile t1 = selectedTiles.get(i-1);
+            Tile t2 = selectedTiles.get(i);
+            float x1Pos = t1.getX()+t1.getWidth()/2+this.getX()+tileGutter;
+            float y1Pos = t1.getY()+t1.getHeight()/2+this.getY()+tileGutter;
+            float x2Pos = t2.getX()+t2.getWidth()/2+this.getX()+tileGutter;
+            float y2Pos = t2.getY()+t2.getHeight()/2+this.getY()+tileGutter;
+
+            if(i == selectedTiles.size()-1){
+                if(x1Pos<x2Pos){
+                    x2Pos-=rad;
+                }else if(x1Pos>x2Pos){
+                    x2Pos+=rad;
+                }else if(y1Pos<y2Pos){
+                    y2Pos-=rad;
+                }else{
+                    y2Pos+=rad;
+                }
+            }
+
+            game.shaper.drawLine(x1Pos,y1Pos,x2Pos,y2Pos);
+        }
+
+        game.renderer.end();
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
 
         //Batch.begin called by parent, so end it
         batch.end();
+
         drawBoardFrame();
+
         batch.begin();
-        //batch.draw(AssetManager.boardBG, getX(), getY(), getWidth(), getHeight());
 
         //draw tiles using batch
         for(int i=0; i<tiles.size; i++){
@@ -314,7 +373,17 @@ public class GameBoard extends Widget {
             }
         }
 
-        setBounds(getX(), getY(), getWidth(), getHeight());
+        //draw falling tiles
+        for(int i=0;i<fallingTiles.size();i++){
+            fallingTiles.get(i).draw(batch, getX()+tileGutter, getY()+tileGutter);
+        }
+
+        batch.end();
+
+        drawSelectedTileHighlight();
+//        setBounds(getX(), getY(), getWidth(), getHeight());
+
+        batch.begin();
     }
 
     public void update(float dt){
@@ -336,25 +405,36 @@ public class GameBoard extends Widget {
             borderColor = normalColor;
         }
 
+        //update board tiles
         for(int i=0; i<tiles.size; i++){
             for(int j=0;j<tiles.get(0).size; j++) {
                 tiles.get(i).get(j).update(dt);
             }
         }
+
+        //update falling tiles
+        for(int i=fallingTiles.size()-1; i>=0; i--){
+            if(fallingTiles.get(i).getState() == PoofEnums.TileState.Dead){
+                fallingTiles.remove(i);
+            }else{
+                fallingTiles.get(i).update(dt);
+            }
+        }
     }
 
     public void boardTouchedDown(float screenX, float screenY) {
-        for(int i=0; i<tiles.size; i++){
-            for(int j=0;j<tiles.get(0).size; j++) {
-                Tile t = tiles.get(i).get(j);
-                if (t.getBoundingRectangle().contains(screenX, screenY)) {
-                    selectedTiles = new ArrayList<Tile>();
-                    t.setSelected();
-                    selectedTiles.add(t);
-                    return;
-                }
-            }
+        int j = (int)Math.floor((screenX-tileGutter)/(tileSize+tileMargin));
+        int i = (int)Math.floor((screenY-tileGutter)/(tileSize+tileMargin));
+
+        if(i<0 || j<0 || i>=numRows || j>=numCols){
+            //return if outside the board
+            return;
         }
+
+        Tile t = tiles.get(i).get(j);
+        selectedTiles = new ArrayList<Tile>();
+        t.setSelected();
+        selectedTiles.add(t);
     }
 
     public void boardTouchedUp() {
@@ -369,60 +449,60 @@ public class GameBoard extends Widget {
             int chainLength = selectedTiles.size();
 
             //Execute powers
+            //This may add more tiles to selected tiles
             for(int i=0; i<selectedTiles.size(); i++){
                 TilePower.unleashPower(this, selectedTiles.get(i));
             }
 
             //remove and add new tiles
-            for(int i=tiles.size-1;i>=0;i--){
-                for(int j=0;j<tiles.get(0).size;j++){
-                    if(tiles.get(i).get(j).isSelected){
+            for(Tile t:selectedTiles){
+                //need to add this tile to falling tiles
+                t.setState(PoofEnums.TileState.Falling);
+                fallingTiles.add(t);
 
-                        //need to remove this tile
-                        tiles.get(i).get(j).removed();
+                int i = (int)t.getCoordinates().x;
+                int j = (int)t.getCoordinates().y;
 
-                        //drop tiles
-                        for(int k=i;k<numRows-1;k++){
-                            tiles.get(k).set(j, tiles.get(k+1).get(j));
-                            //below helps the tiles get in correct column in case they were not ex. during shuffle
-                            tiles.get(k).get(j).setCorrectXPos();
-                            tiles.get(k).get(j).setState("falling");
-                            tiles.get(k).get(j).setCoordinates(k,j);
-                        }
-                        //will always add one at the top
-                        tiles.get(numRows-1).set(j, new Tile(numRows-1, j, tileSize, tileMargin, numRows));
-                    }
+                //drop all tiles by 1
+                for(int k=i;k<numRows-1;k++){
+                    tiles.get(k).set(j, tiles.get(k+1).get(j));
+
+                    //below helps the tiles get in correct column in case they were not ex. during shuffle
+                    tiles.get(k).get(j).setCorrectXPos();
+
+                    tiles.get(k).get(j).setState(PoofEnums.TileState.Dropping);
+                    tiles.get(k).get(j).setCoordinates(k,j);
                 }
+                //will always add one at the top
+                tiles.get(numRows-1).set(j, new Tile(numRows-1, j, tileSize, tileMargin, numRows));
             }
+
             GameData.updateScore(chainLength,selectedTiles);
         }
 
+        //flush the selected tiles array
         selectedTiles = new ArrayList<Tile>();
     }
 
     public void boardTouchDragged(float screenX, float screenY) {
-        //Selection Logic
-        for(int i=0; i<tiles.size; i++){
-            for(int j=0;j<tiles.get(0).size;j++) {
-                Tile tile = tiles.get(i).get(j);
-                if (tile.getBoundingRectangle().contains(screenX, screenY)) {
-                    if (tile.isSelected) {
-                        for (int t = selectedTiles.size() - 1; t >= 0; t--) {
-                            if (selectedTiles.get(t) == tile) {
-                                break;
-                            }
-                            selectedTiles.get(t).setDeselected();
-                            selectedTiles.remove(selectedTiles.size() - 1);
-                        }
-                    } else if (selectedTiles.size() == 0 || tile.isConnectedTo(selectedTiles.get(selectedTiles.size() - 1))) {
-                        //NOTE: order matters in above if condition
-                        //select the tile if no tile is selected or if this tile is connected to a selected tile
-                        selectedTiles.add(tile);
-                        tile.setSelected();
-                    }
-                    break;
-                }
-            }
+        int j = (int)Math.floor((screenX-tileGutter)/(tileSize+tileMargin));
+        int i = (int)Math.floor((screenY-tileGutter)/(tileSize+tileMargin));
+
+        if(i<0 || j<0 || i>=numRows || j>=numCols){
+            //return if outside the board
+            return;
+        }
+        Tile tile = tiles.get(i).get(j);
+
+        if (tile.isSelected && selectedTiles.size()>1 && tile == selectedTiles.get(selectedTiles.size() - 2)) {
+            //if this is the second last selected tile, remove the last selected tile
+            selectedTiles.get(selectedTiles.size() - 1).setDeselected();
+            selectedTiles.remove(selectedTiles.size() - 1);
+        } else if (selectedTiles.size() == 0 || ( tile.isConnectedTo(selectedTiles.get(selectedTiles.size() - 1)) && !tile.isSelected )) {
+            //NOTE: order matters in above if condition
+            //select the tile if no tile is selected or if this tile is connected to a selected tile
+            selectedTiles.add(tile);
+            tile.setSelected();
         }
     }
 

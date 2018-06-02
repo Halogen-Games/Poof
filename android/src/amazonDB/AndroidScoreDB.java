@@ -21,6 +21,10 @@ public class AndroidScoreDB implements CoreScoreDB {
         if(gameMode==null || level==null){
             throw new RuntimeException("gameMode or level can't be null");
         }
+        if(score == 0){
+            //Not uploading 0 score to db
+            return;
+        }
         final ScoresDO scoreItem = new ScoresDO();
         scoreItem.setUserId(user);
         scoreItem.setGameMode(gameMode+"_"+level);

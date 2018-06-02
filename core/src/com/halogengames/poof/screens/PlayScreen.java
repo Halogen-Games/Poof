@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.halogengames.poof.PoofEnums;
 import com.halogengames.poof.dataLoaders.AssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
@@ -36,6 +37,8 @@ class PlayScreen implements Screen {
     private Stage stage;
 
     private ImageButton pauseButton;
+    private ArrayList<ImageButton> buttons;
+    private float buttonSize;
 
     PlayScreen(Poof game){
         this.game = game;
@@ -48,7 +51,7 @@ class PlayScreen implements Screen {
 
         hud = new Hud(game.batch);
 
-        ArrayList<ImageButton> buttons = new ArrayList<ImageButton>();
+        buttons = new ArrayList<ImageButton>();
 
         //Create Buttons
         pauseButton = new ImageButton(AssetManager.playScreenPauseButtonDrawable);
@@ -56,7 +59,7 @@ class PlayScreen implements Screen {
 
         //Create Board
         float boardSize = Poof.V_WIDTH*0.9f;
-        //todo: make sure the board doesn;t go offscreen on weird resolutions
+        //todo: make sure the board doesn't go offscreen on weird resolutions
         Vector2 boardPos = new Vector2(Poof.VIEW_PORT.getWorldWidth()/2 - boardSize/2,Poof.VIEW_PORT.getWorldHeight()*0.1f + Poof.BANNER_AD_SIZE);
         board = new GameBoard(game, boardSize,buttons.size());
         board.setPosition(boardPos.x, boardPos.y);
@@ -64,13 +67,13 @@ class PlayScreen implements Screen {
         stage.addActor(board);
 
         //Set Button Sizes
-        float buttonSize = board.getButtonSize()-2*board.getButtonMargin();
+        buttonSize = board.getButtonSize()-2*board.getButtonMargin();
 
         //Todo: (Low Priority) Make the height dependent on numRows
         for(int i=0;i<buttons.size();i++){
             buttons.get(i).setSize(buttonSize, buttonSize);
-            float posX = boardPos.x+board.getWidth()-board.getCornerRadius()-board.getButtonSize()+board.getButtonMargin()-i*(board.getButtonSize()+board.getButtonGutter());
-            float posY = boardPos.y - buttonSize - board.getButtonMargin();
+            float posX = board.getX()+board.getWidth()-board.getCornerRadius()-board.getButtonSize()+board.getButtonMargin()-i*(board.getButtonSize()+board.getButtonGutter());
+            float posY = board.getY() - buttonSize - board.getButtonMargin();
             buttons.get(i).setPosition(posX,posY);
             stage.addActor(buttons.get(i));
         }
@@ -126,8 +129,15 @@ class PlayScreen implements Screen {
     private void update(float dt) {
         board.update(dt);
 
-        if(!board.getBoardState().equals("shuffle")){
-            //Don't decrease timer during shuffle
+        //update buttons
+        for(int i=0;i<buttons.size();i++){
+            float posX = board.getX()+board.getWidth()-board.getCornerRadius()-board.getButtonSize()+board.getButtonMargin()-i*(board.getButtonSize()+board.getButtonGutter());
+            float posY = board.getY() - buttonSize - board.getButtonMargin();
+            buttons.get(i).setPosition(posX,posY);
+        }
+
+        if(board.getBoardState() == PoofEnums.TileState.Idle || board.getBoardState() == PoofEnums.TileState.Dropping ){
+            //Decrease timer only during tile drops and idle states
             GameData.levelTimer -= dt;
         }
 

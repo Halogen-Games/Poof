@@ -3,6 +3,7 @@ package com.halogengames.poof.sprites;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.halogengames.poof.PoofEnums;
 import com.halogengames.poof.dataLoaders.AssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
@@ -28,12 +29,19 @@ public class Tile extends Sprite{
     private float tileMargin;
 
     //velocity and acceleration with which tiles move to their target location
+    private float alphaAcc;
+    private float alphaVel;
     private float vel;
+    private float velX;
+    private float velY;
     private float acc;
+    private float accX;
+    private float accY;
+    private float gravity;
     private float shuffleAnimSpeed;
 
     //state of tile
-    private String state;
+    private PoofEnums.TileState state;
 
     public Tile(int i, int j, float tileSize, float tileMargin, int numRows) {
         Random rand = new Random();
@@ -46,7 +54,14 @@ public class Tile extends Sprite{
         //setting animation related vars
         float startingYPos = tileMargin * (numRows + 1) + tileSize * numRows;
         this.vel = 0;
-        this.acc = -startingYPos * 3;
+        this.velX = 0;
+        this.velY = 0;
+        this.gravity = -startingYPos * 5;
+        this.acc = -startingYPos * 5;
+        this.accX = 0;
+        this.accY = 0;
+        this.alphaAcc = 0;
+        this.alphaVel = 0;
 
         //NOTE: don't make shuffles slow as it allows player to make use of the stopped time
         this.shuffleAnimSpeed = 5;
@@ -60,7 +75,7 @@ public class Tile extends Sprite{
 
         isSelected = false;
 
-        setState("falling");
+        setState(PoofEnums.TileState.Dropping);
     }
 
     public void setCoordinates(int i, int j){
@@ -71,17 +86,30 @@ public class Tile extends Sprite{
         return coords;
     }
 
-    public void setState(String st){
-        if(st.equals("idle")){
-            state = st;
-        }else if(st.equals("falling")){
-            state = st;
-        }else if(st.equals("shuffle")){
-            state = st;
+    public void setState(PoofEnums.TileState st){
+        switch(st){
+            case Idle:{
+                velX = 0;
+                velY = 0;
+                accX = 0;
+                accY = 0;
+                break;
+            }
+            case Falling:{
+                setDeselected();
+                float maxVel = 1000;
+                accY = gravity;
+                accX = 0;
+                velX = (-0.5f + (float)Math.random())*maxVel;
+                velY = (0.5f + (float)Math.random()*0.5f)*maxVel * 0.75f;
+                break;
+            }
+            default: break;
         }
+        state = st;
     }
 
-    public String getState() {
+    public PoofEnums.TileState getState() {
         return state;
     }
 
@@ -94,6 +122,7 @@ public class Tile extends Sprite{
     }
 
     public void draw(Batch batch, float parentXPos, float parentYPos){
+        batch.setColor(1,1,1,getColor().a);
         batch.draw(getTexture(), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
         if(tilePower != null ){
             batch.draw(AssetManager.powerTextures.get(tilePower), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
@@ -112,53 +141,64 @@ public class Tile extends Sprite{
     }
 
     public boolean isConnectedTo(Tile t){
-        if(!this.color.equals(t.color)){
-            return false;
-        }else if((Math.abs(this.coords.x - t.coords.x) == 1) && (this.coords.y == t.coords.y)){
-            return true;
-        }else if((Math.abs(this.coords.y - t.coords.y) == 1) && (this.coords.x == t.coords.x)){
-            return true;
-        }
-        return false;
+        float xCoordDiff = Math.abs(this.coords.x - t.coords.x);
+        float yCoordDiff = Math.abs(this.coords.y - t.coords.y);
+
+        return this.color.equals(t.color) && xCoordDiff<=1 && yCoordDiff<=1 && xCoordDiff!=yCoordDiff;
     }
 
     public void setCorrectXPos(){
         this.setX(getTargetPos().x);
     }
 
-    public void removed(){
-
-    }
-
-    public void update(double dt){
-        if(state.equals("falling") || state.equals("idle")) {
-            //normal tile behavior
-            if (this.getY() > getTargetPos().y) {
+    public void update(float dt){
+        //Todo: Improve the below code by adding acc X and Y and vel X and Y to a base class
+        switch(state){
+            case Idle:{
+                //do nothing
+                break;
+            }
+            case Dropping:{
+                //normal tile behavior
                 vel += acc * dt;
-                this.setPosition(this.getX(), this.getY() + vel * (float) dt);
-                setState("falling");
-            }
+                this.setPosition(this.getX(), this.getY() + vel * dt);
 
-            if (this.getY() < getTargetPos().y) {
-                this.setPosition(getTargetPos().x, getTargetPos().y);
-                setState("idle");
-                vel = 0;
+                //if tile has settled, set it to idle
+                if (this.getY() < getTargetPos().y) {
+                    this.setPosition(getTargetPos().x, getTargetPos().y);
+                    setState(PoofEnums.TileState.Idle);
+                    vel = 0;
+                }
+                break;
             }
-        }else if(state.equals("shuffle")){
-            //tiles shuffling
-            //set x and y vel based on distance from target location
-            float dx = this.getX() - getTargetPos().x;
-            float dy = this.getY() - getTargetPos().y;
+            case Falling:{
+                this.setAlpha(Math.max(this.getColor().a - dt,0));
+                if(getColor().a <= 0){
+                    this.setState(PoofEnums.TileState.Dead);
+                    break;
+                }
+                this.velY += this.accY * dt;
+                this.setPosition(this.getX() + velX * dt, this.getY() + velY * dt);
 
-            float velX = 5*dx;
-            float velY = 5*dy;
-
-            if(Math.abs(dx)<= Math.max(0.1, velX*dt) && Math.abs(dy)<= Math.max(0.1, velY*dt)){
-                this.setPosition(getTargetPos().x, getTargetPos().y);
-                setState("idle");
-            }else {
-                this.setPosition(this.getX() - velX * (float) dt, this.getY() - velY * (float) dt);
+                break;
             }
+            case Shuffling:{
+                //set x and y vel based on distance from target location
+                float dx = this.getX() - getTargetPos().x;
+                float dy = this.getY() - getTargetPos().y;
+
+                float velX = shuffleAnimSpeed*dx;
+                float velY = shuffleAnimSpeed*dy;
+
+                if(Math.abs(dx)<= Math.max(0.1, velX*dt) && Math.abs(dy)<= Math.max(0.1, velY*dt)){
+                    this.setPosition(getTargetPos().x, getTargetPos().y);
+                    setState(PoofEnums.TileState.Idle);
+                }else {
+                    this.setPosition(this.getX() - velX * dt, this.getY() - velY * dt);
+                }
+                break;
+            }
+            default:throw(new RuntimeException("Unknown Tile State"));
         }
     }
 

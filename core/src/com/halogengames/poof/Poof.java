@@ -90,6 +90,8 @@ public class Poof extends Game {
 		//Init GameData
 		TilePower.init();
 		GameData.init(this);
+
+		//todo: make asset and sound managers load assets in parallel
 		AssetManager.init();
 		SoundManager.init();
 

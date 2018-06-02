@@ -76,9 +76,10 @@ public class AndroidAd implements AdInterface{
         String testInterstitialID = "ca-app-pub-3940256099942544/1033173712";
         String currentInterstitialID = testInterstitialID;
 
+        //todo: separate the initialization and loading just like banner ad
         AndroidLauncher.mInterstitialAd = new InterstitialAd(this.context);
         AndroidLauncher.mInterstitialAd.setAdUnitId(currentInterstitialID);
-        AndroidLauncher.mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        AndroidLauncher.mInterstitialAd.loadAd(adRequest);
 
         AndroidLauncher.mInterstitialAd.setAdListener(new AdListener() {
             @Override
@@ -90,7 +91,8 @@ public class AndroidAd implements AdInterface{
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
                 System.out.println("Ad failed to load, reloading");
-                AndroidLauncher.mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+                AndroidLauncher.mInterstitialAd.loadAd(adRequest);
             }
 
             @Override
@@ -106,7 +108,7 @@ public class AndroidAd implements AdInterface{
             @Override
             public void onAdClosed() {
                 // Code to be executed when the interstitial ad is closed.
-                AndroidLauncher.mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                AndroidLauncher.mInterstitialAd.loadAd(adRequest);
             }
         });
     }
