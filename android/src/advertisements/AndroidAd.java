@@ -2,15 +2,10 @@ package advertisements;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.widget.RelativeLayout;
 
-import com.google.ads.consent.ConsentInfoUpdateListener;
 import com.google.ads.consent.ConsentInformation;
 import com.google.ads.consent.ConsentStatus;
-import com.google.ads.consent.DebugGeography;
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -21,10 +16,6 @@ import com.halogengames.poof.AndroidLauncher;
 import com.halogengames.poof.Poof;
 import com.halogengames.poof.advertisement.AdInterface;
 
-import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import static com.google.ads.consent.ConsentInformation.getInstance;
 
 public class AndroidAd implements AdInterface{
@@ -33,6 +24,9 @@ public class AndroidAd implements AdInterface{
     public Context context;
     private AndroidLauncher contextLauncher;
     private AdRequest adRequest;
+
+    private int interstitialRequests;
+    private int interstitialRate;
 
     public Poof game;
 
@@ -47,6 +41,14 @@ public class AndroidAd implements AdInterface{
         //ConsentInformation.getInstance(context).addTestDevice("525C2A500DB3DFAAF563CBCD22C6DF25");
         //getInstance(context).setDebugGeography(DebugGeography.DEBUG_GEOGRAPHY_EEA);
         isEALocation = true;
+
+        interstitialRequests = 0;
+        interstitialRate = 1;
+    }
+
+    public void setInterstitialRate(int rate){
+        //number of requests for one ad
+        interstitialRate = rate;
     }
 
     public void addBannerViewToLayout() {
@@ -115,7 +117,11 @@ public class AndroidAd implements AdInterface{
 
     @Override
     public void showInterstitialAd() {
-        handler.sendEmptyMessage(SHOW_INTERSTITIAL);
+        interstitialRequests++;
+        //show interstitial every other time when asked
+        if(interstitialRequests%interstitialRate==0) {
+            handler.sendEmptyMessage(SHOW_INTERSTITIAL);
+        }
     }
 
     @Override

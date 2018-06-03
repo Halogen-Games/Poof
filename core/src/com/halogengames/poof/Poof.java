@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.halogengames.poof.advertisement.AdInterface;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
@@ -31,6 +31,10 @@ public class Poof extends Game {
 	public static Viewport VIEW_PORT;
 	public static ExtendViewport EXTEND_VIEW_PORT;
 	public static float BANNER_AD_SIZE;
+
+	//Asset Manager
+    public PoofAssetManager assetManager;
+    public SoundManager soundManager;
 
 	//Fonts
 	public static FreeTypeFontGenerator labelFontGenerator;
@@ -53,6 +57,7 @@ public class Poof extends Game {
 	public Poof(CoreScoreDB db, AdInterface adInterface){
         this.db = db;
         this.adInterface = adInterface;
+        this.adInterface.setInterstitialRate(3);
 	}
 
 	public void setupGDPR(){
@@ -92,8 +97,9 @@ public class Poof extends Game {
 		GameData.init(this);
 
 		//todo: make asset and sound managers load assets in parallel
-		AssetManager.init();
-		SoundManager.init();
+
+        assetManager = new PoofAssetManager();
+        soundManager = new SoundManager(assetManager.manager);
 
 		//Catch the back nav button
 		Gdx.input.setCatchBackKey(true);
@@ -113,7 +119,9 @@ public class Poof extends Game {
 	public void dispose () {
 		//dispose objects for memory cleanup
 		batch.dispose();
-		SoundManager.dispose();
+
+		//below will also dispose sound assets
+		assetManager.dispose();
 	}
 
 	@Override

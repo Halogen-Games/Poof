@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
@@ -41,6 +41,7 @@ public class GameOverScreen implements Screen{
     public GameOverScreen(Poof game){
         this.game = game;
 
+        game.adInterface.showInterstitialAd();
         stage = new Stage(Poof.VIEW_PORT, game.batch);
 
         //Add score table
@@ -49,8 +50,8 @@ public class GameOverScreen implements Screen{
         scoreTable.setFillParent(true);
 
         //Add score label
-        Label scoreTextLabel = new Label("Score", AssetManager.gameOverLabelStyle);
-        Label scoreLabel = new Label(String.valueOf(GameData.score), AssetManager.gameOverLabelStyle);
+        Label scoreTextLabel = new Label("Score", this.game.assetManager.gameOverLabelStyle);
+        Label scoreLabel = new Label(String.valueOf(GameData.score), this.game.assetManager.gameOverLabelStyle);
 
         //add the labels to the table
         scoreTable.add(scoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.05f);
@@ -61,12 +62,12 @@ public class GameOverScreen implements Screen{
         int highScore = GameData.getHighScore();
         if(GameData.score>highScore){
             GameData.setHighScore();
-            Label highScoreMsg = new Label("High score made!", AssetManager.gameOverLabelStyle);
+            Label highScoreMsg = new Label("High score made!", this.game.assetManager.gameOverLabelStyle);
             scoreTable.row();
             scoreTable.add(highScoreMsg).expandX();
         }else{
-            Label highScoreText = new Label("Highest Score", AssetManager.gameOverLabelStyle);
-            Label highScoreVal = new Label(String.valueOf(highScore), AssetManager.gameOverLabelStyle);
+            Label highScoreText = new Label("Highest Score", this.game.assetManager.gameOverLabelStyle);
+            Label highScoreVal = new Label(String.valueOf(highScore), this.game.assetManager.gameOverLabelStyle);
             scoreTable.row();
             scoreTable.add(highScoreText).expandX();
             scoreTable.row();
@@ -76,8 +77,8 @@ public class GameOverScreen implements Screen{
         //Add world rank label
         GameData.getPlayerRank();
         GameData.getNumPlayers();
-        Label rankText = new Label("World Rank", AssetManager.gameOverLabelStyle);
-        rankVal = new Label("Calculating", AssetManager.gameOverLabelStyle);
+        Label rankText = new Label("World Rank", this.game.assetManager.gameOverLabelStyle);
+        rankVal = new Label("Calculating", this.game.assetManager.gameOverLabelStyle);
         scoreTable.row();
         scoreTable.add(rankText).expandX();
         scoreTable.row();
@@ -93,8 +94,8 @@ public class GameOverScreen implements Screen{
         table.setFillParent(true);
 
         //Add buttons
-        replayButton = new TextButton("Replay", AssetManager.gameOverButtonStyle);
-        mainMenuButton = new TextButton("Main Menu", AssetManager.gameOverButtonStyle);
+        replayButton = new TextButton("Replay", this.game.assetManager.gameOverButtonStyle);
+        mainMenuButton = new TextButton("Main Menu", this.game.assetManager.gameOverButtonStyle);
 
         addUIListeners();
 
@@ -103,19 +104,13 @@ public class GameOverScreen implements Screen{
         table.row();
         table.add(mainMenuButton);
         stage.addActor(table);
-
-        GameData.gamesPlayed++;
-        if(GameData.gamesPlayed>=3){
-            GameData.gamesPlayed = 0;
-            game.adInterface.showInterstitialAd();
-        }
     }
 
     private void addUIListeners(){
         replayButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 startGame();
             }
         });
@@ -123,7 +118,7 @@ public class GameOverScreen implements Screen{
         mainMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 openMainMenu();
             }
         });

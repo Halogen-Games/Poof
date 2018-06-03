@@ -1,6 +1,7 @@
 package com.halogengames.poof.dataLoaders;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
@@ -9,52 +10,76 @@ import com.badlogic.gdx.audio.Sound;
  */
 
 public class SoundManager {
+    //Asset Manager
+    AssetManager manager;
+
     //Music
-    public static Music mainMenuMusic;
-    public static Music playMusic;
+    public Music mainMenuMusic;
+    public Music playMusic;
 
     //Sound
-    private static Sound blockTouched;
-    private static Sound wrongMove;
-    private static Sound blocksRemoved;
-    private static Sound buttonTap;
-    public static float soundVolume;
+    private Sound blockTouched;
+    private Sound wrongMove;
+    private Sound blocksRemoved;
+    private Sound buttonTap;
+    public float soundVolume;
 
-    public static void init(){
+    public SoundManager(AssetManager manager){
+        this.manager = manager;
+
         soundVolume = GameData.prefs.getFloat("soundVolume", 1.0f);
+
+        manager.load("music/cute.mp3",Music.class);
+        manager.load("music/enigmatic.mp3",Music.class);
+
+        manager.load("sound/blop.mp3",Sound.class);
+        manager.load("sound/error.wav",Sound.class);
+        manager.load("sound/confirm.wav",Sound.class);
+        manager.load("sound/switchOn.wav",Sound.class);
+    }
+
+    public boolean isLoaded(){
+        if(manager.update()){
+            getAssets();
+            return true;
+        }
+        return false;
+    }
+
+    private void getAssets(){
         float musicVolume = GameData.prefs.getFloat("musicVolume", 1.0f);
 
-        mainMenuMusic = Gdx.audio.newMusic(Gdx.files.internal("music/cute.mp3"));
+        mainMenuMusic = manager.get("music/cute.mp3",Music.class);
         mainMenuMusic.setVolume(musicVolume);
         mainMenuMusic.setLooping(true);
 
-        playMusic = Gdx.audio.newMusic(Gdx.files.internal("music/enigmatic.mp3"));
+        playMusic = manager.get("music/enigmatic.mp3",Music.class);
         playMusic.setVolume(musicVolume);
         playMusic.setLooping(true);
 
-        blockTouched = Gdx.audio.newSound(Gdx.files.internal("sound/blop.mp3"));
-        wrongMove = Gdx.audio.newSound(Gdx.files.internal("sound/error.wav"));
-        blocksRemoved = Gdx.audio.newSound(Gdx.files.internal("sound/confirm.wav"));
-        buttonTap = Gdx.audio.newSound(Gdx.files.internal("sound/switchOn.wav"));
+        blockTouched = manager.get("sound/blop.mp3",Sound.class);
+        wrongMove = manager.get("sound/error.wav",Sound.class);
+        blocksRemoved = manager.get("sound/confirm.wav",Sound.class);
+        buttonTap = manager.get("sound/switchOn.wav",Sound.class);
     }
 
-    public static void playBlockTouched(){
+    public void playBlockTouched(){
         blockTouched.play(soundVolume);
     }
 
-    public static void playWrongMove(){
+    public void playWrongMove(){
         wrongMove.play(soundVolume);
     }
 
-    public static void playBlocksRemoved(){
+    public void playBlocksRemoved(){
         blocksRemoved.play(soundVolume);
     }
 
-    public static void playButtonTap(){
+    public void playButtonTap(){
         buttonTap.play(soundVolume);
     }
 
-    public static void dispose(){
+    public void dispose(){
         mainMenuMusic.dispose();
         playMusic.dispose();
 

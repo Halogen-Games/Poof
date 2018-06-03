@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.Poof;
 
@@ -16,14 +16,15 @@ import com.halogengames.poof.Poof;
  */
 
 public class Hud {
+    private Poof game;
     private Stage stage;
 
     private Label timeLabel;
     private Label scoreLabel;
 
-    public Hud(SpriteBatch sb){
-
-        stage = new Stage(Poof.VIEW_PORT, sb);
+    public Hud(Poof game){
+        this.game = game;
+        stage = new Stage(Poof.VIEW_PORT, game.batch);
 
         //use a table to align objects on stage
         Table table = new Table();
@@ -33,12 +34,12 @@ public class Hud {
         table.setFillParent(true);
 
         //define the labels
-        Label timeTextLabel = new Label("TIME", AssetManager.hudLabelStyle);
-        timeLabel = new Label(String.valueOf((int)Math.ceil(GameData.levelTimer)), AssetManager.hudLabelStyle);
-        Label scoreTextLabel = new Label("SCORE", AssetManager.hudLabelStyle);
-        scoreLabel = new Label(String.valueOf(GameData.score), AssetManager.hudLabelStyle);
-        Label highscoreTextLabel = new Label("Best", AssetManager.hudLabelStyle);
-        Label highscoreLabel = new Label(String.valueOf(GameData.getHighScore()), AssetManager.hudLabelStyle);
+        Label timeTextLabel = new Label("TIME", this.game.assetManager.hudLabelStyle);
+        timeLabel = new Label(String.valueOf((int)Math.ceil(GameData.levelTimer)), this.game.assetManager.hudLabelStyle);
+        Label scoreTextLabel = new Label("SCORE", this.game.assetManager.hudLabelStyle);
+        scoreLabel = new Label(String.valueOf(GameData.score), this.game.assetManager.hudLabelStyle);
+        Label highscoreTextLabel = new Label("Best", this.game.assetManager.hudLabelStyle);
+        Label highscoreLabel = new Label(String.valueOf(GameData.getHighScore()), this.game.assetManager.hudLabelStyle);
 
         table.add(highscoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
         table.add(scoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);

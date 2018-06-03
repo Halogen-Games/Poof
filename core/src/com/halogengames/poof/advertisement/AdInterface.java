@@ -9,4 +9,5 @@ public interface AdInterface {
     boolean isEURegion();
     void genConsentFormIfNeeded();
     void setConsentStatus(int status);
+    void setInterstitialRate(int rate);
 }

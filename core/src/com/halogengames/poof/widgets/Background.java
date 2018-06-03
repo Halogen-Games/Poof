@@ -1,6 +1,6 @@
 package com.halogengames.poof.widgets;
 
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.Poof;
 
 /**
@@ -18,7 +18,7 @@ public class Background {
     public void render(float delta) {
         Poof.EXTEND_VIEW_PORT.apply();
         game.batch.begin();
-        game.batch.draw(AssetManager.commonBG,0,0,Poof.EXTEND_VIEW_PORT.getWorldWidth(),Poof.EXTEND_VIEW_PORT.getWorldHeight());
+        game.batch.draw(this.game.assetManager.commonBG,0,0,Poof.EXTEND_VIEW_PORT.getWorldWidth(),Poof.EXTEND_VIEW_PORT.getWorldHeight());
         game.batch.end();
 
         Poof.VIEW_PORT.apply();

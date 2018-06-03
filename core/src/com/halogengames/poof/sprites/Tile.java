@@ -3,8 +3,9 @@ package com.halogengames.poof.sprites;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.halogengames.poof.Poof;
 import com.halogengames.poof.PoofEnums;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
@@ -18,6 +19,7 @@ import java.util.Random;
  */
 
 public class Tile extends Sprite{
+    private Poof game;
 
     private String color;
     public String tilePower;
@@ -43,7 +45,9 @@ public class Tile extends Sprite{
     //state of tile
     private PoofEnums.TileState state;
 
-    public Tile(int i, int j, float tileSize, float tileMargin, int numRows) {
+    public Tile(Poof game, int i, int j, float tileSize, float tileMargin, int numRows) {
+        this.game = game;
+
         Random rand = new Random();
         color = GameData.validTileColors.get(rand.nextInt(GameData.validTileColors.size));
         tilePower = TilePower.generatePower();
@@ -66,7 +70,7 @@ public class Tile extends Sprite{
         //NOTE: don't make shuffles slow as it allows player to make use of the stopped time
         this.shuffleAnimSpeed = 5;
 
-        this.setTexture(AssetManager.tileTextures.get(color+"_tile"));
+        this.setTexture(this.game.assetManager.tileTextures.get(color+"_tile"));
         this.setPosition(tileMargin*(j+1) + tileSize*j, startingYPos);
 
         this.setBounds(this.getX(), this.getY(), tileSize, tileSize);
@@ -125,18 +129,18 @@ public class Tile extends Sprite{
         batch.setColor(1,1,1,getColor().a);
         batch.draw(getTexture(), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
         if(tilePower != null ){
-            batch.draw(AssetManager.powerTextures.get(tilePower), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
+            batch.draw(this.game.assetManager.powerTextures.get(tilePower), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
         }
     }
 
     public void setSelected(){
-        this.setTexture(AssetManager.tileTextures.get(color+"_tile_touched"));
-        SoundManager.playBlockTouched();
+        this.setTexture(this.game.assetManager.tileTextures.get(color+"_tile_touched"));
+        game.soundManager.playBlockTouched();
         isSelected = true;
     }
 
     public void setDeselected(){
-        this.setTexture(AssetManager.tileTextures.get(color+"_tile"));
+        this.setTexture(this.game.assetManager.tileTextures.get(color+"_tile"));
         isSelected = false;
     }
 

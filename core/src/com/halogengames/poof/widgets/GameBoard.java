@@ -69,17 +69,7 @@ public class GameBoard extends AnimatedSprite {
         numCols = GameData.numBoardCols;
         numRows = GameData.numBoardRows;
 
-        switch(GameData.theme){
-            case Dark:{
-                bgColor = new Color(2/255f,17/255f,44/255f,1);
-                break;
-            }
-            case Light:{
-                bgColor = new Color(Color.WHITE);
-                break;
-            }
-            default: throw(new RuntimeException("Unknown Theme!"));
-        }
+        bgColor = new Color(Color.WHITE);
 
         borderColor = new Color(Color.GRAY);
         normalColor = new Color(Color.GRAY);
@@ -206,9 +196,9 @@ public class GameBoard extends AnimatedSprite {
         for(int i=0; i<numRows; i++){
             for(int j=0; j<numCols; j++) {
                 //todo: remove this loop and make fetching state O(1)
-                if(tiles.get(i).get(j).getState() == PoofEnums.TileState.Shuffling ){
+                if(tiles.get(i).get(j).getState() == PoofEnums.TileState.Shuffling){
                     shuffling = true;
-                }else if(tiles.get(i).get(j).getState() == PoofEnums.TileState.Dropping ){
+                }else if(tiles.get(i).get(j).getState() == PoofEnums.TileState.Dropping){
                     dropping = true;
                 }
             }
@@ -250,7 +240,7 @@ public class GameBoard extends AnimatedSprite {
         for(int i=0; i<numRows; i++){
             Array<Tile> tileColumn = new Array<Tile>();
             for(int j=0; j<numCols; j++) {
-                tileColumn.add(new Tile(i, j, tileSize, tileMargin, numRows));
+                tileColumn.add(new Tile(this.game, i, j, tileSize, tileMargin, numRows));
             }
             tiles.add(tileColumn);
         }
@@ -439,12 +429,12 @@ public class GameBoard extends AnimatedSprite {
 
     public void boardTouchedUp() {
         if(selectedTiles.size()<3) {
-            SoundManager.playWrongMove();
+            game.soundManager.playWrongMove();
             for (int t = selectedTiles.size() - 1; t >= 0; t--) {
                 selectedTiles.get(t).setDeselected();
             }
         }else{
-            SoundManager.playBlocksRemoved();
+            game.soundManager.playBlocksRemoved();
 
             int chainLength = selectedTiles.size();
 
@@ -474,7 +464,7 @@ public class GameBoard extends AnimatedSprite {
                     tiles.get(k).get(j).setCoordinates(k,j);
                 }
                 //will always add one at the top
-                tiles.get(numRows-1).set(j, new Tile(numRows-1, j, tileSize, tileMargin, numRows));
+                tiles.get(numRows-1).set(j, new Tile(this.game,numRows-1, j, tileSize, tileMargin, numRows));
             }
 
             GameData.updateScore(chainLength,selectedTiles);

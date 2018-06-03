@@ -10,11 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
@@ -28,10 +26,13 @@ import com.halogengames.poof.Poof;
 class MainMenuScreen implements Screen {
 
     //the game for sprite batch
-    private  Poof game;
+    private Poof game;
 
     //To add the buttons on the screen
     private Stage stage;
+
+    private Label title;
+
     private TextButton playButton;
     private TextButton helpButton;
     private TextButton exitButton;
@@ -45,39 +46,34 @@ class MainMenuScreen implements Screen {
         game.setupGDPR();
 
         //start music
-        SoundManager.mainMenuMusic.play();
+        game.soundManager.mainMenuMusic.play();
 
         //stage
         stage = new Stage(Poof.VIEW_PORT, game.batch);
 
-        //create a table to position objects on stage
-        Table table = new Table();
-        table.bottom();
-        table.setPosition(0, Poof.BANNER_AD_SIZE);
-        table.setFillParent(true);
-
         //Title Label
-        Label title = new Label("Poof", AssetManager.mainMenuTitleStyle);
-        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
+        title = new Label("Poof", this.game.assetManager.mainMenuTitleStyle);
+        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - title.getWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight());
 
         //Adding buttons
-        playButton = new TextButton("Play", AssetManager.mainMenuButtonStyle);
-        helpButton = new TextButton("Help", AssetManager.mainMenuButtonStyle);
-        optionsButton = new TextButton("Options", AssetManager.mainMenuButtonStyle);
-        exitButton = new TextButton("Quit", AssetManager.mainMenuButtonStyle);
+        playButton = new TextButton("Play", this.game.assetManager.mainMenuButtonStyle);
+        helpButton = new TextButton("Help", this.game.assetManager.mainMenuButtonStyle);
+        optionsButton = new TextButton("Options", this.game.assetManager.mainMenuButtonStyle);
+        exitButton = new TextButton("Quit", this.game.assetManager.mainMenuButtonStyle);
         addUIListeners();
 
-        //adding buttons to table and table to stage
-        table.add(playButton);
-        table.row();
-        table.add(helpButton);
-        table.row();
-        table.add(optionsButton);
-        table.row();
-        table.add(exitButton);
+        //set positions
+        exitButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - exitButton.getWidth()/2, Poof.BANNER_AD_SIZE);
+        optionsButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - optionsButton.getWidth()/2, exitButton.getY()+exitButton.getHeight());
+        helpButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - helpButton.getWidth()/2, optionsButton.getY()+optionsButton.getHeight());
+        playButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - playButton.getWidth()/2, helpButton.getY()+helpButton.getHeight());
+
 
         stage.addActor(title);
-        stage.addActor(table);
+        stage.addActor(exitButton);
+        stage.addActor(optionsButton);
+        stage.addActor(helpButton);
+        stage.addActor(playButton);
 
         //to allow stage to identify events
         Gdx.input.setInputProcessor(stage);
@@ -87,7 +83,7 @@ class MainMenuScreen implements Screen {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 openLevelSelect();
             }
         });
@@ -95,7 +91,7 @@ class MainMenuScreen implements Screen {
         helpButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 openHelp();
             }
         });
@@ -103,7 +99,7 @@ class MainMenuScreen implements Screen {
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 openOptions();
             }
         });
@@ -111,8 +107,8 @@ class MainMenuScreen implements Screen {
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
-                AssetManager.dispose();
+                game.soundManager.playButtonTap();
+                game.assetManager.dispose();
                 Gdx.app.exit();
             }
         });
@@ -131,7 +127,7 @@ class MainMenuScreen implements Screen {
 
     private void openLevelSelect(){
         Gdx.input.setInputProcessor(null);
-        game.setScreen(new LevelSelectScreen(game, this));
+        game.setScreen(new DifficultyScreen(game, this));
     }
 
     private void openHelp(){
@@ -156,14 +152,14 @@ class MainMenuScreen implements Screen {
         stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
-//    public void update(float dt){
-//        Poof.CAM.update();
-//    }
+    public void update(float dt){
+        //Poof.CAM.update();
+    }
 
     @Override
     public void render(float delta){
 //        //no need for below as cam not moving
-//        update(delta);
+        update(delta);
         stage.act(delta);
 
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);

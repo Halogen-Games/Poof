@@ -7,13 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.halogengames.poof.advertisement.AdInterface;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
@@ -50,13 +49,13 @@ public class PrivacyScreen implements Screen {
         table.setFillParent(true);
 
         //Add Label
-        title = new Label("Privacy", AssetManager.privacyTitleStyle);
+        title = new Label("Privacy", this.game.assetManager.privacyTitleStyle);
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
 
         //adding buttons
-        personalizedButton = new TextButton("Yes", AssetManager.privacyButtonStyle);
-        nonPersonalizedButton = new TextButton("No", AssetManager.privacyButtonStyle);
-        policyButton = new TextButton("Privacy Policy", AssetManager.privacyPolicyButtonStyle);
+        personalizedButton = new TextButton("Yes", this.game.assetManager.privacyButtonStyle);
+        nonPersonalizedButton = new TextButton("No", this.game.assetManager.privacyButtonStyle);
+        policyButton = new TextButton("Privacy Policy", this.game.assetManager.privacyPolicyButtonStyle);
 
         personalizedButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/4-personalizedButton.getWidth()/2, Poof.BANNER_AD_SIZE );
         nonPersonalizedButton.setPosition(3*Poof.VIEW_PORT.getWorldWidth()/4-personalizedButton.getWidth()/2, Poof.BANNER_AD_SIZE );
@@ -107,7 +106,7 @@ public class PrivacyScreen implements Screen {
 
     private void returnToPrevScreen(){
         Gdx.input.setInputProcessor(null);
-        SoundManager.playButtonTap();
+        game.soundManager.playButtonTap();
         dispose();
         game.setScreen(prevScreen);
 //        MotionEngine.fadeOut(stage.getRoot(),this,prevScreen,true);
@@ -125,7 +124,7 @@ public class PrivacyScreen implements Screen {
         String text = "We use some of your data to improve user experience, save high scores and show ads.\nCan we continue to use your data to tailor ads for you?";
 
         game.batch.begin();
-        AssetManager.helpTextFont.draw(
+        this.game.assetManager.helpTextFont.draw(
                 game.batch,
                 text,
                 Poof.VIEW_PORT.getWorldWidth()*0.05f,

@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
@@ -22,20 +22,21 @@ import com.halogengames.poof.Poof;
  * Screen to select the difficulty
  */
 
-class LevelSelectScreen implements Screen{
+//Todo:Incomplete Class
+class GameModeSelectScreen implements Screen{
     //the game for sprite batch
     private Poof game;
     private Screen prevScreen;
 
     //To add the buttons on the screen
     private Stage stage;
-    private TextButton easyButton;
-    private TextButton mediumButton;
-    private TextButton hardButton;
+    private TextButton timedButton;
+    private TextButton relaxedButton;
+    private TextButton comingSoonButton;
     private TextButton backButton;
 
     //Constructor
-    LevelSelectScreen(Poof game, Screen prevScr){
+    GameModeSelectScreen(Poof game, Screen prevScr){
         this.game = game;
         this.prevScreen = prevScr;
 
@@ -49,23 +50,23 @@ class LevelSelectScreen implements Screen{
         table.setFillParent(true);
 
         //Title Label
-        Label title = new Label("Select\nDifficulty", AssetManager.levelSelectTitleStyle);
+        Label title = new Label("Select\nGame Mode", this.game.assetManager.levelSelectTitleStyle);
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
         title.setAlignment(Align.center);
 
         //Adding buttons
-        easyButton = new TextButton("Easy", AssetManager.levelSelectButtonStyle);
-        mediumButton = new TextButton("Medium", AssetManager.levelSelectButtonStyle);
-        hardButton = new TextButton("Hard", AssetManager.levelSelectButtonStyle);
-        backButton = new TextButton("Back", AssetManager.levelSelectButtonStyle);
+        timedButton = new TextButton("Timed", this.game.assetManager.levelSelectButtonStyle);
+        relaxedButton = new TextButton("Relaxed", this.game.assetManager.levelSelectButtonStyle);
+        comingSoonButton = new TextButton("Coming Soon...", this.game.assetManager.levelSelectGreyedButtonStyle);
+        backButton = new TextButton("Back", this.game.assetManager.levelSelectGreyedButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
-        table.add(easyButton);
+        table.add(timedButton);
         table.row();
-        table.add(mediumButton);
+        table.add(relaxedButton);
         table.row();
-        table.add(hardButton);
+        table.add(comingSoonButton);
         table.row();
         table.add(backButton).padTop(Poof.V_HEIGHT/10);
 
@@ -77,30 +78,23 @@ class LevelSelectScreen implements Screen{
     }
 
     private void addUIListeners(){
-        easyButton.addListener(new ChangeListener() {
+        timedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
-                GameData.setLevel("easy");
-                startGame();
+                Gdx.input.setInputProcessor(null);
+                game.soundManager.playButtonTap();
+                dispose();
+                game.setScreen(prevScreen);
             }
         });
 
-        mediumButton.addListener(new ChangeListener() {
+        relaxedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
-                GameData.setLevel("medium");
-                startGame();
-            }
-        });
-
-        hardButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
-                GameData.setLevel("hard");
-                startGame();
+                Gdx.input.setInputProcessor(null);
+                game.soundManager.playButtonTap();
+                dispose();
+                game.setScreen(prevScreen);
             }
         });
 
@@ -108,7 +102,7 @@ class LevelSelectScreen implements Screen{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.input.setInputProcessor(null);
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 dispose();
                 game.setScreen(prevScreen);
             }
@@ -117,7 +111,7 @@ class LevelSelectScreen implements Screen{
 
     private void startGame(){
         Gdx.input.setInputProcessor(null);
-        SoundManager.mainMenuMusic.stop();
+        game.soundManager.mainMenuMusic.stop();
         dispose();
         //only show ad if at least three games played completely
         game.setScreen(new PlayScreen(game));

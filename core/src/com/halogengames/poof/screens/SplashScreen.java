@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.Poof;
+import com.halogengames.poof.dataLoaders.SoundManager;
 
 /**
  * Created by Rohit on 22-10-2017.
@@ -52,7 +54,7 @@ public class SplashScreen implements Screen {
     public void render(float delta) {
         update(delta);
 
-        if(elapsed > splashDuration){
+        if(this.game.assetManager.isLoaded() && this.game.soundManager.isLoaded()){
             game.setScreen(new MainMenuScreen(game));
         }
 

@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -18,27 +17,26 @@ import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
 
 /**
- * Defined the options screen
+ * Created by Rohit on 20-05-2018.
+ *
+ * Screen to select the difficulty
  */
 
-class OptionsScreen implements Screen {
-
+class DifficultyScreen implements Screen{
+    //the game for sprite batch
     private Poof game;
-
     private Screen prevScreen;
-
-    //Sliders
-    private Slider musicSlider;
-    private Slider soundSlider;
 
     //To add the buttons on the screen
     private Stage stage;
+    private TextButton easyButton;
+    private TextButton mediumButton;
+    private TextButton hardButton;
     private TextButton backButton;
-    private TextButton privacyButton;
 
-    OptionsScreen(Poof game, Screen prevScr){
+    //Constructor
+    DifficultyScreen(Poof game, Screen prevScr){
         this.game = game;
-
         this.prevScreen = prevScr;
 
         //stage
@@ -50,38 +48,79 @@ class OptionsScreen implements Screen {
         table.setPosition(0, Poof.BANNER_AD_SIZE);
         table.setFillParent(true);
 
-        //Add Label
-        Label title = new Label("Options", this.game.assetManager.optionsTitleStyle);
+        //Title Label
+        Label title = new Label("Select\nDifficulty", this.game.assetManager.levelSelectTitleStyle);
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
+        title.setAlignment(Align.center);
 
-        //adding back button
-        backButton = new TextButton("Back", this.game.assetManager.optionsButtonStyle);
-        privacyButton = new TextButton("Privacy", this.game.assetManager.optionsButtonStyle);
-
-        //adding sliders
-        musicSlider = new Slider(0,1,0.01f,false, this.game.assetManager.optionsMusicSliderStyle);
-        musicSlider.setValue(GameData.prefs.getFloat("musicVolume", 1.0f));
-
-        soundSlider = new Slider(0,1,0.2f,false, this.game.assetManager.optionsSoundSliderStyle);
-        soundSlider.setValue(GameData.prefs.getFloat("soundVolume", 1.0f));
-
+        //Adding buttons
+        easyButton = new TextButton("Easy", this.game.assetManager.levelSelectButtonStyle);
+        mediumButton = new TextButton("Medium", this.game.assetManager.levelSelectButtonStyle);
+        hardButton = new TextButton("Hard", this.game.assetManager.levelSelectButtonStyle);
+        backButton = new TextButton("Back", this.game.assetManager.levelSelectButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
-        table.add(musicSlider).width(Poof.V_WIDTH*0.65f).padBottom(Poof.V_HEIGHT/15);
+        table.add(easyButton);
         table.row();
-        table.add(soundSlider).width(Poof.V_WIDTH*0.65f).padBottom(Poof.V_HEIGHT/10);
-        if(game.adInterface.isEURegion()) {
-            table.row();
-            table.add(privacyButton);
-        }
+        table.add(mediumButton);
         table.row();
-        table.add(backButton);
+        table.add(hardButton);
+        table.row();
+        table.add(backButton).padTop(Poof.V_HEIGHT/10);
+
         stage.addActor(title);
         stage.addActor(table);
 
         //to allow stage to identify events
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private void addUIListeners(){
+        easyButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.soundManager.playButtonTap();
+                GameData.setLevel("easy");
+                startGame();
+            }
+        });
+
+        mediumButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.soundManager.playButtonTap();
+                GameData.setLevel("medium");
+                startGame();
+            }
+        });
+
+        hardButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.soundManager.playButtonTap();
+                GameData.setLevel("hard");
+                startGame();
+            }
+        });
+
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.input.setInputProcessor(null);
+                game.soundManager.playButtonTap();
+                dispose();
+                game.setScreen(prevScreen);
+            }
+        });
+    }
+
+    private void startGame(){
+        Gdx.input.setInputProcessor(null);
+        game.soundManager.mainMenuMusic.stop();
+        dispose();
+        //only show ad if at least three games played completely
+        game.setScreen(new PlayScreen(game));
     }
 
     @Override
@@ -91,61 +130,9 @@ class OptionsScreen implements Screen {
         stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
-    private void addUIListeners(){
-        backButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                returnToPrevScreen();
-            }
-        });
-
-        privacyButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                openGDPRScreen();
-            }
-        });
-
-        musicSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.soundManager.mainMenuMusic.setVolume(musicSlider.getValue());
-                game.soundManager.playMusic.setVolume(musicSlider.getValue());
-
-                GameData.prefs.putFloat("musicVolume", musicSlider.getValue());
-                GameData.prefs.flush();
-            }
-        });
-
-        soundSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.soundManager.soundVolume = soundSlider.getValue();
-
-                GameData.prefs.putFloat("soundVolume", soundSlider.getValue());
-                GameData.prefs.flush();
-
-                game.soundManager.playButtonTap();
-            }
-        });
-    }
-
-    private void openGDPRScreen(){
-        Gdx.input.setInputProcessor(null);
-        game.setScreen(new PrivacyScreen(game,this));
-    }
-
-    private void returnToPrevScreen(){
-        Gdx.input.setInputProcessor(null);
-        game.soundManager.playButtonTap();
-        dispose();
-        game.setScreen(prevScreen);
-//        MotionEngine.fadeOut(stage.getRoot(),this,prevScreen,true);
-    }
-
     @Override
-    public void render(float delta) {
-        stage.act();
+    public void render(float delta){
+        stage.act(delta);
 
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -166,9 +153,7 @@ class OptionsScreen implements Screen {
     }
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
     public void hide() {
@@ -177,7 +162,7 @@ class OptionsScreen implements Screen {
 
     @Override
     public void dispose() {
-        System.out.println("Options Screen Disposed");
+        System.out.println("level Select Screen Disposed");
         stage.dispose();
     }
 }

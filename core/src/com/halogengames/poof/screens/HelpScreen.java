@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
@@ -55,7 +55,7 @@ class HelpScreen implements Screen {
         table.setFillParent(true);
 
         //Adding buttons
-        backButton = new TextButton("Back", AssetManager.pauseButtonStyle);
+        backButton = new TextButton("Back", this.game.assetManager.pauseButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
@@ -77,7 +77,7 @@ class HelpScreen implements Screen {
 
     private void returnToPrevScreen(){
         Gdx.input.setInputProcessor(null);
-        SoundManager.playButtonTap();
+        game.soundManager.playButtonTap();
         dispose();
         game.setScreen(prevScreen);
     }
@@ -90,7 +90,7 @@ class HelpScreen implements Screen {
 
     private void update(float dt){
         elapsed += dt;
-        animTex = AssetManager.helpAnim.getKeyFrame(elapsed);
+        animTex = this.game.assetManager.helpAnim.getKeyFrame(elapsed);
 
         animWidth = Poof.VIEW_PORT.getWorldWidth()*0.8f;
         animHeight = animTex.getRegionHeight() * animWidth/animTex.getRegionWidth();
@@ -118,7 +118,7 @@ class HelpScreen implements Screen {
                 animHeight
         );
 
-        AssetManager.helpTextFont.draw(
+        this.game.assetManager.helpTextFont.draw(
                 game.batch,
                 "Drag to select a chain of similar colored blocks to remove them from the board",
                 Poof.VIEW_PORT.getWorldWidth()*0.1f,

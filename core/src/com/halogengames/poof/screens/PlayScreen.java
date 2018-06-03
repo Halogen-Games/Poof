@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.halogengames.poof.PoofEnums;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
@@ -40,21 +40,25 @@ class PlayScreen implements Screen {
     private ArrayList<ImageButton> buttons;
     private float buttonSize;
 
+    private boolean gameStarted;
+
     PlayScreen(Poof game){
         this.game = game;
+        game.adInterface.showInterstitialAd();
+        gameStarted = false;
         GameData.resetData();
         System.out.println(GameData.gamesPlayed);
-        SoundManager.playMusic.play();
+        game.soundManager.playMusic.play();
 
         //stage
         stage = new Stage(Poof.VIEW_PORT, game.batch);
 
-        hud = new Hud(game.batch);
+        hud = new Hud(game);
 
         buttons = new ArrayList<ImageButton>();
 
         //Create Buttons
-        pauseButton = new ImageButton(AssetManager.playScreenPauseButtonDrawable);
+        pauseButton = new ImageButton(this.game.assetManager.playScreenPauseButtonDrawable);
         buttons.add(pauseButton);
 
         //Create Board
@@ -136,8 +140,11 @@ class PlayScreen implements Screen {
             buttons.get(i).setPosition(posX,posY);
         }
 
-        if(board.getBoardState() == PoofEnums.TileState.Idle || board.getBoardState() == PoofEnums.TileState.Dropping ){
-            //Decrease timer only during tile drops and idle states
+        //Decrease timer only during tile drops and idle states
+        if(board.getBoardState() == PoofEnums.TileState.Idle){
+            gameStarted = true;
+            GameData.levelTimer -= dt;
+        }else if(board.getBoardState() == PoofEnums.TileState.Dropping){
             GameData.levelTimer -= dt;
         }
 
@@ -170,21 +177,23 @@ class PlayScreen implements Screen {
     @Override
     public void pause() {
         Gdx.input.setInputProcessor(null);
-        SoundManager.playButtonTap();
-        SoundManager.playMusic.pause();
-        game.setScreen(new PauseScreen(game, this));
+        game.soundManager.playButtonTap();
+        game.soundManager.playMusic.pause();
+        if(gameStarted) {
+            game.setScreen(new PauseScreen(game, this));
+        }
     }
 
     @Override
     public void resume() {
-        SoundManager.playMusic.play();
+        game.soundManager.playMusic.play();
         game.setScreen(this);
         Gdx.input.setInputProcessor(stage);
     }
 
     private void endGame() {
         Gdx.input.setInputProcessor(null);
-        SoundManager.playMusic.stop();
+        game.soundManager.playMusic.stop();
         dispose();
         game.setScreen(new GameOverScreen(game));
     }
@@ -197,6 +206,7 @@ class PlayScreen implements Screen {
     @Override
     public void dispose() {
         System.out.println("Play Screen Disposed");
+
         board.dispose();
         hud.dispose();
         stage.dispose();

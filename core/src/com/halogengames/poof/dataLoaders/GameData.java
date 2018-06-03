@@ -20,6 +20,10 @@ import static java.lang.Math.max;
 
 public class GameData {
 
+    public enum GameMode{
+        Timed, Relaxed
+    }
+
     private static Poof game;
 
     //final vars
@@ -29,6 +33,7 @@ public class GameData {
     private static int maxTime;
     private static int numColors;
     private static String levelName;
+    //Todo: Convert gameMode from string to GameMode type
     private static String gameMode;
 
     //things like font size are hardcoded according to this base width and then scaled appropriately based on actual width of screen
@@ -36,9 +41,6 @@ public class GameData {
 
     public static int numBoardCols;
     public static int numBoardRows;
-
-    //Theme
-    public static PoofEnums.Theme theme;
 
     //GL Clear Color
     public static Color clearColor;
@@ -98,9 +100,6 @@ public class GameData {
         numBoardCols = 6;
         numBoardRows = 6;
         numColors = 3;
-
-        //Todo: Dynamic switching of assets based on theme in game(will require storing assets in a hash map with Theme Key so that swapping is easy)
-        theme = PoofEnums.Theme.Light;
 
         clearColor = new Color(1,1,1,1);
 

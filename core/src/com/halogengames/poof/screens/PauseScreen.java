@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.halogengames.poof.dataLoaders.AssetManager;
+import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
@@ -49,14 +49,14 @@ class PauseScreen implements Screen {
         table.setFillParent(true);
 
         //Title Label
-        Label title = new Label("Paused!!!", AssetManager.pauseTitleStyle);
+        Label title = new Label("Paused!!!", this.game.assetManager.pauseTitleStyle);
         title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
 
         //Adding buttons
-        resumeButton = new TextButton("Resume", AssetManager.pauseButtonStyle);
-        restartButton = new TextButton("Restart", AssetManager.pauseButtonStyle);
-        optionsButton = new TextButton("Options", AssetManager.pauseButtonStyle);
-        mainMenuButton = new TextButton("Main Menu", AssetManager.pauseButtonStyle);
+        resumeButton = new TextButton("Resume", this.game.assetManager.pauseButtonStyle);
+        restartButton = new TextButton("Restart", this.game.assetManager.pauseButtonStyle);
+        optionsButton = new TextButton("Options", this.game.assetManager.pauseButtonStyle);
+        mainMenuButton = new TextButton("Main Menu", this.game.assetManager.pauseButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
@@ -78,7 +78,7 @@ class PauseScreen implements Screen {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 resumeGame();
             }
         });
@@ -86,7 +86,7 @@ class PauseScreen implements Screen {
         restartButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 restartGame();
             }
         });
@@ -94,7 +94,7 @@ class PauseScreen implements Screen {
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 openOptions();
             }
         });
@@ -102,7 +102,7 @@ class PauseScreen implements Screen {
         mainMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.playButtonTap();
+                game.soundManager.playButtonTap();
                 openMainMenu();
             }
         });
@@ -117,11 +117,9 @@ class PauseScreen implements Screen {
     private void restartGame(){
         //todo: add confirmation dialogue (Possibly needs sprite queue)
         Gdx.input.setInputProcessor(null);
-        SoundManager.playMusic.stop();
+        game.soundManager.playMusic.stop();
         playScr.dispose();
         dispose();
-        //don't show ad on restart
-        //game.adInterface.showInterstitialAd();
         game.setScreen(new PlayScreen(game));
     }
 
@@ -132,7 +130,7 @@ class PauseScreen implements Screen {
 
     private void openMainMenu(){
         Gdx.input.setInputProcessor(null);
-        SoundManager.playMusic.stop();
+        game.soundManager.playMusic.stop();
         playScr.dispose();
         dispose();
         game.setScreen(new MainMenuScreen(game));
