@@ -11,11 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.halogengames.poof.PoofEnums;
 import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
+import com.halogengames.poof.sprites.Tile.TileState;
 import com.halogengames.poof.widgets.GameBoard;
 import com.halogengames.poof.widgets.Hud;
 
@@ -118,6 +118,15 @@ class PlayScreen implements Screen {
         });
     }
 
+    private void updateButtonPos(){
+        //update button positions
+        for(int i=0;i<buttons.size();i++){
+            float posX = board.getX()+board.getWidth()-board.getCornerRadius()-board.getButtonSize()+board.getButtonMargin()-i*(board.getButtonSize()+board.getButtonGutter());
+            float posY = board.getY() - buttonSize - board.getButtonMargin();
+            buttons.get(i).setPosition(posX,posY);
+        }
+    }
+
     @Override
     public void show() {
         //handle input events
@@ -131,27 +140,32 @@ class PlayScreen implements Screen {
     }
 
     private void update(float dt) {
-        board.update(dt);
-
-        //update buttons
-        for(int i=0;i<buttons.size();i++){
-            float posX = board.getX()+board.getWidth()-board.getCornerRadius()-board.getButtonSize()+board.getButtonMargin()-i*(board.getButtonSize()+board.getButtonGutter());
-            float posY = board.getY() - buttonSize - board.getButtonMargin();
-            buttons.get(i).setPosition(posX,posY);
+        if (board.getBoardState() == TileState.Idle) {
+            gameStarted = true;
         }
 
         //Decrease timer only during tile drops and idle states
-        if(board.getBoardState() == PoofEnums.TileState.Idle){
-            gameStarted = true;
-            GameData.levelTimer -= dt;
-        }else if(board.getBoardState() == PoofEnums.TileState.Dropping){
-            GameData.levelTimer -= dt;
+        if( GameData.getGameMode() == GameData.GameMode.Timed) {
+            if(!board.movesLeft()) {
+                board.shuffleBoard();
+            }
+
+            if (board.getBoardState() == TileState.Idle) {
+                GameData.levelTimer -= dt;
+            } else if (board.getBoardState() == TileState.Dropping) {
+                GameData.levelTimer -= dt;
+            }
+
+            if (GameData.levelTimer <= 0) {
+                endGame();
+            }
+        }else if(GameData.getGameMode() == GameData.GameMode.Relaxed){
+            if(!board.movesLeft()) {
+                endGame();
+            }
         }
 
-        if(GameData.levelTimer<=0){
-            endGame();
-        }
-        Poof.CAM.update();
+        board.update(dt);
     }
 
     @Override
@@ -163,7 +177,7 @@ class PlayScreen implements Screen {
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling?GL20.GL_COVERAGE_BUFFER_BIT_NV:0));
 
-        Poof.bg.render(delta);
+        game.bg.render(delta);
 
         hud.draw();
         stage.draw();
@@ -172,14 +186,15 @@ class PlayScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         game.resize(width,height);
+        updateButtonPos();
     }
 
     @Override
     public void pause() {
-        Gdx.input.setInputProcessor(null);
-        game.soundManager.playButtonTap();
-        game.soundManager.playMusic.pause();
         if(gameStarted) {
+            Gdx.input.setInputProcessor(null);
+            game.soundManager.playButtonTap();
+            game.soundManager.playMusic.pause();
             game.setScreen(new PauseScreen(game, this));
         }
     }

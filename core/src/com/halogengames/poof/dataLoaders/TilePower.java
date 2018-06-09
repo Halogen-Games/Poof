@@ -1,6 +1,7 @@
 package com.halogengames.poof.dataLoaders;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.halogengames.poof.sprites.Tile;
 import com.halogengames.poof.widgets.GameBoard;
@@ -13,33 +14,48 @@ import java.util.Random;
  * Handles effects of powerups when used in a match
  */
 
+//ove tile powers to tile class
 public class TilePower {
-    static ArrayMap<String,Float> powerProbs;
+    private static ArrayMap<String,Float> powerProbs;
+    private static ArrayMap<String,Float> cumPowerProbs;
 
     public static void init(){
         powerProbs = new ArrayMap<String, Float>();
-        powerProbs.put("timer", 0.03f);
+        cumPowerProbs = new ArrayMap<String, Float>();
+
+        setPowerProb("timer", 0.03f);
         //powerProbs.put("bomb", 0.0f);
         //powerProbs.put("gem", 0.001f);
+    }
 
+    public static ArrayMap.Keys<String> getPowersList(){
+        return powerProbs.keys();
+    }
+
+    private static void resetCumPowerProbs(){
         float probSum = 0;
-        //bellow foreach always runs through same order because it's an ArrayMap
-        for (String power:powerProbs.keys()) {
+        //below foreach always runs through same order because it's an ArrayMap
+        for (String power: powerProbs.keys()) {
             probSum += powerProbs.get(power);
-            powerProbs.put(power,probSum);
+            cumPowerProbs.put(power,probSum);
         }
         if(probSum>1){
             throw new Error("Sum of probs should be < 1");
         }
-        powerProbs.put(null,1.0f);
+        cumPowerProbs.put(null,1.0f);
+    }
+
+    public static void setPowerProb(String power, float prob){
+        powerProbs.put(power,prob);
+        resetCumPowerProbs();
     }
 
     public static String generatePower(){
         Random generator = new Random();
         float rand = generator.nextFloat();
 
-        for(String power:powerProbs.keys()){
-            if(rand<powerProbs.get(power)){
+        for(String power: cumPowerProbs.keys()){
+            if(rand< cumPowerProbs.get(power)){
                 return power;
             }
         }

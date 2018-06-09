@@ -48,15 +48,15 @@ public class SplashScreen implements Screen {
         margin += (targetMargin-margin)*dt*1/splashDuration;
         logoWidth = Poof.VIEW_PORT.getWorldWidth() - 2*margin;
         logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
+
+        if(this.game.assetManager.isLoaded() && this.game.soundManager.isLoaded()){
+            game.setScreen(new MainMenuScreen(game));
+        }
     }
 
     @Override
     public void render(float delta) {
         update(delta);
-
-        if(this.game.assetManager.isLoaded() && this.game.soundManager.isLoaded()){
-            game.setScreen(new MainMenuScreen(game));
-        }
 
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

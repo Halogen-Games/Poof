@@ -119,7 +119,6 @@ class DifficultyScreen implements Screen{
         Gdx.input.setInputProcessor(null);
         game.soundManager.mainMenuMusic.stop();
         dispose();
-        //only show ad if at least three games played completely
         game.setScreen(new PlayScreen(game));
     }
 
@@ -137,7 +136,7 @@ class DifficultyScreen implements Screen{
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Poof.bg.render(delta);
+        game.bg.render(delta);
 
         stage.draw();
     }

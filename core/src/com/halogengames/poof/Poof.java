@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -51,8 +52,7 @@ public class Poof extends Game {
     //Ad object
 	public AdInterface adInterface;
 
-	//todo: why is this here and not in asset manager
-	public static Background bg;
+	public Background bg;
 
 	public Poof(CoreScoreDB db, AdInterface adInterface){
         this.db = db;
@@ -93,7 +93,6 @@ public class Poof extends Game {
 		valueFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));
 
 		//Init GameData
-		TilePower.init();
 		GameData.init(this);
 
 		//todo: make asset and sound managers load assets in parallel
@@ -113,6 +112,16 @@ public class Poof extends Game {
 		//Game class delegates to the current screen hence using super
 		//since the func only uses super call, no need for this func as in absence of Poof.render, super.render will get called in place if exists
 		super.render();
+
+        //Uncomment below for framerate
+//		batch.begin();
+//        assetManager.helpTextFont.draw(
+//                batch,
+//                Float.toString( Math.round(1/Gdx.graphics.getDeltaTime())),
+//                0,
+//                Poof.VIEW_PORT.getWorldHeight()-100
+//        );
+//		batch.end();
 	}
 
 	@Override

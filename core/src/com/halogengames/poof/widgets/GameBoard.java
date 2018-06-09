@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Array;
-import com.halogengames.poof.PoofEnums;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
@@ -14,6 +13,7 @@ import com.halogengames.poof.Poof;
 import com.halogengames.poof.library.AnimatedSprite;
 import com.halogengames.poof.library.Value2D;
 import com.halogengames.poof.sprites.Tile;
+import com.halogengames.poof.sprites.Tile.TileState;
 
 import java.util.ArrayList;
 
@@ -146,8 +146,8 @@ public class GameBoard extends AnimatedSprite {
         return compSize;
     }
 
-    private boolean movesLeft(){
-        if(!boardInitialized || getBoardState() != PoofEnums.TileState.Idle){
+    public boolean movesLeft(){
+        if(!boardInitialized || getBoardState() != TileState.Idle){
             return true;
         }
 
@@ -167,9 +167,9 @@ public class GameBoard extends AnimatedSprite {
         return false;
     }
 
-    private void shuffleBoard(){
-        tileSize = (getWidth() - 2*tileGutter)/(tileMarginFactor*numCols + numCols + tileMarginFactor);
-        tileMargin = tileSize*tileMarginFactor;
+    public void shuffleBoard(){
+//        tileSize = (getWidth() - 2*tileGutter)/(tileMarginFactor*numCols + numCols + tileMarginFactor);
+//        tileMargin = tileSize*tileMarginFactor;
 
         //get all tiles
         Array<Tile> allTiles = new Array<Tile>();
@@ -177,39 +177,42 @@ public class GameBoard extends AnimatedSprite {
             allTiles.addAll(tiles.get(i));
         }
 
-        allTiles.shuffle();
-
-        for(int i=0; i<numRows; i++){
-            for(int j=0; j<numCols; j++) {
-                //set new position for each tile
-                allTiles.get(i*numCols + j).setCoordinates(i,j);
-                allTiles.get(i*numCols + j).setState(PoofEnums.TileState.Shuffling);
-                tiles.get(i).set(j,allTiles.get(i*numCols + j));
+        while(!movesLeft()) {
+            allTiles.shuffle();
+            for (int i = 0; i < numRows; i++) {
+                for (int j = 0; j < numCols; j++) {
+                    //set new position for each tile
+                    allTiles.get(i * numCols + j).setCoordinates(i, j);
+                    allTiles.get(i * numCols + j).setState(TileState.Shuffling);
+                    tiles.get(i).set(j, allTiles.get(i * numCols + j));
+                }
             }
         }
+
+        game.soundManager.playShuffleSound();
     }
 
-    public PoofEnums.TileState getBoardState(){
+    public TileState getBoardState(){
         boolean shuffling = false;
         boolean dropping = false;
 
         for(int i=0; i<numRows; i++){
             for(int j=0; j<numCols; j++) {
                 //todo: remove this loop and make fetching state O(1)
-                if(tiles.get(i).get(j).getState() == PoofEnums.TileState.Shuffling){
+                if(tiles.get(i).get(j).getState() == TileState.Shuffling){
                     shuffling = true;
-                }else if(tiles.get(i).get(j).getState() == PoofEnums.TileState.Dropping){
+                }else if(tiles.get(i).get(j).getState() == TileState.Dropping){
                     dropping = true;
                 }
             }
         }
 
         if(shuffling){
-            return PoofEnums.TileState.Shuffling;
+            return TileState.Shuffling;
         }else if(dropping){
-            return PoofEnums.TileState.Dropping;
+            return TileState.Dropping;
         }
-        return PoofEnums.TileState.Idle;
+        return TileState.Idle;
     }
 
     public void setTileAsSelected(int i, int j){
@@ -377,12 +380,6 @@ public class GameBoard extends AnimatedSprite {
     }
 
     public void update(float dt){
-        while(!movesLeft()) {
-            shuffleBoard();
-        }
-
-        //todo: add a sound for shuffle here
-
         //flash board if time left is less than threshold
         if(GameData.levelTimer<=flashStartTime){
             float timeSegments = (float)GameData.levelTimer*flashFreq*2;
@@ -404,7 +401,7 @@ public class GameBoard extends AnimatedSprite {
 
         //update falling tiles
         for(int i=fallingTiles.size()-1; i>=0; i--){
-            if(fallingTiles.get(i).getState() == PoofEnums.TileState.Dead){
+            if(fallingTiles.get(i).getState() == TileState.Dead){
                 fallingTiles.remove(i);
             }else{
                 fallingTiles.get(i).update(dt);
@@ -447,7 +444,7 @@ public class GameBoard extends AnimatedSprite {
             //remove and add new tiles
             for(Tile t:selectedTiles){
                 //need to add this tile to falling tiles
-                t.setState(PoofEnums.TileState.Falling);
+                t.setState(TileState.Falling);
                 fallingTiles.add(t);
 
                 int i = (int)t.getCoordinates().x;
@@ -460,14 +457,14 @@ public class GameBoard extends AnimatedSprite {
                     //below helps the tiles get in correct column in case they were not ex. during shuffle
                     tiles.get(k).get(j).setCorrectXPos();
 
-                    tiles.get(k).get(j).setState(PoofEnums.TileState.Dropping);
+                    tiles.get(k).get(j).setState(TileState.Dropping);
                     tiles.get(k).get(j).setCoordinates(k,j);
                 }
                 //will always add one at the top
                 tiles.get(numRows-1).set(j, new Tile(this.game,numRows-1, j, tileSize, tileMargin, numRows));
             }
 
-            GameData.updateScore(chainLength,selectedTiles);
+            GameData.updateData(chainLength,selectedTiles);
         }
 
         //flush the selected tiles array

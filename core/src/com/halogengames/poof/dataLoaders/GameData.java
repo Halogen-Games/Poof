@@ -5,13 +5,10 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.PoofEnums;
 import com.halogengames.poof.sprites.Tile;
 
 import java.util.ArrayList;
 import java.util.UUID;
-
-import static java.lang.Math.max;
 
 /**
  * Created by Rohit on 13-08-2017.
@@ -31,10 +28,11 @@ public class GameData {
 
     public static double levelTimer;
     private static int maxTime;
-    private static int numColors;
+    private static int numTileColors;
+
+    //todo: remove level
     private static String levelName;
-    //Todo: Convert gameMode from string to GameMode type
-    private static String gameMode;
+    private static GameMode gameMode;
 
     //things like font size are hardcoded according to this base width and then scaled appropriately based on actual width of screen
     static float baseWidth;
@@ -46,8 +44,7 @@ public class GameData {
     public static Color clearColor;
 
     //Valid Colors
-    static Array<String> allTileColors;
-    public static Array<String> validTileColors;
+    public static Array<String> tileColors;
 
     //player data
     public static Preferences prefs;
@@ -77,19 +74,12 @@ public class GameData {
 
         showTutorial = prefs.getBoolean("showTutorial", true);
 
-        gameMode = "classic";
         worldRank = new int[1];
         worldRank[0] = -1;
         numGlobalPlayers = new int[1];
         numGlobalPlayers[0] = -1;
 
-        //Todo:make this sync better
-        //Sync highScore with dynamoDB
-        String[] levelNamesList = {"easy","medium","hard"};
-        for(String level:levelNamesList){
-            levelName = level;
-            game.db.writeHighScoreToDB(playerID,gameMode,levelName,getHighScore());
-        }
+        syncHighScores();
 
         gamesPlayed = 0;
 
@@ -99,16 +89,32 @@ public class GameData {
 
         numBoardCols = 6;
         numBoardRows = 6;
-        numColors = 3;
 
         clearColor = new Color(1,1,1,1);
 
-        allTileColors = new Array<String>();
-        allTileColors.add("blue");
-        allTileColors.add("green");
-        allTileColors.add("indigo");
-        allTileColors.add("red");
-        allTileColors.add("yellow");
+        //move tile colors to tile class
+        tileColors = new Array<String>();
+        tileColors.add("blue");
+        tileColors.add("green");
+        tileColors.add("red");
+        tileColors.add("yellow");
+        tileColors.add("indigo");
+
+        tileColors.shuffle();
+
+        TilePower.init();
+    }
+
+    public static void syncHighScores(){
+        //Todo:make this sync better
+        //Sync highScore with dynamoDB
+        String[] levelNamesList = {"easy","medium","hard"};
+        GameMode[] gameModesList = {GameMode.Relaxed,GameMode.Timed};
+        for(String level:levelNamesList) {
+            for (GameMode mode : gameModesList) {
+                game.db.writeHighScoreToDB(playerID, mode.toString(), level, getHighScore());
+            }
+        }
     }
 
     public static void tutorialShown(){
@@ -124,7 +130,7 @@ public class GameData {
     public static void setHighScore(){
         prefs.putInteger("highScore_" + levelName, score);
         prefs.flush();
-        game.db.writeHighScoreToDB(playerID,gameMode,levelName,getHighScore());
+        game.db.writeHighScoreToDB(playerID,gameMode.toString(),levelName,getHighScore());
     }
 
     public static void getPlayerRank(){
@@ -140,33 +146,60 @@ public class GameData {
     public static void setLevel(String level){
         if(level.equals("easy")){
             levelName = level;
-            numColors = 3;
+            numTileColors = 3;
         }else if(level.equals("medium")){
             levelName = level;
-            numColors = 4;
+            numTileColors = 4;
         }else if(level.equals("hard")){
             levelName = level;
-            numColors = 5;
+            numTileColors = 5;
         }else{
             throw new Error("unknown level selected: " + level);
         }
     }
 
-    public static void updateScore(int chainLength, ArrayList<Tile> selectedTiles){
+    public static void setGameMode(GameMode mode){
+        switch(mode){
+            case Relaxed:{
+                TilePower.setPowerProb("timer",0);
+                break;
+            }
+            case Timed:{
+                TilePower.setPowerProb("timer",0.03f);
+                break;
+            }
+            default: throw new RuntimeException("Unknown Game Mode");
+        }
+        gameMode = mode;
+
+        //select easy level by default
+        setLevel("easy");
+    }
+
+    public static GameMode getGameMode(){
+        return gameMode;
+    }
+
+    public static int getNumTileColors(){
+        return numTileColors;
+    }
+
+    public static void updateData(int chainLength, ArrayList<Tile> selectedTiles){
         score += selectedTiles.size();
         if(chainLength > 5){
             score += Math.pow(chainLength-5,1.2);
         }
+
+        if(score>600){
+            setLevel("hard");
+        }else if(score>300){
+            setLevel("medium");
+        }
     }
 
     public static void resetData(){
+        setLevel("easy");
         levelTimer = maxTime;
-
         score = 0;
-
-        validTileColors = new Array<String>(allTileColors);
-        while(validTileColors.size>numColors){
-            validTileColors.removeIndex((int)Math.floor(Math.random()*validTileColors.size));
-        }
     }
 }

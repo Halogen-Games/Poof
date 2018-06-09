@@ -1,7 +1,6 @@
 package com.halogengames.poof.dataLoaders;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -305,14 +304,14 @@ public class PoofAssetManager {
 
     private void loadBoardAssets(){
         //Tile Texturess
-        for(int i=0;i<GameData.allTileColors.size;i++){
-            String color = GameData.allTileColors.get(i);
+        for(int i = 0; i<GameData.tileColors.size; i++){
+            String color = GameData.tileColors.get(i);
             manager.load("tiles/tile_" + color + ".png",Texture.class);
             manager.load("tiles/tile_" + color + "_touched.png",Texture.class);
         }
 
         //Power Textures
-        for (String power:TilePower.powerProbs.keys()){
+        for (String power:TilePower.getPowersList()){
             if(power != null)
             manager.load("tiles/tile_" + power + ".png",Texture.class);
         }
@@ -320,8 +319,8 @@ public class PoofAssetManager {
 
     private void getBoardAssets(){
         tileTextures = new ArrayMap<String, Texture>();
-        for(int i=0;i<GameData.allTileColors.size;i++){
-            String color = GameData.allTileColors.get(i);
+        for(int i = 0; i<GameData.tileColors.size; i++){
+            String color = GameData.tileColors.get(i);
             tileTextures.put(color+"_tile", manager.get("tiles/tile_" + color + ".png",Texture.class));
             tileTextures.put(color+"_tile_touched", manager.get("tiles/tile_" + color + "_touched.png",Texture.class));
         }
@@ -332,7 +331,7 @@ public class PoofAssetManager {
 
         //Power Textures
         powerTextures = new ArrayMap<String, Texture>();
-        for (String power:TilePower.powerProbs.keys()){
+        for (String power:TilePower.getPowersList()){
             if(power != null)
                 powerTextures.put(power, manager.get("tiles/tile_" + power + ".png",Texture.class));
         }

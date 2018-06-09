@@ -32,7 +32,6 @@ class GameModeSelectScreen implements Screen{
     private Stage stage;
     private TextButton timedButton;
     private TextButton relaxedButton;
-    private TextButton comingSoonButton;
     private TextButton backButton;
 
     //Constructor
@@ -57,8 +56,8 @@ class GameModeSelectScreen implements Screen{
         //Adding buttons
         timedButton = new TextButton("Timed", this.game.assetManager.levelSelectButtonStyle);
         relaxedButton = new TextButton("Relaxed", this.game.assetManager.levelSelectButtonStyle);
-        comingSoonButton = new TextButton("Coming Soon...", this.game.assetManager.levelSelectGreyedButtonStyle);
-        backButton = new TextButton("Back", this.game.assetManager.levelSelectGreyedButtonStyle);
+        TextButton comingSoonButton = new TextButton("Coming Soon...", this.game.assetManager.levelSelectGreyedButtonStyle);
+        backButton = new TextButton("Back", this.game.assetManager.levelSelectButtonStyle);
         addUIListeners();
 
         //adding buttons to table and table to stage
@@ -81,20 +80,18 @@ class GameModeSelectScreen implements Screen{
         timedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.input.setInputProcessor(null);
                 game.soundManager.playButtonTap();
-                dispose();
-                game.setScreen(prevScreen);
+                GameData.setGameMode(GameData.GameMode.Timed);
+                startGame();
             }
         });
 
         relaxedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.input.setInputProcessor(null);
                 game.soundManager.playButtonTap();
-                dispose();
-                game.setScreen(prevScreen);
+                GameData.setGameMode(GameData.GameMode.Relaxed);
+                startGame();
             }
         });
 
@@ -113,7 +110,6 @@ class GameModeSelectScreen implements Screen{
         Gdx.input.setInputProcessor(null);
         game.soundManager.mainMenuMusic.stop();
         dispose();
-        //only show ad if at least three games played completely
         game.setScreen(new PlayScreen(game));
     }
 
@@ -131,7 +127,7 @@ class GameModeSelectScreen implements Screen{
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Poof.bg.render(delta);
+        game.bg.render(delta);
 
         stage.draw();
     }

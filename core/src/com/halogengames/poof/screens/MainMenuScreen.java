@@ -84,7 +84,7 @@ class MainMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.soundManager.playButtonTap();
-                openLevelSelect();
+                openGameModeSelect();
             }
         });
 
@@ -123,6 +123,11 @@ class MainMenuScreen implements Screen {
                 return false;
             }
         });
+    }
+
+    private void openGameModeSelect(){
+        Gdx.input.setInputProcessor(null);
+        game.setScreen(new GameModeSelectScreen(game, this));
     }
 
     private void openLevelSelect(){
@@ -165,7 +170,7 @@ class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Poof.bg.render(delta);
+        game.bg.render(delta);
 
         stage.draw();
     }

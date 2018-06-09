@@ -43,11 +43,15 @@ public class Hud {
 
         table.add(highscoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
         table.add(scoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
-        table.add(timeTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
+        if(GameData.getGameMode() == GameData.GameMode.Timed){
+            table.add(timeTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
+        }
         table.row();
         table.add(highscoreLabel).expandX();
         table.add(scoreLabel).expandX();
-        table.add(timeLabel).expandX();
+        if(GameData.getGameMode() == GameData.GameMode.Timed){
+            table.add(timeLabel).expandX();
+        }
 
         stage.addActor(table);
     }

@@ -4,10 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.PoofEnums;
-import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
-import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
 
 import java.util.Random;
@@ -19,6 +16,10 @@ import java.util.Random;
  */
 
 public class Tile extends Sprite{
+    public enum TileState{
+        Dropping, Falling, Idle, Shuffling, Dead
+    }
+
     private Poof game;
 
     private String color;
@@ -43,13 +44,13 @@ public class Tile extends Sprite{
     private float shuffleAnimSpeed;
 
     //state of tile
-    private PoofEnums.TileState state;
+    private TileState state;
 
     public Tile(Poof game, int i, int j, float tileSize, float tileMargin, int numRows) {
         this.game = game;
 
         Random rand = new Random();
-        color = GameData.validTileColors.get(rand.nextInt(GameData.validTileColors.size));
+        color = GameData.tileColors.get(rand.nextInt(GameData.getNumTileColors()));
         tilePower = TilePower.generatePower();
 
         this.tileSize = tileSize;
@@ -79,7 +80,7 @@ public class Tile extends Sprite{
 
         isSelected = false;
 
-        setState(PoofEnums.TileState.Dropping);
+        setState(TileState.Dropping);
     }
 
     public void setCoordinates(int i, int j){
@@ -90,7 +91,7 @@ public class Tile extends Sprite{
         return coords;
     }
 
-    public void setState(PoofEnums.TileState st){
+    public void setState(TileState st){
         switch(st){
             case Idle:{
                 velX = 0;
@@ -113,7 +114,7 @@ public class Tile extends Sprite{
         state = st;
     }
 
-    public PoofEnums.TileState getState() {
+    public TileState getState() {
         return state;
     }
 
@@ -156,7 +157,7 @@ public class Tile extends Sprite{
     }
 
     public void update(float dt){
-        //Todo: Improve the below code by adding acc X and Y and vel X and Y to a base class
+        //Todo: Improve the below code by using Interpolator
         switch(state){
             case Idle:{
                 //do nothing
@@ -170,7 +171,7 @@ public class Tile extends Sprite{
                 //if tile has settled, set it to idle
                 if (this.getY() < getTargetPos().y) {
                     this.setPosition(getTargetPos().x, getTargetPos().y);
-                    setState(PoofEnums.TileState.Idle);
+                    setState(TileState.Idle);
                     vel = 0;
                 }
                 break;
@@ -178,7 +179,7 @@ public class Tile extends Sprite{
             case Falling:{
                 this.setAlpha(Math.max(this.getColor().a - dt,0));
                 if(getColor().a <= 0){
-                    this.setState(PoofEnums.TileState.Dead);
+                    this.setState(TileState.Dead);
                     break;
                 }
                 this.velY += this.accY * dt;
@@ -196,7 +197,7 @@ public class Tile extends Sprite{
 
                 if(Math.abs(dx)<= Math.max(0.1, velX*dt) && Math.abs(dy)<= Math.max(0.1, velY*dt)){
                     this.setPosition(getTargetPos().x, getTargetPos().y);
-                    setState(PoofEnums.TileState.Idle);
+                    setState(TileState.Idle);
                 }else {
                     this.setPosition(this.getX() - velX * dt, this.getY() - velY * dt);
                 }

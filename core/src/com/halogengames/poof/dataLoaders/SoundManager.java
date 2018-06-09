@@ -29,8 +29,8 @@ public class SoundManager {
 
         soundVolume = GameData.prefs.getFloat("soundVolume", 1.0f);
 
-        manager.load("music/cute.mp3",Music.class);
-        manager.load("music/enigmatic.mp3",Music.class);
+        manager.load("music/memories.mp3",Music.class);
+        manager.load("music/summer.mp3",Music.class);
 
         manager.load("sound/blop.mp3",Sound.class);
         manager.load("sound/error.wav",Sound.class);
@@ -49,11 +49,11 @@ public class SoundManager {
     private void getAssets(){
         float musicVolume = GameData.prefs.getFloat("musicVolume", 1.0f);
 
-        mainMenuMusic = manager.get("music/cute.mp3",Music.class);
+        mainMenuMusic = manager.get("music/memories.mp3",Music.class);
         mainMenuMusic.setVolume(musicVolume);
         mainMenuMusic.setLooping(true);
 
-        playMusic = manager.get("music/enigmatic.mp3",Music.class);
+        playMusic = manager.get("music/summer.mp3",Music.class);
         playMusic.setVolume(musicVolume);
         playMusic.setLooping(true);
 
@@ -77,6 +77,10 @@ public class SoundManager {
 
     public void playButtonTap(){
         buttonTap.play(soundVolume);
+    }
+
+    public void playShuffleSound(){
+        //todo:add shuffle sound here
     }
 
     public void dispose(){

@@ -119,7 +119,7 @@ public class PrivacyScreen implements Screen {
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Poof.bg.render(delta);
+        game.bg.render(delta);
 
         String text = "We use some of your data to improve user experience, save high scores and show ads.\nCan we continue to use your data to tailor ads for you?";
 

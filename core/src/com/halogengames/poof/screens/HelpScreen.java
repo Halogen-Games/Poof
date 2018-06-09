@@ -106,7 +106,7 @@ class HelpScreen implements Screen {
 
         game.batch.setProjectionMatrix(Poof.CAM.combined);
 
-        Poof.bg.render(delta);
+        game.bg.render(delta);
 
         game.batch.begin();
         //todo: (Low Priority) remove below hardcoded animWidth/15 and make animations such that their center is centered at screen as well
