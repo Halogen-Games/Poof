@@ -59,17 +59,18 @@ public class GameOverScreen implements Screen{
         scoreTable.add(scoreLabel).expandX();
 
         //Add highscore label
+        //Todo:Sync setting high score with retrieving rank
         int highScore = GameData.getHighScore();
         if(GameData.score>highScore){
             GameData.setHighScore();
             Label highScoreMsg = new Label("High score made!", this.game.assetManager.gameOverLabelStyle);
             scoreTable.row();
-            scoreTable.add(highScoreMsg).expandX();
+            scoreTable.add(highScoreMsg).expandX().padTop(Poof.V_HEIGHT/10);
         }else{
             Label highScoreText = new Label("Highest Score", this.game.assetManager.gameOverLabelStyle);
             Label highScoreVal = new Label(String.valueOf(highScore), this.game.assetManager.gameOverLabelStyle);
             scoreTable.row();
-            scoreTable.add(highScoreText).expandX();
+            scoreTable.add(highScoreText).expandX().padTop(Poof.V_HEIGHT/10);
             scoreTable.row();
             scoreTable.add(highScoreVal).expandX();
         }

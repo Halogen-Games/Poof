@@ -12,9 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
-import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
 
 /**
@@ -117,6 +115,7 @@ class MainMenuScreen implements Screen {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if(keycode == Input.Keys.BACK){
+                    dispose();
                     Gdx.app.exit();
                     return true;
                 }
@@ -127,12 +126,7 @@ class MainMenuScreen implements Screen {
 
     private void openGameModeSelect(){
         Gdx.input.setInputProcessor(null);
-        game.setScreen(new GameModeSelectScreen(game, this));
-    }
-
-    private void openLevelSelect(){
-        Gdx.input.setInputProcessor(null);
-        game.setScreen(new DifficultyScreen(game, this));
+        game.setScreen(new GameModeSelectScreen(game,this));
     }
 
     private void openHelp(){
@@ -157,14 +151,8 @@ class MainMenuScreen implements Screen {
         stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
-    public void update(float dt){
-        //Poof.CAM.update();
-    }
-
     @Override
     public void render(float delta){
-//        //no need for below as cam not moving
-        update(delta);
         stage.act(delta);
 
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);

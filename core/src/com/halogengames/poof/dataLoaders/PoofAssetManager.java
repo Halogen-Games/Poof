@@ -17,8 +17,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -35,6 +37,9 @@ public class PoofAssetManager {
     public AssetManager manager;
     FreeTypeFontLoaderParameter labelFontLoader;
     FreeTypeFontLoaderParameter valueFontLoader;
+
+    //Skin
+    public Skin poofSkin;
 
     //Font Generators
     public FreeTypeFontGenerator labelFontGenerator;
@@ -128,6 +133,10 @@ public class PoofAssetManager {
         loadHUDAssets();
     }
 
+    private void getSkin(){
+        poofSkin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+    }
+
     public boolean isLoaded(){
         if(manager.update()){
             getAssets();
@@ -148,6 +157,7 @@ public class PoofAssetManager {
         getPlayScreenAssets();
         getBoardAssets();
         getHUDAssets();
+        getSkin();
     }
 
     private void loadFontGenerators(){

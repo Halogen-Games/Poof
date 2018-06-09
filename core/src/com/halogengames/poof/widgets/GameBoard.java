@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * Class representing the game board
  * Also houses game board generation logic
  */
-public class GameBoard extends AnimatedSprite {
+public class GameBoard extends Widget {
 
     //handle to game and screen
     private Poof game;

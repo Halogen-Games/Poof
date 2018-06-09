@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -17,6 +18,7 @@ import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
 import com.halogengames.poof.database.CoreScoreDB;
 import com.halogengames.poof.library.BasicShapes;
+import com.halogengames.poof.library.WidgetStack;
 import com.halogengames.poof.screens.PrivacyScreen;
 import com.halogengames.poof.screens.SplashScreen;
 import com.halogengames.poof.widgets.Background;
@@ -46,6 +48,9 @@ public class Poof extends Game {
 	public ShapeRenderer renderer;
 	public BasicShapes shaper;
 
+	//drawable stacks
+    public WidgetStack widgetStack;
+
 	//DB object
     public CoreScoreDB db;
 
@@ -74,6 +79,8 @@ public class Poof extends Game {
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
 		shaper = new BasicShapes(this);
+
+		widgetStack = new WidgetStack(this);
 
 		//defining Background
 		bg = new Background(this);
@@ -112,6 +119,8 @@ public class Poof extends Game {
 		//Game class delegates to the current screen hence using super
 		//since the func only uses super call, no need for this func as in absence of Poof.render, super.render will get called in place if exists
 		super.render();
+
+		widgetStack.draw();
 
         //Uncomment below for framerate
 //		batch.begin();

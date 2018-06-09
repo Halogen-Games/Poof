@@ -1,8 +1,10 @@
 package com.halogengames.poof.database;
 
-public interface CoreScoreDB {
-    void writeHighScoreToDB(String user,String gameMode,String level,double score);
+import com.halogengames.poof.dataLoaders.GameData;
 
-    void getRank(String gameMode,int score,int[] rank);
-    void getNumPlayers(String gameMode,int[] numPlayers);
+public interface CoreScoreDB {
+    void writeHighScoreToDB(String user, GameData.GameMode gameMode, double score);
+
+    void getRank(GameData.GameMode gameMode, int score, int[] rank);
+    void getNumPlayers(GameData.GameMode gameMode, int[] numPlayers);
 }

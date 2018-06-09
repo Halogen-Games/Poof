@@ -30,8 +30,6 @@ public class GameData {
     private static int maxTime;
     private static int numTileColors;
 
-    //todo: remove level
-    private static String levelName;
     private static GameMode gameMode;
 
     //things like font size are hardcoded according to this base width and then scaled appropriately based on actual width of screen
@@ -105,57 +103,43 @@ public class GameData {
         TilePower.init();
     }
 
-    public static void syncHighScores(){
+    private static void syncHighScores(){
         //Todo:make this sync better
         //Sync highScore with dynamoDB
-        String[] levelNamesList = {"easy","medium","hard"};
         GameMode[] gameModesList = {GameMode.Relaxed,GameMode.Timed};
-        for(String level:levelNamesList) {
-            for (GameMode mode : gameModesList) {
-                game.db.writeHighScoreToDB(playerID, mode.toString(), level, getHighScore());
-            }
+        for (GameMode mode : gameModesList) {
+            game.db.writeHighScoreToDB(playerID, mode, getHighScore(mode));
         }
     }
 
     public static void tutorialShown(){
         showTutorial = false;
-        prefs.putBoolean("showTutorial", false);
+        prefs.putBoolean("showTutorial", showTutorial);
         prefs.flush();
     }
 
     public static int getHighScore(){
-        return prefs.getInteger("highScore_" + levelName, 0);
+        return getHighScore(gameMode);
+    }
+
+    private static int getHighScore(GameMode gameMode){
+        return prefs.getInteger("highScore_" + gameMode, 0);
     }
 
     public static void setHighScore(){
-        prefs.putInteger("highScore_" + levelName, score);
+        prefs.putInteger("highScore_" + gameMode, score);
         prefs.flush();
-        game.db.writeHighScoreToDB(playerID,gameMode.toString(),levelName,getHighScore());
+        game.db.writeHighScoreToDB(playerID,gameMode,getHighScore());
     }
 
     public static void getPlayerRank(){
         worldRank[0] = -1;
-        game.db.getRank(gameMode+"_"+levelName,getHighScore(),worldRank);
+        game.db.getRank(gameMode,getHighScore(),worldRank);
     }
 
     public static void getNumPlayers(){
         numGlobalPlayers[0] = -1;
-        game.db.getNumPlayers(gameMode+"_"+levelName,numGlobalPlayers);
-    }
-
-    public static void setLevel(String level){
-        if(level.equals("easy")){
-            levelName = level;
-            numTileColors = 3;
-        }else if(level.equals("medium")){
-            levelName = level;
-            numTileColors = 4;
-        }else if(level.equals("hard")){
-            levelName = level;
-            numTileColors = 5;
-        }else{
-            throw new Error("unknown level selected: " + level);
-        }
+        game.db.getNumPlayers(gameMode,numGlobalPlayers);
     }
 
     public static void setGameMode(GameMode mode){
@@ -171,9 +155,6 @@ public class GameData {
             default: throw new RuntimeException("Unknown Game Mode");
         }
         gameMode = mode;
-
-        //select easy level by default
-        setLevel("easy");
     }
 
     public static GameMode getGameMode(){
@@ -191,14 +172,14 @@ public class GameData {
         }
 
         if(score>600){
-            setLevel("hard");
+            numTileColors = 5;
         }else if(score>300){
-            setLevel("medium");
+            numTileColors = 4;
         }
     }
 
     public static void resetData(){
-        setLevel("easy");
+        numTileColors = 3;
         levelTimer = maxTime;
         score = 0;
     }

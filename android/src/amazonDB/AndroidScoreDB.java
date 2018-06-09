@@ -17,17 +17,13 @@ import amazonAWS.models.nosql.ScoresDO;
 
 public class AndroidScoreDB implements CoreScoreDB {
     @Override
-    public void writeHighScoreToDB(String user, String gameMode,String level,double score){
-        if(gameMode==null || level==null){
+    public void writeHighScoreToDB(String user, GameData.GameMode gameMode, double score){
+        if(gameMode==null){
             throw new RuntimeException("gameMode or level can't be null");
-        }
-        if(score == 0){
-            //Not uploading 0 score to db
-            return;
         }
         final ScoresDO scoreItem = new ScoresDO();
         scoreItem.setUserId(user);
-        scoreItem.setGameMode(gameMode+"_"+level);
+        scoreItem.setGameMode(gameMode.toString());
         scoreItem.setScore(score);
 
         new Thread(new Runnable() {
@@ -45,15 +41,15 @@ public class AndroidScoreDB implements CoreScoreDB {
     }
 
     @Override
-    public void getRank(final String gameMode,final int score,final int[] rank) {
+    public void getRank(final GameData.GameMode gameMode, final int score, final int[] rank) {
         //rank needs to be an array as it is final and can't be reassigned
-
+        //Todo: make sure get rank doesn't get run before write high score to db
         final ScoresDO scoreItem = new ScoresDO();
 
         new Thread(new Runnable(){
             @Override
             public void run(){
-                scoreItem.setGameMode(gameMode); //partition key
+                scoreItem.setGameMode(gameMode.toString()); //partition key
 
                 DynamoDBQueryExpression<ScoresDO> queryExpression = new DynamoDBQueryExpression<ScoresDO>()
                         .withHashKeyValues(scoreItem)
@@ -74,13 +70,14 @@ public class AndroidScoreDB implements CoreScoreDB {
                     System.out.println("DB get rank call failed");
                     System.out.println("Error:" + e.getMessage());
                     rank[0] = GameData.NO_NETWORK;
+                    getRank(gameMode, score, rank);
                 }
             }
         }).start();
     }
 
     @Override
-    public void getNumPlayers(final String gameMode,final int[] numPlayers){
+    public void getNumPlayers(final GameData.GameMode gameMode, final int[] numPlayers){
         //numPlayers needs to be an array as it is final and can't be reassigned
 
         final ScoresDO scoreItem = new ScoresDO();
@@ -88,7 +85,7 @@ public class AndroidScoreDB implements CoreScoreDB {
         new Thread(new Runnable(){
             @Override
             public void run(){
-                scoreItem.setGameMode(gameMode); //partition key
+                scoreItem.setGameMode(gameMode.toString()); //partition key
 
                 DynamoDBQueryExpression<ScoresDO> queryExpression = new DynamoDBQueryExpression<ScoresDO>()
                         .withHashKeyValues(scoreItem)
@@ -102,6 +99,7 @@ public class AndroidScoreDB implements CoreScoreDB {
                     System.out.println("DB get num players call failed");
                     System.out.println("Error:" + e.getMessage());
                     numPlayers[0] = GameData.NO_NETWORK;
+                    getNumPlayers(gameMode, numPlayers);
                 }
             }
         }).start();

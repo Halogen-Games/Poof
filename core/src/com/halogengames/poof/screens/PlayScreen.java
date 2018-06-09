@@ -11,15 +11,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
-import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
 import com.halogengames.poof.sprites.Tile.TileState;
 import com.halogengames.poof.widgets.GameBoard;
+import com.halogengames.poof.widgets.GameDialog;
 import com.halogengames.poof.widgets.Hud;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 /**
  * Created by Rohit on 14-07-2017.
@@ -29,6 +29,9 @@ import java.util.ArrayList;
  */
 
 class PlayScreen implements Screen {
+
+    //required for inner classes
+    private final PlayScreen this_handle = this;
 
     private Poof game;
     private Hud hud;
@@ -41,13 +44,14 @@ class PlayScreen implements Screen {
     private float buttonSize;
 
     private boolean gameStarted;
+    private boolean gamePaused;
 
     PlayScreen(Poof game){
         this.game = game;
         game.adInterface.showInterstitialAd();
         gameStarted = false;
+        gamePaused = false;
         GameData.resetData();
-        System.out.println(GameData.gamesPlayed);
         game.soundManager.playMusic.play();
 
         //stage
@@ -140,6 +144,10 @@ class PlayScreen implements Screen {
     }
 
     private void update(float dt) {
+        if(gamePaused){
+            return;
+        }
+
         if (board.getBoardState() == TileState.Idle) {
             gameStarted = true;
         }
@@ -189,33 +197,91 @@ class PlayScreen implements Screen {
         updateButtonPos();
     }
 
+    private void pauseGame() {
+        gamePaused = true;
+        Gdx.input.setInputProcessor(null);
+        game.soundManager.playMusic.pause();
+        board.boardTouchedUp();
+    }
+
     @Override
-    public void pause() {
+    public void pause(){
         if(gameStarted) {
-            Gdx.input.setInputProcessor(null);
+            pauseGame();
             game.soundManager.playButtonTap();
-            game.soundManager.playMusic.pause();
             game.setScreen(new PauseScreen(game, this));
         }
     }
 
     @Override
     public void resume() {
+        gamePaused = false;
         game.soundManager.playMusic.play();
         game.setScreen(this);
         Gdx.input.setInputProcessor(stage);
     }
 
     private void endGame() {
+        //pause the game
+        pauseGame();
+
+        System.out.println("Creating Button!");
+
+        //give reward ad option and act accordingly
+        String text;
+        switch(GameData.getGameMode()){
+            case Relaxed:{
+                text = "No Moves Left!\nWatch a small video to shuffle?";
+                break;
+            }
+            case Timed:{
+                text = "Time Up!\nWatch a small video to get 20 sec?";
+                break;
+            }
+            default:throw new RuntimeException("Unknown Game Mode");
+        }
+
+        //Create the continue dialogue
+        GameDialog dialog = new GameDialog(text, this.game);
+
+        dialog.addButton("Sure!", new Callable() {
+            @Override
+            public Object call() throws Exception {
+                switch (GameData.getGameMode()){
+                    case Timed:{
+                        GameData.levelTimer += 20;
+                        break;
+                    }
+                    case Relaxed:{
+                        this_handle.board.shuffleBoard();
+                        break;
+                    }
+                    default:throw new RuntimeException("Unknown Game Mode");
+                }
+                resume();
+                return null;
+            }
+        });
+
+        dialog.addButton("No!", new Callable() {
+            @Override
+            public Object call() throws Exception {
+                this_handle.gameOver();
+                return null;
+            }
+        });
+    }
+
+    public void gameOver(){
         Gdx.input.setInputProcessor(null);
         game.soundManager.playMusic.stop();
         dispose();
         game.setScreen(new GameOverScreen(game));
     }
 
+
     @Override
     public void hide() {
-
     }
 
     @Override
