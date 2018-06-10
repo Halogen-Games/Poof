@@ -7,11 +7,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.dataLoaders.GameData;
-import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.dataLoaders.TilePower;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.library.AnimatedSprite;
-import com.halogengames.poof.library.Value2D;
+import com.halogengames.poof.library.SpriteList;
+import com.halogengames.poof.sprites.Explosion;
 import com.halogengames.poof.sprites.Tile;
 import com.halogengames.poof.sprites.Tile.TileState;
 
@@ -55,6 +54,8 @@ public class GameBoard extends Widget {
     private int flashStartTime;
     private float flashFreq;
 
+
+    private SpriteList spriteList;
     private Array<Array<Tile>> tiles;
     private ArrayList<Tile> selectedTiles;
     private ArrayList<Tile> fallingTiles;
@@ -77,6 +78,8 @@ public class GameBoard extends Widget {
         tileHighlightColor = new Color(Color.WHITE);
         flashStartTime = 10;
         flashFreq = 2;
+
+        spriteList = new SpriteList(game);
 
         tiles = new Array<Array<Tile>>();
         selectedTiles = new ArrayList<Tile>();
@@ -183,9 +186,16 @@ public class GameBoard extends Widget {
                 for (int j = 0; j < numCols; j++) {
                     //set new position for each tile
                     allTiles.get(i * numCols + j).setCoordinates(i, j);
-                    allTiles.get(i * numCols + j).setState(TileState.Shuffling);
                     tiles.get(i).set(j, allTiles.get(i * numCols + j));
                 }
+            }
+        }
+
+        //set state to shuffling for all tiles
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                //set new position for each tile
+                allTiles.get(i * numCols + j).setState(TileState.Shuffling);
             }
         }
 
@@ -220,6 +230,13 @@ public class GameBoard extends Widget {
             tiles.get(i).get(j).setSelected();
             selectedTiles.add(tiles.get(i).get(j));
         }
+    }
+
+    public void addExplosion(Tile t){
+        Explosion exp = new Explosion(game,spriteList,3*(tileSize+tileMargin));
+        exp.setLifeLength(0.5f);
+        exp.setPosition(getX() + t.getX() + tileSize/2 + tileGutter,getY() + t.getY() + tileSize/2 + tileGutter);
+        spriteList.add(exp);
     }
 
     @Override
@@ -376,6 +393,8 @@ public class GameBoard extends Widget {
         drawSelectedTileHighlight();
 //        setBounds(getX(), getY(), getWidth(), getHeight());
 
+        spriteList.draw();
+
         batch.begin();
     }
 
@@ -419,6 +438,12 @@ public class GameBoard extends Widget {
         }
 
         Tile t = tiles.get(i).get(j);
+
+        //todo:add non selectable powers in a list
+        if("rock".equals(t.tilePower)){
+            return;
+        }
+
         selectedTiles = new ArrayList<Tile>();
         t.setSelected();
         selectedTiles.add(t);
@@ -480,6 +505,10 @@ public class GameBoard extends Widget {
             return;
         }
         Tile tile = tiles.get(i).get(j);
+
+        if("rock".equals(tile.tilePower)){
+            return;
+        }
 
         if (tile.isSelected && selectedTiles.size()>1 && tile == selectedTiles.get(selectedTiles.size() - 2)) {
             //if this is the second last selected tile, remove the last selected tile

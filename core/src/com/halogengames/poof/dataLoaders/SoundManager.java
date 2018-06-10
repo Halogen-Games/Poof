@@ -11,7 +11,7 @@ import com.badlogic.gdx.audio.Sound;
 
 public class SoundManager {
     //Asset Manager
-    AssetManager manager;
+    private AssetManager manager;
 
     //Music
     public Music mainMenuMusic;
@@ -81,6 +81,10 @@ public class SoundManager {
 
     public void playShuffleSound(){
         //todo:add shuffle sound here
+    }
+
+    public void playExplosionSound(){
+        //todo: play explosion sound
     }
 
     public void dispose(){

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.Poof;
+import com.halogengames.poof.library.SpriteList;
 import com.halogengames.poof.sprites.Tile.TileState;
 import com.halogengames.poof.widgets.GameBoard;
 import com.halogengames.poof.widgets.GameDialog;
@@ -49,6 +50,7 @@ class PlayScreen implements Screen {
     PlayScreen(Poof game){
         this.game = game;
         game.adInterface.showInterstitialAd();
+
         gameStarted = false;
         gamePaused = false;
         GameData.resetData();
@@ -206,7 +208,7 @@ class PlayScreen implements Screen {
 
     @Override
     public void pause(){
-        if(gameStarted) {
+        if(gameStarted && !gamePaused) {
             pauseGame();
             game.soundManager.playButtonTap();
             game.setScreen(new PauseScreen(game, this));
@@ -246,7 +248,7 @@ class PlayScreen implements Screen {
 
         dialog.addButton("Sure!", new Callable() {
             @Override
-            public Object call() throws Exception {
+            public Object call() {
                 switch (GameData.getGameMode()){
                     case Timed:{
                         GameData.levelTimer += 20;
@@ -265,7 +267,7 @@ class PlayScreen implements Screen {
 
         dialog.addButton("No!", new Callable() {
             @Override
-            public Object call() throws Exception {
+            public Object call() {
                 this_handle.gameOver();
                 return null;
             }

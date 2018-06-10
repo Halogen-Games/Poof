@@ -3,11 +3,10 @@ package com.halogengames.poof;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -15,13 +14,15 @@ import com.halogengames.poof.advertisement.AdInterface;
 import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
-import com.halogengames.poof.dataLoaders.TilePower;
 import com.halogengames.poof.database.CoreScoreDB;
 import com.halogengames.poof.library.BasicShapes;
+import com.halogengames.poof.library.SpriteList;
 import com.halogengames.poof.library.WidgetStack;
 import com.halogengames.poof.screens.PrivacyScreen;
 import com.halogengames.poof.screens.SplashScreen;
 import com.halogengames.poof.widgets.Background;
+
+import java.util.ArrayList;
 
 public class Poof extends Game {
 	//Todo: Convert static to non static wherever possible
@@ -48,7 +49,8 @@ public class Poof extends Game {
 	public ShapeRenderer renderer;
 	public BasicShapes shaper;
 
-	//drawable stacks
+	//drawable lists
+    //todo: move widgetStack in screens
     public WidgetStack widgetStack;
 
 	//DB object

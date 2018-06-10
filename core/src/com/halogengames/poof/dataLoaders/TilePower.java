@@ -24,8 +24,8 @@ public class TilePower {
         cumPowerProbs = new ArrayMap<String, Float>();
 
         setPowerProb("timer", 0.03f);
-        //powerProbs.put("bomb", 0.0f);
-        //powerProbs.put("gem", 0.001f);
+        //setPowerProb("bomb", 0.01f);
+        //setPowerProb("rock", 0.005f);
     }
 
     public static ArrayMap.Keys<String> getPowersList(){
@@ -33,6 +33,7 @@ public class TilePower {
     }
 
     private static void resetCumPowerProbs(){
+        cumPowerProbs = new ArrayMap<String, Float>();
         float probSum = 0;
         //below foreach always runs through same order because it's an ArrayMap
         for (String power: powerProbs.keys()) {
@@ -65,7 +66,7 @@ public class TilePower {
     public static void unleashPower(GameBoard board, Tile tile){
         //Todo: add bomb sound and animation(will possibly need sound and sprite queue with delayed addition)
         String power = tile.tilePower;
-        if( power == null ){
+        if( power == null || power == "rock"){
             return;
         }
 
@@ -75,6 +76,8 @@ public class TilePower {
 
         if(power.equals("bomb")){
             Vector2 pos = tile.getCoordinates();
+
+            board.addExplosion(tile);
 
             ArrayList<Integer> validIMoves = new ArrayList<Integer>();
             ArrayList<Integer> validJMoves = new ArrayList<Integer>();

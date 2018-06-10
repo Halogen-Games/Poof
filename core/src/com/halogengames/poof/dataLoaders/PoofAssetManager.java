@@ -83,6 +83,7 @@ public class PoofAssetManager {
 
     //Play Screen Assets
     public Drawable playScreenPauseButtonDrawable;
+    public ArrayMap<String,Animation<TextureRegion>> spriteAnims;
 
     //Board Assets
     public ArrayMap<String, Texture> tileTextures;
@@ -93,6 +94,8 @@ public class PoofAssetManager {
 
     public PoofAssetManager(){
         manager = new AssetManager();
+
+        spriteAnims = new ArrayMap<String, Animation<TextureRegion>>();
 
         //Todo: load fonts using asset manager as well like in hud
         FileHandleResolver resolver = new InternalFileHandleResolver();
@@ -201,7 +204,7 @@ public class PoofAssetManager {
     }
 
     private void getHelpScreenAssets(){
-        TextureAtlas helpAtlas = new TextureAtlas("manual/animation/slide_anim.txt");
+        TextureAtlas helpAtlas = manager.get("manual/animation/slide_anim.txt", TextureAtlas.class);
         helpAnim = new Animation<TextureRegion>(0.033f, helpAtlas.findRegions("slide"), Animation.PlayMode.LOOP);
     }
 
@@ -304,12 +307,20 @@ public class PoofAssetManager {
 
     private void loadPlayScreenAssets(){
         manager.load("buttons/pause.png",Texture.class);
+
+        //load animation assets
+        manager.load("animation/sprites/explosion.txt", TextureAtlas.class);
     }
 
     private void getPlayScreenAssets(){
         Texture pauseButtonTex = manager.get("buttons/pause.png",Texture.class);
         pauseButtonTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         playScreenPauseButtonDrawable = new TextureRegionDrawable(new TextureRegion(pauseButtonTex));
+
+        //load animations
+        TextureAtlas tempAtlas = manager.get("animation/sprites/explosion.txt", TextureAtlas.class);
+        Animation<TextureRegion> explodeAnim = new Animation<TextureRegion>(0.3f/15.0f, tempAtlas.findRegions("explosion"), Animation.PlayMode.LOOP);
+        spriteAnims.put("explosion", explodeAnim);
     }
 
     private void loadBoardAssets(){

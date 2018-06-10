@@ -171,8 +171,12 @@ public class GameData {
             score += Math.pow(chainLength-5,1.2);
         }
 
-        if(score>600){
+        if(score>750){
             numTileColors = 5;
+        }else if(score>600){
+            TilePower.setPowerProb("bomb",0.02f);
+        }else if(score>450){
+            TilePower.setPowerProb("rock",0.01f);
         }else if(score>300){
             numTileColors = 4;
         }

@@ -128,7 +128,9 @@ public class Tile extends Sprite{
 
     public void draw(Batch batch, float parentXPos, float parentYPos){
         batch.setColor(1,1,1,getColor().a);
-        batch.draw(getTexture(), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
+        if(!"rock".equals(tilePower)) {
+            batch.draw(getTexture(), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
+        }
         if(tilePower != null ){
             batch.draw(this.game.assetManager.powerTextures.get(tilePower), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
         }
@@ -148,6 +150,10 @@ public class Tile extends Sprite{
     public boolean isConnectedTo(Tile t){
         float xCoordDiff = Math.abs(this.coords.x - t.coords.x);
         float yCoordDiff = Math.abs(this.coords.y - t.coords.y);
+
+        if("rock".equals(tilePower) || "rock".equals(t.tilePower)){
+            return false;
+        }
 
         return this.color.equals(t.color) && xCoordDiff<=1 && yCoordDiff<=1 && xCoordDiff!=yCoordDiff;
     }
