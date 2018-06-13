@@ -28,8 +28,14 @@ public class TilePower {
         //setPowerProb("rock", 0.005f);
     }
 
-    public static ArrayMap.Keys<String> getPowersList(){
-        return powerProbs.keys();
+    public static ArrayList<String> getPowersList(){
+        ArrayList<String> rv = new ArrayList<String>();
+
+        rv.add("bomb");
+        rv.add("timer");
+        rv.add("rock");
+
+        return rv;
     }
 
     private static void resetCumPowerProbs(){
@@ -49,6 +55,7 @@ public class TilePower {
     public static void setPowerProb(String power, float prob){
         powerProbs.put(power,prob);
         resetCumPowerProbs();
+        System.out.println(cumPowerProbs);
     }
 
     public static String generatePower(){

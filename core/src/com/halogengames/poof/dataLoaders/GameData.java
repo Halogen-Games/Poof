@@ -166,19 +166,23 @@ public class GameData {
     }
 
     public static void updateData(int chainLength, ArrayList<Tile> selectedTiles){
+        int oldScore = score;
         score += selectedTiles.size();
         if(chainLength > 5){
             score += Math.pow(chainLength-5,1.2);
         }
 
-        if(score>750){
-            numTileColors = 5;
-        }else if(score>600){
-            TilePower.setPowerProb("bomb",0.02f);
-        }else if(score>450){
-            TilePower.setPowerProb("rock",0.01f);
+        //new colors
+        if(score>500 && oldScore/200 != score/200){
+            tileColors.shuffle();
+        }
+
+        //power addition
+        //Note: I don't expect the score to rise so much in a move so that one of the below blocks is skipped as score increases
+        if(score>500){
+            TilePower.setPowerProb("bomb",0.025f);
         }else if(score>300){
-            numTileColors = 4;
+            TilePower.setPowerProb("rock",0.01f);
         }
     }
 
@@ -186,5 +190,9 @@ public class GameData {
         numTileColors = 3;
         levelTimer = maxTime;
         score = 0;
+
+        //set power probs
+        TilePower.setPowerProb("rock",0);
+        TilePower.setPowerProb("bomb",0);
     }
 }

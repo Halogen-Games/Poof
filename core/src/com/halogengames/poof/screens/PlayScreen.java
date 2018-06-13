@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.library.SpriteList;
 import com.halogengames.poof.sprites.Tile.TileState;
 import com.halogengames.poof.widgets.GameBoard;
 import com.halogengames.poof.widgets.GameDialog;
@@ -45,14 +44,14 @@ class PlayScreen implements Screen {
     private float buttonSize;
 
     private boolean gameStarted;
-    private boolean gamePaused;
+    private boolean dialogShowing;
 
     PlayScreen(Poof game){
         this.game = game;
         game.adInterface.showInterstitialAd();
 
         gameStarted = false;
-        gamePaused = false;
+        dialogShowing = false;
         GameData.resetData();
         game.soundManager.playMusic.play();
 
@@ -146,7 +145,7 @@ class PlayScreen implements Screen {
     }
 
     private void update(float dt) {
-        if(gamePaused){
+        if(dialogShowing){
             return;
         }
 
@@ -200,7 +199,6 @@ class PlayScreen implements Screen {
     }
 
     private void pauseGame() {
-        gamePaused = true;
         Gdx.input.setInputProcessor(null);
         game.soundManager.playMusic.pause();
         board.boardTouchedUp();
@@ -208,7 +206,7 @@ class PlayScreen implements Screen {
 
     @Override
     public void pause(){
-        if(gameStarted && !gamePaused) {
+        if(gameStarted && !dialogShowing) {
             pauseGame();
             game.soundManager.playButtonTap();
             game.setScreen(new PauseScreen(game, this));
@@ -217,57 +215,59 @@ class PlayScreen implements Screen {
 
     @Override
     public void resume() {
-        gamePaused = false;
-        game.soundManager.playMusic.play();
-        game.setScreen(this);
-        Gdx.input.setInputProcessor(stage);
+        if(!dialogShowing) {
+            game.soundManager.playMusic.play();
+            game.setScreen(this);
+            Gdx.input.setInputProcessor(stage);
+        }
     }
 
     private void endGame() {
         //pause the game
         pauseGame();
-
+        dialogShowing = true;
         System.out.println("Creating Button!");
 
         //give reward ad option and act accordingly
         String text;
         switch(GameData.getGameMode()){
             case Relaxed:{
-                text = "No Moves Left!\nWatch a small video to shuffle?";
+                text = "No Moves Left!\nBetter luck next time...";
                 break;
             }
             case Timed:{
-                text = "Time Up!\nWatch a small video to get 20 sec?";
+                text = "Time Up!\nBetter luck next time...";
                 break;
             }
             default:throw new RuntimeException("Unknown Game Mode");
         }
 
         //Create the continue dialogue
-        GameDialog dialog = new GameDialog(text, this.game);
+        final GameDialog dialog = new GameDialog(text, this.game);
 
-        dialog.addButton("Sure!", new Callable() {
+//        dialog.addButton("Sure!", new Callable() {
+//            @Override
+//            public Object call() {
+//                switch (GameData.getGameMode()){
+//                    case Timed:{
+//                        GameData.levelTimer += 20;
+//                        break;
+//                    }
+//                    case Relaxed:{
+//                        this_handle.board.shuffleBoard();
+//                        break;
+//                    }
+//                    default:throw new RuntimeException("Unknown Game Mode");
+//                }
+//                resume();
+//                return null;
+//            }
+//        });
+
+        dialog.addButton("OK", new Callable() {
             @Override
             public Object call() {
-                switch (GameData.getGameMode()){
-                    case Timed:{
-                        GameData.levelTimer += 20;
-                        break;
-                    }
-                    case Relaxed:{
-                        this_handle.board.shuffleBoard();
-                        break;
-                    }
-                    default:throw new RuntimeException("Unknown Game Mode");
-                }
-                resume();
-                return null;
-            }
-        });
-
-        dialog.addButton("No!", new Callable() {
-            @Override
-            public Object call() {
+                dialogShowing = false;
                 this_handle.gameOver();
                 return null;
             }

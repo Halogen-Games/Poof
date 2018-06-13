@@ -135,6 +135,7 @@ public class AndroidAd implements AdInterface{
         ConsentListener consentListener =  new ConsentListener(this);
 
         //get the current consent status
+        ConsentInformation.getInstance(this.context).addTestDevice("525C2A500DB3DFAAF563CBCD22C6DF25");
         consentInformation.requestConsentInfoUpdate(publisherIds, consentListener);
     }
 
@@ -152,7 +153,9 @@ public class AndroidAd implements AdInterface{
         getInstance(context).setConsentStatus(ConsentStatus.PERSONALIZED);
 
         //create a personalized ad request
-        adRequest = new AdRequest.Builder().build();
+        adRequest = new AdRequest.Builder()
+                .addTestDevice("525C2A500DB3DFAAF563CBCD22C6DF25")
+                .build();
         reloadBannerAd();
         setupInterstitialAds();
     }
@@ -165,7 +168,9 @@ public class AndroidAd implements AdInterface{
         Bundle extras = new Bundle();
         extras.putString("npa", "1");
 
-        adRequest = new AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter.class, extras).build();
+        adRequest = new AdRequest.Builder()
+                .addTestDevice("525C2A500DB3DFAAF563CBCD22C6DF25")
+                .addNetworkExtrasBundle(AdMobAdapter.class, extras).build();
         reloadBannerAd();
         setupInterstitialAds();
     }

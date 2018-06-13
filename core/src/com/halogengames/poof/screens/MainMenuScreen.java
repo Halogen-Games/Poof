@@ -118,6 +118,7 @@ class MainMenuScreen implements Screen {
             public boolean keyDown(InputEvent event, int keycode) {
                 if(keycode == Input.Keys.BACK){
                     dispose();
+                    game.dispose();
                     Gdx.app.exit();
                     return true;
                 }

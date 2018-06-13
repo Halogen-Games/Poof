@@ -372,6 +372,7 @@ public class PoofAssetManager {
         hudLabelStyle.font = manager.get("hudFont.ttf",BitmapFont.class);
     }
 
+    //Fixme: Memory leak
     public void dispose(){
         System.out.println("Assets disposed");
         manager.dispose();
