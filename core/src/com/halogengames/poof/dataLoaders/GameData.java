@@ -175,6 +175,9 @@ public class GameData {
         }
 
         //new colors
+        if(score>2000){
+            numTileColors = 4;
+        }
         if(score>=500 && oldScore/200 != score/200){
             tileColors.shuffle();
         }

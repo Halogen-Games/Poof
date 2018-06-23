@@ -21,6 +21,8 @@ import com.halogengames.poof.widgets.Hud;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
+import static com.halogengames.poof.dataLoaders.GameData.GameMode.Timed;
+
 /**
  * Created by Rohit on 14-07-2017.
  *
@@ -45,6 +47,10 @@ class PlayScreen implements Screen {
 
     private boolean gameStarted;
     private boolean dialogShowing;
+    private boolean rewardAdPlaying;
+    private boolean rewardGiven;
+
+    private PauseScreen pauseScrHandle;
 
     PlayScreen(Poof game){
         this.game = game;
@@ -53,6 +59,9 @@ class PlayScreen implements Screen {
 
         gameStarted = false;
         dialogShowing = false;
+        rewardAdPlaying = false;
+        rewardGiven = false;
+
         GameData.resetData();
         game.soundManager.playMusic.play();
 
@@ -155,7 +164,7 @@ class PlayScreen implements Screen {
         }
 
         //Decrease timer only during tile drops and idle states
-        if( GameData.getGameMode() == GameData.GameMode.Timed) {
+        if( GameData.getGameMode() == Timed) {
             if(!board.movesLeft()) {
                 board.shuffleBoard();
             }
@@ -207,10 +216,14 @@ class PlayScreen implements Screen {
 
     @Override
     public void pause(){
-        if(gameStarted && !dialogShowing) {
+        if(rewardAdPlaying){
+            //game should be paused through earlier dialogs
+            showRewardConfirmation();
+        }else if(gameStarted && !dialogShowing) {
             pauseGame();
             game.soundManager.playButtonTap();
-            game.setScreen(new PauseScreen(game, this));
+            pauseScrHandle = new PauseScreen(game,this);
+            game.setScreen(pauseScrHandle);
         }
     }
 
@@ -256,13 +269,19 @@ class PlayScreen implements Screen {
         //Create the continue dialogue
         final GameDialog dialog = new GameDialog(text, this.game);
 
+        if(rewardGiven){
+            showRewardAd = false;
+        }
+
         if(showRewardAd) {
             dialog.addButton("Sure!", new Callable() {
                 @Override
                 public Object call() {
-                    //this will cause the pause func in this screen
+                    //this will call the pause func in this screen
+                    rewardAdPlaying = true;
+                    rewardGiven = true;
+
                     game.adManager.showRewardAd();
-                    dialogShowing = false;
                     switch (GameData.getGameMode()) {
                         case Timed: {
                             GameData.levelTimer += 20;
@@ -285,6 +304,35 @@ class PlayScreen implements Screen {
             public Object call() {
                 dialogShowing = false;
                 this_handle.gameOver();
+                return null;
+            }
+        });
+    }
+
+    private void showRewardConfirmation(){
+        //give reward ad option and act accordingly
+        String text;
+        switch(GameData.getGameMode()){
+            case Relaxed: {
+                text = "You've got an extra shuffle!";
+                break;
+            }
+            case Timed:{
+                text = "You've got 20 more seconds!";
+                break;
+            }
+            default:throw new RuntimeException("Unknown Game Mode");
+        }
+
+        //Create the reward confirmation dialogue
+        final GameDialog dialog = new GameDialog(text, this.game);
+
+        dialog.addButton("OK", new Callable() {
+            @Override
+            public Object call() {
+                dialogShowing = false;
+                rewardAdPlaying = false;
+                resume();
                 return null;
             }
         });
