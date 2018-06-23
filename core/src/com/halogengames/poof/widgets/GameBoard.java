@@ -429,6 +429,9 @@ public class GameBoard extends Widget {
     }
 
     public void boardTouchedDown(float screenX, float screenY) {
+        //set sounds to idle
+        game.soundManager.setSoundsToIdle();
+
         int j = (int)Math.floor((screenX-tileGutter)/(tileSize+tileMargin));
         int i = (int)Math.floor((screenY-tileGutter)/(tileSize+tileMargin));
 

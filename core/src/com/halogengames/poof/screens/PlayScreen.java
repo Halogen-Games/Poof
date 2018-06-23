@@ -48,7 +48,8 @@ class PlayScreen implements Screen {
 
     PlayScreen(Poof game){
         this.game = game;
-        game.adInterface.showInterstitialAd();
+
+        game.adManager.showInterstitialAd();
 
         gameStarted = false;
         dialogShowing = false;
@@ -228,15 +229,25 @@ class PlayScreen implements Screen {
         dialogShowing = true;
         System.out.println("Creating Button!");
 
+        boolean showRewardAd = this.game.adManager.rewardAdReady();
+
         //give reward ad option and act accordingly
         String text;
         switch(GameData.getGameMode()){
             case Relaxed:{
-                text = "No Moves Left!\nBetter luck next time...";
+                if(showRewardAd){
+                    text = "No Moves Left!\nWatch a small video to get a shuffle";
+                }else{
+                    text = "No Moves Left!\nBetter luck next time...";
+                }
                 break;
             }
             case Timed:{
-                text = "Time Up!\nBetter luck next time...";
+                if(showRewardAd){
+                    text = "Time Up!\nWatch a small video to get 20 Sec";
+                }else{
+                    text = "Time Up!\nBetter luck next time...";
+                }
                 break;
             }
             default:throw new RuntimeException("Unknown Game Mode");
@@ -245,24 +256,29 @@ class PlayScreen implements Screen {
         //Create the continue dialogue
         final GameDialog dialog = new GameDialog(text, this.game);
 
-//        dialog.addButton("Sure!", new Callable() {
-//            @Override
-//            public Object call() {
-//                switch (GameData.getGameMode()){
-//                    case Timed:{
-//                        GameData.levelTimer += 20;
-//                        break;
-//                    }
-//                    case Relaxed:{
-//                        this_handle.board.shuffleBoard();
-//                        break;
-//                    }
-//                    default:throw new RuntimeException("Unknown Game Mode");
-//                }
-//                resume();
-//                return null;
-//            }
-//        });
+        if(showRewardAd) {
+            dialog.addButton("Sure!", new Callable() {
+                @Override
+                public Object call() {
+                    //this will cause the pause func in this screen
+                    game.adManager.showRewardAd();
+                    dialogShowing = false;
+                    switch (GameData.getGameMode()) {
+                        case Timed: {
+                            GameData.levelTimer += 20;
+                            break;
+                        }
+                        case Relaxed: {
+                            this_handle.board.shuffleBoard();
+                            break;
+                        }
+                        default:
+                            throw new RuntimeException("Unknown Game Mode");
+                    }
+                    return null;
+                }
+            });
+        }
 
         dialog.addButton("OK", new Callable() {
             @Override

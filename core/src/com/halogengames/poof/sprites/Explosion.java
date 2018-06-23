@@ -56,9 +56,9 @@ public class Explosion extends Sprite {
         elapsed += dt;
         age = elapsed - birthTime;
 
-        if(age > 0 && age-dt < 0){
+        if(age > 0 && age-dt <= 0){
             //just born
-            game.soundManager.playExplosionSound();
+            game.soundManager.playExplosionSound(true);
         }
 
         if(age>lifeLength){

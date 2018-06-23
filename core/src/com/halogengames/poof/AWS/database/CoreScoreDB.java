@@ -1,4 +1,4 @@
-package com.halogengames.poof.database;
+package com.halogengames.poof.AWS.database;
 
 import com.halogengames.poof.dataLoaders.GameData;
 

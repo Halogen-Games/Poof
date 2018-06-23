@@ -23,7 +23,7 @@ public class TilePower {
         powerProbs = new ArrayMap<String, Float>();
         cumPowerProbs = new ArrayMap<String, Float>();
 
-        setPowerProb("timer", 0.03f);
+        setPowerProb("timer", 0.04f);
         //setPowerProb("bomb", 0.01f);
         //setPowerProb("rock", 0.005f);
     }
@@ -55,7 +55,6 @@ public class TilePower {
     public static void setPowerProb(String power, float prob){
         powerProbs.put(power,prob);
         resetCumPowerProbs();
-        System.out.println(cumPowerProbs);
     }
 
     public static String generatePower(){

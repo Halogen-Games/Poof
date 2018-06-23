@@ -22,7 +22,6 @@ import com.halogengames.poof.Poof;
  * Screen to select the difficulty
  */
 
-//Todo:Incomplete Class
 class GameModeSelectScreen implements Screen{
     //the game for sprite batch
     private Poof game;

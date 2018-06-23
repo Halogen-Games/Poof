@@ -3,26 +3,23 @@ package com.halogengames.poof;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.halogengames.poof.AWS.analytics.AWSPinpointInterface;
 import com.halogengames.poof.advertisement.AdInterface;
 import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
-import com.halogengames.poof.database.CoreScoreDB;
+import com.halogengames.poof.AWS.database.CoreScoreDB;
 import com.halogengames.poof.library.BasicShapes;
-import com.halogengames.poof.library.SpriteList;
 import com.halogengames.poof.library.WidgetStack;
+import com.halogengames.poof.screens.MainMenuScreen;
 import com.halogengames.poof.screens.PrivacyScreen;
 import com.halogengames.poof.screens.SplashScreen;
 import com.halogengames.poof.widgets.Background;
-
-import java.util.ArrayList;
 
 public class Poof extends Game {
 	//Todo: Convert static to non static wherever possible
@@ -40,10 +37,6 @@ public class Poof extends Game {
     public PoofAssetManager assetManager;
     public SoundManager soundManager;
 
-	//Fonts
-	public static FreeTypeFontGenerator labelFontGenerator;
-	public static FreeTypeFontGenerator valueFontGenerator;
-
 	//Drawing Objects
 	public SpriteBatch batch;
 	public ShapeRenderer renderer;
@@ -54,26 +47,29 @@ public class Poof extends Game {
     public WidgetStack widgetStack;
 
 	//DB object
-    public CoreScoreDB db;
+    public AdInterface adManager;
 
-    //Ad object
-	public AdInterface adInterface;
+    //AWS Objects
+    public CoreScoreDB db;
+	public AWSPinpointInterface analyticsManager;
 
 	public Background bg;
 
-	public Poof(CoreScoreDB db, AdInterface adInterface){
+	public Poof(CoreScoreDB db, AdInterface adManager, AWSPinpointInterface analyticsManager){
         this.db = db;
-        this.adInterface = adInterface;
-        this.adInterface.setInterstitialRate(3);
+        this.adManager = adManager;
+        this.adManager.setInterstitialRate(4);
+        this.analyticsManager = analyticsManager;
+
+        adManager.setGameHandle(this);
 	}
 
-	public void setupGDPR(){
-        adInterface.genConsentFormIfNeeded();
-    }
-
-    public void showGDPRConsentPage(){
-	    this.setScreen(new PrivacyScreen(this,this.getScreen()));
-
+    public void showGDPRConsentPageIfNeeded(){
+        this.setScreen(new MainMenuScreen(this));
+	    if(adManager.isConsentFormNeeded()) {
+            System.out.println("Show Consent Page");
+            this.setScreen(new PrivacyScreen(this, this.getScreen()));
+        }
     }
 
 	@Override
@@ -97,15 +93,10 @@ public class Poof extends Game {
 		//todo: set this dynamically somehow
         BANNER_AD_SIZE = 150;
 
-		//Font
-		labelFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));
-		valueFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));
-
-		//Init GameData
-		GameData.init(this);
+        //Init GameData
+        GameData.init(this);
 
 		//todo: make asset and sound managers load assets in parallel
-
         assetManager = new PoofAssetManager();
         soundManager = new SoundManager(assetManager.manager);
 

@@ -1,13 +1,20 @@
 package com.halogengames.poof.advertisement;
 
-public interface AdInterface {
-    int SHOW_INTERSTITIAL = -1;
-    int PERSONALIZED_AD = -2;
-    int NON_PERSONALIZED_AD = -3;
+import com.halogengames.poof.Poof;
 
+public interface AdInterface {
     void showInterstitialAd();
+    boolean rewardAdReady();
+    void showRewardAd();
+
     boolean isEURegion();
-    void genConsentFormIfNeeded();
-    void setConsentStatus(int status);
+    boolean isConsentFormNeeded();
+    void setPersonalizedAdStatus(boolean isPersonalized);
+
     void setInterstitialRate(int rate);
+
+    void setGameHandle(Poof game);
+
+    void setPersonalizedAd();
+    void setNonPersonalizedAd();
 }

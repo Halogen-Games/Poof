@@ -136,10 +136,6 @@ public class PoofAssetManager {
         loadHUDAssets();
     }
 
-    private void getSkin(){
-        poofSkin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-    }
-
     public boolean isLoaded(){
         if(manager.update()){
             getAssets();
@@ -160,7 +156,6 @@ public class PoofAssetManager {
         getPlayScreenAssets();
         getBoardAssets();
         getHUDAssets();
-        getSkin();
     }
 
     private void loadFontGenerators(){
@@ -219,7 +214,7 @@ public class PoofAssetManager {
         //Button Style
         fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
         optionsButtonStyle = new TextButtonStyle();
-        optionsButtonStyle.font = Poof.labelFontGenerator.generateFont(fontParam);
+        optionsButtonStyle.font = labelFontGenerator.generateFont(fontParam);
 
         //load slider assets
         manager.load("slider/musicKnob.png", Texture.class);
@@ -250,13 +245,13 @@ public class PoofAssetManager {
         //Button Style
         fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
         privacyButtonStyle = new TextButtonStyle();
-        privacyButtonStyle.font = Poof.labelFontGenerator.generateFont(fontParam);
+        privacyButtonStyle.font = labelFontGenerator.generateFont(fontParam);
 
         //Button Style
         fontParam.color = new Color(132f/255f,178f/255f,133f/255f,1);
         fontParam.size = (int)(30 * Poof.V_WIDTH/GameData.baseWidth);
         privacyPolicyButtonStyle = new TextButtonStyle();
-        privacyPolicyButtonStyle.font = Poof.labelFontGenerator.generateFont(fontParam);
+        privacyPolicyButtonStyle.font = labelFontGenerator.generateFont(fontParam);
     }
 
     private void loadLevelSelectAssets(){
@@ -283,12 +278,12 @@ public class PoofAssetManager {
         //Label Font
         fontParam.size = (int)(30 * Poof.V_WIDTH/GameData.baseWidth);
         gameOverLabelStyle = new LabelStyle();
-        gameOverLabelStyle.font = Poof.valueFontGenerator.generateFont(fontParam);
+        gameOverLabelStyle.font = valueFontGenerator.generateFont(fontParam);
 
         //Button Font
         fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
         gameOverButtonStyle = new TextButtonStyle();
-        gameOverButtonStyle.font = Poof.valueFontGenerator.generateFont(fontParam);
+        gameOverButtonStyle.font = valueFontGenerator.generateFont(fontParam);
     }
 
     private void loadPauseScreenAssets(){

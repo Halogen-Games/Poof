@@ -50,7 +50,7 @@ public class SplashScreen implements Screen {
         logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
 
         if(this.game.assetManager.isLoaded() && this.game.soundManager.isLoaded()){
-            game.setScreen(new MainMenuScreen(game));
+            game.showGDPRConsentPageIfNeeded();
         }
     }
 

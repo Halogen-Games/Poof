@@ -22,7 +22,11 @@ public class SoundManager {
     private Sound wrongMove;
     private Sound blocksRemoved;
     private Sound buttonTap;
+    private Sound bombSound;
     public float soundVolume;
+
+    //used for sounds played once every move
+    private boolean soundsIdle;
 
     public SoundManager(AssetManager manager){
         this.manager = manager;
@@ -36,6 +40,7 @@ public class SoundManager {
         manager.load("sound/error.wav",Sound.class);
         manager.load("sound/confirm.wav",Sound.class);
         manager.load("sound/switchOn.wav",Sound.class);
+        manager.load("sound/cannon.wav",Sound.class);
     }
 
     public boolean isLoaded(){
@@ -61,6 +66,10 @@ public class SoundManager {
         wrongMove = manager.get("sound/error.wav",Sound.class);
         blocksRemoved = manager.get("sound/confirm.wav",Sound.class);
         buttonTap = manager.get("sound/switchOn.wav",Sound.class);
+
+        bombSound = manager.get("sound/cannon.wav",Sound.class);
+
+        soundsIdle = true;
     }
 
     public void playBlockTouched(){
@@ -83,8 +92,15 @@ public class SoundManager {
         //todo:add shuffle sound here
     }
 
-    public void playExplosionSound(){
-        //todo: play explosion sound
+    public void playExplosionSound(boolean playOncePerMove){
+        if(!playOncePerMove || soundsIdle) {
+            bombSound.play(soundVolume);
+            soundsIdle = false;
+        }
+    }
+
+    public void setSoundsToIdle(){
+        soundsIdle = true;
     }
 
     public void dispose(){

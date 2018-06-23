@@ -12,9 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.halogengames.poof.advertisement.AdInterface;
-import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
-import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
 
 /**
@@ -83,7 +81,7 @@ public class PrivacyScreen implements Screen {
         personalizedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.adInterface.setConsentStatus(AdInterface.PERSONALIZED_AD);
+                game.adManager.setPersonalizedAdStatus(true);
                 returnToPrevScreen();
             }
         });
@@ -91,7 +89,7 @@ public class PrivacyScreen implements Screen {
         nonPersonalizedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.adInterface.setConsentStatus(AdInterface.NON_PERSONALIZED_AD);
+                game.adManager.setPersonalizedAdStatus(false);
                 returnToPrevScreen();
             }
         });

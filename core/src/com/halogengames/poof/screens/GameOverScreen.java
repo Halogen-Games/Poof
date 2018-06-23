@@ -10,9 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
-import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
 
 /**
@@ -41,7 +39,7 @@ public class GameOverScreen implements Screen{
     public GameOverScreen(Poof game){
         this.game = game;
 
-        game.adInterface.showInterstitialAd();
+        game.adManager.showInterstitialAd();
         stage = new Stage(Poof.VIEW_PORT, game.batch);
 
         //Add score table

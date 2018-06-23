@@ -23,7 +23,7 @@ import com.halogengames.poof.sprites.Explosion;
  * Opening screen for the game
  */
 
-class MainMenuScreen implements Screen {
+public class MainMenuScreen implements Screen {
 
     //the game for sprite batch
     private Poof game;
@@ -39,11 +39,8 @@ class MainMenuScreen implements Screen {
     private TextButton optionsButton;
 
     //Constructor
-    MainMenuScreen(Poof game){
+    public MainMenuScreen(Poof game){
         this.game = game;
-
-        //setup GDPR
-        game.setupGDPR();
 
         //start music
         game.soundManager.mainMenuMusic.play();
@@ -129,6 +126,7 @@ class MainMenuScreen implements Screen {
 
     private void openGameModeSelect(){
         Gdx.input.setInputProcessor(null);
+        //game.setScreen(new GameModeSelectScreen(game,this));
         game.setScreen(new GameModeSelectScreen(game,this));
     }
 

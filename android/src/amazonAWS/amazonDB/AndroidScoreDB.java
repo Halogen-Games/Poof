@@ -1,21 +1,20 @@
-package amazonDB;
+package amazonAWS.amazonDB;
 
-import android.util.AndroidRuntimeException;
-
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperConfig;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedList;
 import com.halogengames.poof.AndroidLauncher;
 import com.halogengames.poof.dataLoaders.GameData;
-import com.halogengames.poof.database.CoreScoreDB;
-
-import java.io.IOException;
-import java.util.List;
+import com.halogengames.poof.AWS.database.CoreScoreDB;
 
 import amazonAWS.models.nosql.ScoresDO;
 
 public class AndroidScoreDB implements CoreScoreDB {
+
+    public AndroidScoreDB(){
+
+    }
+
     @Override
     public void writeHighScoreToDB(String user, GameData.GameMode gameMode, double score){
         if(gameMode==null){

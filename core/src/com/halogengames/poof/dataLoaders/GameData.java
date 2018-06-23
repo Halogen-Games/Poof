@@ -70,6 +70,8 @@ public class GameData {
             prefs.flush();
         }
 
+        game.analyticsManager.addUser(playerID);
+
         showTutorial = prefs.getBoolean("showTutorial", true);
 
         worldRank = new int[1];
@@ -173,15 +175,15 @@ public class GameData {
         }
 
         //new colors
-        if(score>500 && oldScore/200 != score/200){
+        if(score>=500 && oldScore/200 != score/200){
             tileColors.shuffle();
         }
 
         //power addition
         //Note: I don't expect the score to rise so much in a move so that one of the below blocks is skipped as score increases
-        if(score>500){
-            TilePower.setPowerProb("bomb",0.025f);
-        }else if(score>300){
+        if(score>=400 && oldScore<400){
+            TilePower.setPowerProb("bomb",0.02f);
+        }else if(score>=200 && oldScore<200){
             TilePower.setPowerProb("rock",0.01f);
         }
     }
@@ -194,5 +196,17 @@ public class GameData {
         //set power probs
         TilePower.setPowerProb("rock",0);
         TilePower.setPowerProb("bomb",0);
+
+        switch(gameMode){
+            case Relaxed:{
+                TilePower.setPowerProb("timer",0);
+                break;
+            }
+            case Timed:{
+                TilePower.setPowerProb("timer",0.04f);
+                break;
+            }
+            default: throw new RuntimeException("Unknown Game Mode");
+        }
     }
 }

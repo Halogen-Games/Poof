@@ -28,11 +28,9 @@ allprojects {
         mavenLocal()
         jcenter()
 
-        //for admob
-        maven { url "https://maven.google.com" }
-
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://jitpack.io" }
         google()
     }
 }
@@ -59,12 +57,19 @@ project(":android") {
 
         // Amazon Cognito dependencies for user access to AWS resources
         implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
+
         // AmazonDynamoDB dependencies for NoSQL Database
         implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.+'
 
-        //for admob
+        //Amazon pinpoint for analytics
+        implementation 'com.amazonaws:aws-android-sdk-pinpoint:2.6.+'
+
+        //for chartboost
         implementation 'com.google.android.gms:play-services-ads:15.0.1'
-        implementation 'com.google.android.ads.consent:consent-library:1.0.3'
+        implementation fileTree(dir: 'libs/chartboost', include: ['*.jar']) //imported in this way due to libGdx
+
+        //for fetching region
+        implementation 'com.github.seventhmoon:ipapi-retrofit:v1.2'
 
         implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
