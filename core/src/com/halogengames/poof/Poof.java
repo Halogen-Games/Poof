@@ -2,6 +2,7 @@ package com.halogengames.poof;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -14,6 +15,7 @@ import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.AWS.database.CoreScoreDB;
+import com.halogengames.poof.dataLoaders.TilePower;
 import com.halogengames.poof.library.BasicShapes;
 import com.halogengames.poof.library.WidgetStack;
 import com.halogengames.poof.screens.MainMenuScreen;
@@ -55,11 +57,15 @@ public class Poof extends Game {
 
 	public Background bg;
 
+	public boolean adShowing;
+
 	public Poof(CoreScoreDB db, AdInterface adManager, AWSPinpointInterface analyticsManager){
         this.db = db;
         this.adManager = adManager;
         this.adManager.setInterstitialRate(4);
         this.analyticsManager = analyticsManager;
+
+        adShowing = false;
 
         adManager.setGameHandle(this);
 	}
@@ -86,9 +92,9 @@ public class Poof extends Game {
 		//Camera and viewport
 		CAM = new OrthographicCamera(Poof.V_WIDTH, Poof.V_HEIGHT);
 		CAM.setToOrtho(false, Poof.V_WIDTH, Poof.V_HEIGHT);
-		VIEW_PORT = new FitViewport( Poof.V_WIDTH, Poof.V_HEIGHT, CAM);
+		VIEW_PORT = new FitViewport(Poof.V_WIDTH, Poof.V_HEIGHT, CAM);
 		EXTEND_VIEW_PORT = new ExtendViewport(Poof.V_WIDTH, Poof.V_HEIGHT, CAM);
-		CAM.position.set( VIEW_PORT.getWorldWidth()/2, VIEW_PORT.getWorldHeight()/2, 0);
+		CAM.position.set(VIEW_PORT.getWorldWidth()/2, VIEW_PORT.getWorldHeight()/2, 0);
 
 		//todo: set this dynamically somehow
         BANNER_AD_SIZE = 150;
@@ -111,11 +117,15 @@ public class Poof extends Game {
 	public void render () {
 		//Game class delegates to the current screen hence using super
 		//since the func only uses super call, no need for this func as in absence of Poof.render, super.render will get called in place if exists
-		super.render();
+		if(adShowing){
+			Gdx.gl.glClearColor(0,0,0,0);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		}else {
+			super.render();
+			widgetStack.draw();
+		}
 
-		widgetStack.draw();
-
-        //Uncomment below for framerate
+        //Uncomment below for frame rate
 //		batch.begin();
 //        assetManager.helpTextFont.draw(
 //                batch,
@@ -128,11 +138,16 @@ public class Poof extends Game {
 
 	@Override
 	public void dispose () {
+	    //called with Gdx.app.exit();
 		//dispose objects for memory cleanup
 		batch.dispose();
+        renderer.dispose();
 
 		//below will also dispose sound assets
 		assetManager.dispose();
+
+        //Temporary fix fo memory leak
+        System.exit(0);
 	}
 
 	@Override

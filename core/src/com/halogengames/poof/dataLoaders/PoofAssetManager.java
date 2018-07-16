@@ -20,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -327,7 +326,7 @@ public class PoofAssetManager {
         }
 
         //Power Textures
-        for (String power:TilePower.getPowersList()){
+        for (String power:TilePower.getPossiblePowersList()){
             if(power != null)
             manager.load("tiles/tile_" + power + ".png",Texture.class);
         }
@@ -347,7 +346,7 @@ public class PoofAssetManager {
 
         //Power Textures
         powerTextures = new ArrayMap<String, Texture>();
-        for (String power:TilePower.getPowersList()){
+        for (String power:TilePower.getPossiblePowersList()){
             if(power != null)
                 powerTextures.put(power, manager.get("tiles/tile_" + power + ".png",Texture.class));
         }
@@ -370,6 +369,8 @@ public class PoofAssetManager {
     //Fixme: Memory leak
     public void dispose(){
         System.out.println("Assets disposed");
+        labelFontGenerator.dispose();
+        valueFontGenerator.dispose();
         manager.dispose();
     }
 }

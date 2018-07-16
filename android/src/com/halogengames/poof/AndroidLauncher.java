@@ -58,6 +58,7 @@ public class AndroidLauncher extends AndroidApplication {
         layout = new RelativeLayout(this);
 
         androidAd = new ChartboostAd(this);
+        Chartboost.setDelegate(androidAd.cbDelegateObject);
 
         gameInstance = new Poof(new AndroidScoreDB(), androidAd, new AWSPinpointManager());
 

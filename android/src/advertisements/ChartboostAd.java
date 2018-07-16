@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.chartboost.sdk.CBLocation;
 import com.chartboost.sdk.Chartboost;
+import com.chartboost.sdk.ChartboostDelegate;
 import com.halogengames.poof.Poof;
 import com.halogengames.poof.advertisement.AdInterface;
 
@@ -51,6 +52,7 @@ public class ChartboostAd implements AdInterface {
             if(interstitialRequests >= interstitialRate) {
                 interstitialRequests = 0;
                 System.out.println("Interstitial Showing");
+                game.adShowing = true;
                 Chartboost.showInterstitial(CBLocation.LOCATION_DEFAULT);
             }
         }else{
@@ -72,6 +74,7 @@ public class ChartboostAd implements AdInterface {
 
     @Override
     public void showRewardAd(){
+        game.adShowing = true;
         Chartboost.showRewardedVideo(CBLocation.LOCATION_DEFAULT);
         Chartboost.cacheRewardedVideo(CBLocation.LOCATION_DEFAULT);
     }
@@ -117,4 +120,27 @@ public class ChartboostAd implements AdInterface {
     public void setGameHandle(Poof game){
         this.game = game;
     }
+
+    //delegate methods
+    public ChartboostDelegate cbDelegateObject = new ChartboostDelegate() {
+        // Called after an interstitial has been dismissed.
+        public void didDismissInterstitial(String location){
+            game.adShowing = false;
+        }
+
+        // Called after an interstitial has been closed.
+        public void didCloseInterstitial(String location){
+            game.adShowing = false;
+        }
+
+        // Called after a rewarded video has been dismissed.
+        public void didDismissRewardedVideo(String location){
+            game.adShowing = false;
+        }
+
+        // Called after a rewarded video has been closed.
+        public void didCloseRewardedVideo(String location){
+            game.adShowing = false;
+        }
+    };
 }

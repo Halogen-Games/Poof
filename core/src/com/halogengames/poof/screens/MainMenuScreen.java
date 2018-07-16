@@ -105,7 +105,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.soundManager.playButtonTap();
-                game.assetManager.dispose();
+                dispose();
                 Gdx.app.exit();
             }
         });
@@ -115,7 +115,6 @@ public class MainMenuScreen implements Screen {
             public boolean keyDown(InputEvent event, int keycode) {
                 if(keycode == Input.Keys.BACK){
                     dispose();
-                    game.dispose();
                     Gdx.app.exit();
                     return true;
                 }

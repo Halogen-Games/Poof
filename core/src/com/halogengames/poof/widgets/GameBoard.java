@@ -403,9 +403,9 @@ public class GameBoard extends Widget {
         if(GameData.levelTimer<=flashStartTime){
             float timeSegments = (float)GameData.levelTimer*flashFreq*2;
             if(Math.round(timeSegments)%2 == 0){
-                borderColor = flashColor;
-            }else{
                 borderColor = normalColor;
+            }else{
+                borderColor = flashColor;
             }
         }else{
             borderColor = normalColor;

@@ -105,6 +105,12 @@ public class GameData {
         TilePower.init();
     }
 
+    private static void shiftTileColors(){
+        String headColor = tileColors.get(0);
+        tileColors.removeIndex(0);
+        tileColors.add(headColor);
+    }
+
     private static void syncHighScores(){
         //Todo:make this sync better
         //Sync highScore with dynamoDB
@@ -115,8 +121,7 @@ public class GameData {
     }
 
     public static void tutorialShown(){
-        showTutorial = false;
-        prefs.putBoolean("showTutorial", showTutorial);
+        prefs.putBoolean("showTutorial", false);
         prefs.flush();
     }
 
@@ -175,18 +180,27 @@ public class GameData {
         }
 
         //new colors
-        if(score>2000){
-            numTileColors = 4;
+        if(score>=1500 && oldScore/400 != score/400){
+            shiftTileColors();
         }
-        if(score>=500 && oldScore/200 != score/200){
-            tileColors.shuffle();
+        if(score>=750 && oldScore/200 != score/200){
+            shiftTileColors();
         }
 
         //power addition
         //Note: I don't expect the score to rise so much in a move so that one of the below blocks is skipped as score increases
-        if(score>=400 && oldScore<400){
-            TilePower.setPowerProb("bomb",0.02f);
-        }else if(score>=200 && oldScore<200){
+        if(score >= 2500 && oldScore<2500){
+            TilePower.setPowerProb("rock",0.025f);
+        }else if(score >= 2000 && oldScore<2000){
+            TilePower.setPowerProb("rock",0.020f);
+        }else if(score >= 1500 && oldScore<1500){
+            TilePower.setPowerProb("bomb",0.025f);
+            TilePower.setPowerProb("rock",0.016f);
+        }else if(score >= 1000 && oldScore<1000){
+            TilePower.setPowerProb("rock",0.013f);
+        }else if(score>=500 && oldScore<500){
+            TilePower.setPowerProb("bomb",0.020f);
+        }else if(score>=250 && oldScore<250){
             TilePower.setPowerProb("rock",0.01f);
         }
     }

@@ -46,8 +46,6 @@ class PlayScreen implements Screen {
     private float buttonSize;
 
     private boolean gameStarted;
-    private boolean dialogShowing;
-    private boolean rewardAdPlaying;
     private boolean rewardGiven;
 
     private PauseScreen pauseScrHandle;
@@ -58,8 +56,6 @@ class PlayScreen implements Screen {
         game.adManager.showInterstitialAd();
 
         gameStarted = false;
-        dialogShowing = false;
-        rewardAdPlaying = false;
         rewardGiven = false;
 
         GameData.resetData();
@@ -155,7 +151,7 @@ class PlayScreen implements Screen {
     }
 
     private void update(float dt) {
-        if(dialogShowing){
+        if(game.widgetStack.size()>0){
             return;
         }
 
@@ -216,10 +212,7 @@ class PlayScreen implements Screen {
 
     @Override
     public void pause(){
-        if(rewardAdPlaying){
-            //game should be paused through earlier dialogs
-            showRewardConfirmation();
-        }else if(gameStarted && !dialogShowing) {
+        if(gameStarted && game.widgetStack.size()==0) {
             pauseGame();
             game.soundManager.playButtonTap();
             pauseScrHandle = new PauseScreen(game,this);
@@ -229,7 +222,7 @@ class PlayScreen implements Screen {
 
     @Override
     public void resume() {
-        if(!dialogShowing) {
+        if(game.widgetStack.size()==0) {
             game.soundManager.playMusic.play();
             game.setScreen(this);
             Gdx.input.setInputProcessor(stage);
@@ -239,10 +232,13 @@ class PlayScreen implements Screen {
     private void endGame() {
         //pause the game
         pauseGame();
-        dialogShowing = true;
         System.out.println("Creating Button!");
 
         boolean showRewardAd = this.game.adManager.rewardAdReady();
+
+        if(rewardGiven){
+            showRewardAd = false;
+        }
 
         //give reward ad option and act accordingly
         String text;
@@ -269,18 +265,15 @@ class PlayScreen implements Screen {
         //Create the continue dialogue
         final GameDialog dialog = new GameDialog(text, this.game);
 
-        if(rewardGiven){
-            showRewardAd = false;
-        }
+        text = "OK";
 
         if(showRewardAd) {
             dialog.addButton("Sure!", new Callable() {
                 @Override
                 public Object call() {
-                    //this will call the pause func in this screen
-                    rewardAdPlaying = true;
                     rewardGiven = true;
 
+                    //this will call the pause func in this screen
                     game.adManager.showRewardAd();
                     switch (GameData.getGameMode()) {
                         case Timed: {
@@ -294,15 +287,17 @@ class PlayScreen implements Screen {
                         default:
                             throw new RuntimeException("Unknown Game Mode");
                     }
+                    showRewardConfirmation();
                     return null;
                 }
             });
+
+            text = "No";
         }
 
-        dialog.addButton("OK", new Callable() {
+        dialog.addButton(text, new Callable() {
             @Override
             public Object call() {
-                dialogShowing = false;
                 this_handle.gameOver();
                 return null;
             }
@@ -330,8 +325,6 @@ class PlayScreen implements Screen {
         dialog.addButton("OK", new Callable() {
             @Override
             public Object call() {
-                dialogShowing = false;
-                rewardAdPlaying = false;
                 resume();
                 return null;
             }
