@@ -121,6 +121,7 @@ public class GameData {
     }
 
     public static void tutorialShown(){
+        showTutorial = false;
         prefs.putBoolean("showTutorial", false);
         prefs.flush();
     }
@@ -211,6 +212,7 @@ public class GameData {
         score = 0;
 
         //set power probs
+        TilePower.init();
         TilePower.setPowerProb("rock",0);
         TilePower.setPowerProb("bomb",0);
 
@@ -220,7 +222,7 @@ public class GameData {
                 break;
             }
             case Timed:{
-                TilePower.setPowerProb("timer",0.04f);
+                TilePower.setPowerProb("timer",0.03f);
                 break;
             }
             default: throw new RuntimeException("Unknown Game Mode");

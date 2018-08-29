@@ -1,0 +1,110 @@
+explosion.png
+size: 1548, 516
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+explosion
+  rotate: false
+  xy: 1, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 1
+explosion
+  rotate: false
+  xy: 1, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 2
+explosion
+  rotate: false
+  xy: 1, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 3
+explosion
+  rotate: false
+  xy: 1, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 4
+explosion
+  rotate: false
+  xy: 1, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 5
+explosion
+  rotate: false
+  xy: 517, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 6
+explosion
+  rotate: false
+  xy: 517, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 7
+explosion
+  rotate: false
+  xy: 517, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 8
+explosion
+  rotate: false
+  xy: 517, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 9
+explosion
+  rotate: false
+  xy: 517, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 10
+explosion
+  rotate: false
+  xy: 1033, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 11
+explosion
+  rotate: false
+  xy: 1033, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 12
+explosion
+  rotate: false
+  xy: 1033, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 13
+explosion
+  rotate: false
+  xy: 1033, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 14
+explosion
+  rotate: false
+  xy: 1033, 1
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: 15
