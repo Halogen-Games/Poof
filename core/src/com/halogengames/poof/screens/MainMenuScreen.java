@@ -4,18 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.sprites.Explosion;
 
 /**
  * Created by Rohit on 01-08-2017.
@@ -31,12 +29,19 @@ public class MainMenuScreen implements Screen {
     //To add the buttons on the screen
     private Stage stage;
 
-    private Label title;
+    private Texture titleTex;
+    private float titleWidth;
+    private float titleHeight;
 
-    private TextButton playButton;
-    private TextButton helpButton;
-    private TextButton exitButton;
-    private TextButton optionsButton;
+    private ImageButton playButton;
+    private ImageButton helpButton;
+    private ImageButton hallOfFameButton;
+    private ImageButton optionsButton;
+    private ImageButton shopButton;
+
+    private float playButtSize;
+    private float smallButtSize;
+
 
     //Constructor
     public MainMenuScreen(Poof game){
@@ -49,28 +54,40 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(Poof.VIEW_PORT, game.batch);
 
         //Title Label
-        title = new Label("Poof", this.game.assetManager.mainMenuTitleStyle);
-        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - title.getWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight());
+        titleTex = game.assetManager.mainMenuTitleTex;
+        titleWidth = Poof.V_WIDTH*2/3;
+        titleHeight = titleTex.getHeight()*titleWidth/titleTex.getWidth();
 
         //Adding buttons
-        playButton = new TextButton("Play", this.game.assetManager.mainMenuButtonStyle);
-        helpButton = new TextButton("Help", this.game.assetManager.mainMenuButtonStyle);
-        optionsButton = new TextButton("Options", this.game.assetManager.mainMenuButtonStyle);
-        exitButton = new TextButton("Quit", this.game.assetManager.mainMenuButtonStyle);
+        playButton = new ImageButton(this.game.assetManager.mainMenuPlayButtonDrawable);
+        helpButton = new ImageButton(this.game.assetManager.mainMenuHelpButtonDrawable);
+        hallOfFameButton = new ImageButton(this.game.assetManager.mainMenuFameButtonDrawable);
+        optionsButton = new ImageButton(this.game.assetManager.mainMenuOptionsButtonDrawable);
+        shopButton = new ImageButton(this.game.assetManager.mainMenuShopButtonDrawable);
         addUIListeners();
 
+        playButtSize = Poof.V_WIDTH/3;
+        smallButtSize = Poof.V_WIDTH/6;
+
+        //set size
+        playButton.setSize(playButtSize,playButtSize);
+        helpButton.setSize(smallButtSize,smallButtSize);
+        hallOfFameButton.setSize(smallButtSize,smallButtSize);
+        optionsButton.setSize(smallButtSize,smallButtSize);
+        shopButton.setSize(smallButtSize,smallButtSize);
+
         //set positions
-        exitButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - exitButton.getWidth()/2, Poof.BANNER_AD_SIZE);
-        optionsButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - optionsButton.getWidth()/2, exitButton.getY()+exitButton.getHeight());
-        helpButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - helpButton.getWidth()/2, optionsButton.getY()+optionsButton.getHeight());
-        playButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - playButton.getWidth()/2, helpButton.getY()+helpButton.getHeight());
+        playButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - playButton.getWidth()/2, Poof.VIEW_PORT.getWorldHeight()/2.5f - playButton.getHeight()/2);
+        optionsButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*1/6 - hallOfFameButton.getWidth()/2, playButton.getY() - optionsButton.getHeight()*1f);
+        helpButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*2/6 - hallOfFameButton.getWidth()/2, playButton.getY() - helpButton.getHeight()*2f);
+        shopButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*4/6 - hallOfFameButton.getWidth()/2, playButton.getY() - helpButton.getHeight()*2f);
+        hallOfFameButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*5/6 - hallOfFameButton.getWidth()/2, playButton.getY() - hallOfFameButton.getHeight()*1f);
 
-
-        stage.addActor(title);
-        stage.addActor(exitButton);
+        stage.addActor(hallOfFameButton);
         stage.addActor(optionsButton);
         stage.addActor(helpButton);
         stage.addActor(playButton);
+        stage.addActor(shopButton);
 
         //to allow stage to identify events
         Gdx.input.setInputProcessor(stage);
@@ -101,12 +118,19 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        exitButton.addListener(new ChangeListener() {
+        hallOfFameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.soundManager.playButtonTap();
-                dispose();
-                Gdx.app.exit();
+                openHallOfFame();
+            }
+        });
+
+        shopButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.soundManager.playButtonTap();
+                openShop();
             }
         });
 
@@ -125,7 +149,6 @@ public class MainMenuScreen implements Screen {
 
     private void openGameModeSelect(){
         Gdx.input.setInputProcessor(null);
-        //game.setScreen(new GameModeSelectScreen(game,this));
         game.setScreen(new GameModeSelectScreen(game,this));
     }
 
@@ -139,16 +162,19 @@ public class MainMenuScreen implements Screen {
         game.setScreen(new OptionsScreen(game,this));
     }
 
-    private void openUpgrades(){
+    private void openShop(){
         Gdx.input.setInputProcessor(null);
-        game.setScreen(new HelpScreen(game,this));
+        game.setScreen(new ShopScreen(game,this));
+    }
+
+    private void openHallOfFame(){
+        //no need to remove input processor as playgames work correctly
+        game.leaderboardManager.showLeaderBoard();
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        stage.getRoot().setColor(1,1,1,0);
-        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     @Override
@@ -161,6 +187,12 @@ public class MainMenuScreen implements Screen {
         game.bg.render(delta);
 
         stage.draw();
+
+        game.batch.setProjectionMatrix(Poof.CAM.combined);
+
+        game.batch.begin();
+        game.batch.draw(titleTex,Poof.V_WIDTH/2 - titleWidth/2, Poof.V_HEIGHT*0.9f - titleHeight, titleWidth, titleHeight);
+        game.batch.end();
     }
 
     @Override
@@ -174,7 +206,9 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void resume() {}
+    public void resume() {
+        Gdx.input.setInputProcessor(stage);
+    }
 
     @Override
     public void hide() {

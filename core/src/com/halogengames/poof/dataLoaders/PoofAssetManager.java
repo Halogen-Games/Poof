@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -16,14 +17,19 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.halogengames.poof.Poof;
+
+import java.util.ArrayList;
 
 
 /**
@@ -38,7 +44,8 @@ public class PoofAssetManager {
     FreeTypeFontLoaderParameter valueFontLoader;
 
     //Skin
-    public Skin poofSkin;
+    public Skin shopSkin;
+    private Color fontColor = Color.BLACK;
 
     //Font Generators
     public FreeTypeFontGenerator labelFontGenerator;
@@ -46,11 +53,17 @@ public class PoofAssetManager {
     public FreeTypeFontParameter fontParam;
 
     //Common Assets
-    public Texture commonBG;
+    public ArrayList<Texture> bgShapes;
+    private ArrayList<String> bgShapesList;
+    public Texture gradientBg;
 
     //Main Menu Assets
-    public LabelStyle mainMenuTitleStyle;
-    public TextButtonStyle mainMenuButtonStyle;
+    public Texture mainMenuTitleTex;
+    public Drawable mainMenuPlayButtonDrawable;
+    public Drawable mainMenuHelpButtonDrawable;
+    public Drawable mainMenuFameButtonDrawable;
+    public Drawable mainMenuShopButtonDrawable;
+    public Drawable mainMenuOptionsButtonDrawable;
 
     //help Screen Assets
     public BitmapFont helpTextFont;
@@ -103,18 +116,18 @@ public class PoofAssetManager {
         manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 
         labelFontLoader = new FreeTypeFontLoaderParameter();
-        labelFontLoader.fontFileName = "fonts/rock_solid.TTF";
+        labelFontLoader.fontFileName = "fonts/comic_sans_ms.ttf";
         labelFontLoader.fontParameters.minFilter = TextureFilter.Linear;
         labelFontLoader.fontParameters.magFilter = TextureFilter.Linear;
 
         valueFontLoader = new FreeTypeFontLoaderParameter();
-        valueFontLoader.fontFileName = "fonts/rock_solid.TTF";
+        valueFontLoader.fontFileName = "fonts/comic_sans_ms.ttf";
         valueFontLoader.fontParameters.minFilter = TextureFilter.Linear;
         valueFontLoader.fontParameters.magFilter = TextureFilter.Linear;
 
 //        Font Generators
-        labelFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));
-        valueFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/rock_solid.TTF"));
+        labelFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/comic_sans_ms.ttf"));
+        valueFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/comic_sans_ms.ttf"));
 
         //font param common settings
         fontParam = new FreeTypeFontParameter();
@@ -124,6 +137,7 @@ public class PoofAssetManager {
         //generate assets
         loadCommonAssets();
         loadMainMenuAssets();
+        loadShopAssets();
         loadHelpScreenAssets();
         loadOptionsAssets();
         loadPrivacyScreenAssets();
@@ -145,7 +159,8 @@ public class PoofAssetManager {
 
     private void getAssets(){
         getCommonAssets();
-        //getMainMenuAssets();
+        getMainMenuAssets();
+        getShopAssets();
         getHelpScreenAssets();
         getOptionsAssets();
 //        getPrivacyScreenAssets();
@@ -157,39 +172,120 @@ public class PoofAssetManager {
         getHUDAssets();
     }
 
-    private void loadFontGenerators(){
-        manager.load("fonts/rock_solid.TTF",FreeTypeFontGenerator.class);
-    }
-
-    private void getFontGenerators(){
-        labelFontGenerator = manager.get("fonts/rock_solid.TTF",FreeTypeFontGenerator.class);
-        valueFontGenerator = manager.get("fonts/rock_solid.TTF",FreeTypeFontGenerator.class);
-    }
-
     private void loadCommonAssets(){
-        manager.load("common/bg.png", Texture.class);
+        bgShapes = new ArrayList<Texture>();
+        bgShapesList = new ArrayList<String>();
+
+        bgShapesList.add("circle");
+        bgShapesList.add("square");
+        bgShapesList.add("triangle");
+        bgShapesList.add("star");
+
+        for(int i=0;i<bgShapesList.size();i++){
+            manager.load("common/bg_"+bgShapesList.get(i)+".png", Texture.class);
+        }
+
+        manager.load("common/blue_bg.png", Texture.class);
     }
 
     private void getCommonAssets(){
-        commonBG = manager.get("common/bg.png", Texture.class);
+        for(int i=0;i<bgShapesList.size();i++){
+            bgShapes.add(manager.get("common/bg_"+bgShapesList.get(i)+".png", Texture.class));
+            bgShapes.get(i).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        }
+
+        gradientBg = manager.get("common/blue_bg.png", Texture.class);
     }
 
     private void loadMainMenuAssets(){
-        fontParam.color = Color.DARK_GRAY;
+        manager.load("main_menu/title.png", Texture.class);
+        manager.load("main_menu/play.png", Texture.class);
+        manager.load("main_menu/fame.png", Texture.class);
+        manager.load("main_menu/options.png", Texture.class);
+        manager.load("main_menu/help.png", Texture.class);
+        manager.load("main_menu/shop.png", Texture.class);
+    }
 
-        //Title Style
-        fontParam.size = (int)(100 * Poof.V_WIDTH/GameData.baseWidth);
-        mainMenuTitleStyle = new LabelStyle();
-        mainMenuTitleStyle.font = labelFontGenerator.generateFont(fontParam);
+    private void getMainMenuAssets(){
+        mainMenuTitleTex = manager.get("main_menu/title.png", Texture.class);
+        mainMenuTitleTex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
 
-        //Button Style
-        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
-        mainMenuButtonStyle = new TextButtonStyle();
-        mainMenuButtonStyle.font = labelFontGenerator.generateFont(fontParam);
+        Texture tex = manager.get("main_menu/play.png", Texture.class);
+        tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
+        mainMenuPlayButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
+
+        tex = manager.get("main_menu/help.png", Texture.class);
+        tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
+        mainMenuHelpButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
+
+        tex = manager.get("main_menu/fame.png", Texture.class);
+        tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
+        mainMenuFameButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
+
+        tex = manager.get("main_menu/options.png", Texture.class);
+        tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
+        mainMenuOptionsButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
+
+        tex = manager.get("main_menu/shop.png", Texture.class);
+        tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
+        mainMenuShopButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
+    }
+
+    private void loadShopAssets(){
+        manager.load("shop/shopTitle.png", Texture.class);
+
+        manager.load("shop/upgradeBG.png", Texture.class);
+
+        manager.load("shop/upgrade_icon.png", Texture.class);
+
+        manager.load("shop/sliderBG.png", Texture.class);
+        manager.load("shop/sliderBef.png", Texture.class);
+
+        manager.load("shop/coin.png", Texture.class);
+
+        manager.load("shop/buyButtBG.png", Texture.class);
+    }
+
+    private void getShopAssets(){
+        shopSkin = new Skin();
+
+        //set shop title
+        Texture shopTitleTex = manager.get("shop/shopTitle.png", Texture.class);
+        shopSkin.add("shopTitleTex", shopTitleTex);
+
+        //set bg
+        NinePatch bg = new NinePatch(manager.get("shop/upgradeBG.png", Texture.class),40,40,40,40);
+        shopSkin.add("upgradeBG",bg);
+
+        //set progress bar style
+        SliderStyle upgradeSliderStyle = new SliderStyle();
+        upgradeSliderStyle.background = new NinePatchDrawable(new NinePatch(manager.get("shop/sliderBG.png", Texture.class),9,9,9,9));
+        upgradeSliderStyle.knobBefore = new NinePatchDrawable(new NinePatch(manager.get("shop/sliderBef.png", Texture.class),4,4,4,4));
+        shopSkin.add("upgradeSliderStyle", upgradeSliderStyle);
+
+        //setting font
+        fontParam.color = Color.BLACK;
+        fontParam.size = 20;
+
+        //set buy button style
+        ImageTextButton.ImageTextButtonStyle buyButtStyle = new ImageTextButton.ImageTextButtonStyle();
+        buyButtStyle.up = new NinePatchDrawable(new NinePatch(manager.get("shop/buyButtBG.png", Texture.class),11,11,11,11));
+        buyButtStyle.imageUp = new TextureRegionDrawable(new TextureRegion(manager.get("shop/coin.png", Texture.class)));
+        buyButtStyle.font = valueFontGenerator.generateFont(fontParam);
+        shopSkin.add("purchaseButtonStyle",buyButtStyle);
+
+        //set description style
+        Label.LabelStyle labSt = new Label.LabelStyle();
+        labSt.font = valueFontGenerator.generateFont(fontParam);
+        shopSkin.add("descriptionStyle",labSt);
+
+        //set bomb icon
+        Texture bombUpgradeIcon = manager.get("shop/upgrade_icon.png", Texture.class);
+        shopSkin.add("bombUpgradeIcon",bombUpgradeIcon);
     }
 
     private void loadHelpScreenAssets(){
-        fontParam.color = Color.DARK_GRAY;
+        fontParam.color = fontColor;
         fontParam.size = (int)(30 * Poof.V_WIDTH/GameData.baseWidth);
         helpTextFont = valueFontGenerator.generateFont(fontParam);
 
@@ -203,7 +299,7 @@ public class PoofAssetManager {
     }
 
     private void loadOptionsAssets(){
-        fontParam.color = Color.DARK_GRAY;
+        fontParam.color = fontColor;
 
         //Title Style
         fontParam.size = (int)(80 * Poof.V_WIDTH/GameData.baseWidth);
@@ -234,7 +330,7 @@ public class PoofAssetManager {
     }
 
     private void loadPrivacyScreenAssets(){
-        fontParam.color = Color.DARK_GRAY;
+        fontParam.color = fontColor;
 
         //Title Style
         fontParam.size = (int)(70 * Poof.V_WIDTH/GameData.baseWidth);
@@ -254,7 +350,7 @@ public class PoofAssetManager {
     }
 
     private void loadLevelSelectAssets(){
-        fontParam.color = Color.DARK_GRAY;
+        fontParam.color = fontColor;
 
         //Title Style
         fontParam.size = (int)(65 * Poof.V_WIDTH/GameData.baseWidth);
@@ -272,7 +368,7 @@ public class PoofAssetManager {
     }
 
     private void loadGameOverAssets(){
-        fontParam.color = Color.DARK_GRAY;
+        fontParam.color = fontColor;
 
         //Label Font
         fontParam.size = (int)(30 * Poof.V_WIDTH/GameData.baseWidth);
@@ -286,7 +382,7 @@ public class PoofAssetManager {
     }
 
     private void loadPauseScreenAssets(){
-        fontParam.color = Color.DARK_GRAY;
+        fontParam.color = fontColor;
 
         //Title Style
         fontParam.size = (int)(80 * Poof.V_WIDTH/GameData.baseWidth);
@@ -356,7 +452,7 @@ public class PoofAssetManager {
     }
 
     private void loadHUDAssets(){
-        valueFontLoader.fontParameters.color = Color.DARK_GRAY;
+        valueFontLoader.fontParameters.color = fontColor;
         valueFontLoader.fontParameters.size = (int)(20 * Poof.V_WIDTH/GameData.baseWidth);
         manager.load("hudFont.ttf", BitmapFont.class, valueFontLoader);
     }

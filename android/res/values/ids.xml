@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    //for play games
+    <string name="app_id">353366641959</string>
+    <string name="timed_leaderboard_id">CgkIp5qssqQKEAIQAQ</string>
+    <string name="relaxed_leaderboard_id">CgkIp5qssqQKEAIQAg</string>
+    <string name="club_500_leaderboard_id">CgkIp5qssqQKEAIQBA</string>
+
+</resources>

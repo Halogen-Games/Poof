@@ -19,6 +19,13 @@
         android:label="@string/app_name"
         android:theme="@style/GdxTheme"
         android:name="android.support.multidex.MultiDexApplication">
+
+        <!--below 2 meta data for play games-->
+        <meta-data android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id"/>
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
         <activity
             android:name="com.halogengames.poof.AndroidLauncher"
             android:label="@string/app_name" 

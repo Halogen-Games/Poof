@@ -10,6 +10,8 @@ import com.halogengames.poof.widgets.GameBoard;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static com.halogengames.poof.dataLoaders.GameData.prefs;
+
 /**
  * Created by Rohit on 05-10-2017.
  * Handles effects of powerups when used in a match
@@ -19,8 +21,16 @@ import java.util.Random;
 public class TilePower {
     private static RandomBag powers;
 
+    private static int bombRad;
+    private static int timerVal;
+
     public static void init(){
         powers = new RandomBag(1000);
+
+        initPowerProbs();
+
+        bombRad = 0;
+        timerVal = 0;
     }
 
     public static ArrayList<String> getPossiblePowersList(){
@@ -35,6 +45,74 @@ public class TilePower {
 
     public static void setPowerProb(String power, float prob){
         powers.setItemProb(power, prob);
+    }
+
+    private static void initPowerProbs(){
+
+        initTimer();
+
+        initBomb();
+    }
+
+    private static void initTimer(){
+        int currTimerLvl = prefs.getInteger("timerLvl",0);
+        switch(currTimerLvl){
+            case 0:
+                setPowerProb("timer",0);
+                break;
+            case 1:
+                setPowerProb("timer",0.015f);
+                timerVal = 3;
+                break;
+            case 2:
+                setPowerProb("timer",0.03f);
+                timerVal = 3;
+                break;
+            case 3:
+                setPowerProb("timer",0.03f);
+                timerVal = 5;
+                break;
+            case 4:
+                setPowerProb("timer",0.04f);
+                timerVal = 5;
+                break;
+            case 5:
+                setPowerProb("timer",0.04f);
+                timerVal = 7;
+                break;
+            default:throw new RuntimeException("Unknown level for timer upgrade");
+        }
+    }
+
+    private static void initBomb(){
+        int currBombLvl = prefs.getInteger("bombLvl",0);
+        switch(currBombLvl){
+            case 0:
+                setPowerProb("bomb",0);
+                bombRad = 0;
+                break;
+            case 1:
+                setPowerProb("bomb",0.01f);
+                bombRad = 1;
+                break;
+            case 2:
+                setPowerProb("bomb",0.02f);
+                bombRad = 1;
+                break;
+            case 3:
+                setPowerProb("bomb",0.02f);
+                bombRad = 2;
+                break;
+            case 4:
+                setPowerProb("bomb",0.03f);
+                bombRad = 2;
+                break;
+            case 5:
+                setPowerProb("bomb",0.03f);
+                bombRad = 3;
+                break;
+            default:throw new RuntimeException("Unknown level for bomb upgrade");
+        }
     }
 
     public static String generatePower(){

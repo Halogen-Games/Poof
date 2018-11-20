@@ -95,9 +95,6 @@ class PlayScreen implements Screen {
 
         addUIListeners();
 
-        stage.getRoot().setColor(1,1,1,0);
-        stage.getRoot().addAction(Actions.fadeIn(0.2f));
-
         //handle input events
         Gdx.input.setInputProcessor(stage);
     }

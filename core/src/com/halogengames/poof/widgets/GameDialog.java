@@ -56,7 +56,7 @@ public class GameDialog extends Widget {
     }
 
     public void addButton(String label, final Callable listener){
-        TextButton button = new TextButton(label, this.game.assetManager.mainMenuButtonStyle);
+        TextButton button = new TextButton(label, this.game.assetManager.levelSelectButtonStyle);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

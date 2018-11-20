@@ -139,8 +139,6 @@ class PauseScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        stage.getRoot().setColor(1,1,1,0);
-        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     @Override

@@ -28,7 +28,7 @@ android {
         applicationId "com.halogengames.poof"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 17
+        versionCode 18
         versionName "0.17"
         multiDexEnabled true
     }

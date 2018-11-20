@@ -8,7 +8,6 @@ import com.halogengames.poof.Poof;
 import com.halogengames.poof.sprites.Tile;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Created by Rohit on 13-08-2017.
@@ -61,23 +60,7 @@ public class GameData {
 
         prefs = Gdx.app.getPreferences("preferences");
 
-        //Init player id
-        if(prefs.contains("playerID")){
-            playerID = prefs.getString("playerID");
-        }else{
-            playerID = UUID.randomUUID().toString();
-            prefs.putString("playerID",playerID);
-            prefs.flush();
-        }
-
-        game.analyticsManager.addUser(playerID);
-
         showTutorial = prefs.getBoolean("showTutorial", true);
-
-        worldRank = new int[1];
-        worldRank[0] = -1;
-        numGlobalPlayers = new int[1];
-        numGlobalPlayers[0] = -1;
 
         syncHighScores();
 
@@ -112,12 +95,9 @@ public class GameData {
     }
 
     private static void syncHighScores(){
-        //Todo:make this sync better
-        //Sync highScore with dynamoDB
-        GameMode[] gameModesList = {GameMode.Relaxed,GameMode.Timed};
-        for (GameMode mode : gameModesList) {
-            game.db.writeHighScoreToDB(playerID, mode, getHighScore(mode));
-        }
+        //Sync highScore with play games
+        game.leaderboardManager.setRelaxedScore(getHighScore(GameMode.Relaxed));
+        game.leaderboardManager.setTimedScore(getHighScore(GameMode.Timed));
     }
 
     public static void tutorialShown(){
@@ -134,20 +114,18 @@ public class GameData {
         return prefs.getInteger("highScore_" + gameMode, 0);
     }
 
+    public static void saveScore(){
+        switch(gameMode){
+            case Timed: game.leaderboardManager.setTimedScore(score);
+                break;
+            case Relaxed: game.leaderboardManager.setRelaxedScore(score);
+                break;
+        }
+    }
+
     public static void setHighScore(){
         prefs.putInteger("highScore_" + gameMode, score);
         prefs.flush();
-        game.db.writeHighScoreToDB(playerID,gameMode,getHighScore());
-    }
-
-    public static void getPlayerRank(){
-        worldRank[0] = -1;
-        game.db.getRank(gameMode,getHighScore(),worldRank);
-    }
-
-    public static void getNumPlayers(){
-        numGlobalPlayers[0] = -1;
-        game.db.getNumPlayers(gameMode,numGlobalPlayers);
     }
 
     public static void setGameMode(GameMode mode){
@@ -213,8 +191,7 @@ public class GameData {
 
         //set power probs
         TilePower.init();
-        TilePower.setPowerProb("rock",0);
-        TilePower.setPowerProb("bomb",0);
+        TilePower.setPowerProb("rock",0.004f);
 
         switch(gameMode){
             case Relaxed:{
@@ -222,7 +199,7 @@ public class GameData {
                 break;
             }
             case Timed:{
-                TilePower.setPowerProb("timer",0.03f);
+                //nothiing to do here
                 break;
             }
             default: throw new RuntimeException("Unknown Game Mode");

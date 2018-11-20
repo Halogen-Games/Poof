@@ -56,32 +56,16 @@ public class GameOverScreen implements Screen{
         scoreTable.row();
         scoreTable.add(scoreLabel).expandX();
 
+        GameData.saveScore();
+
         //Add highscore label
-        //Todo:Sync setting high score with retrieving rank
         int highScore = GameData.getHighScore();
         if(GameData.score>highScore){
             GameData.setHighScore();
             Label highScoreMsg = new Label("High score made!", this.game.assetManager.gameOverLabelStyle);
             scoreTable.row();
             scoreTable.add(highScoreMsg).expandX().padTop(Poof.V_HEIGHT/10);
-        }else{
-            Label highScoreText = new Label("Highest Score", this.game.assetManager.gameOverLabelStyle);
-            Label highScoreVal = new Label(String.valueOf(highScore), this.game.assetManager.gameOverLabelStyle);
-            scoreTable.row();
-            scoreTable.add(highScoreText).expandX().padTop(Poof.V_HEIGHT/10);
-            scoreTable.row();
-            scoreTable.add(highScoreVal).expandX();
         }
-
-        //Add world rank label
-        GameData.getPlayerRank();
-        GameData.getNumPlayers();
-        Label rankText = new Label("World Rank", this.game.assetManager.gameOverLabelStyle);
-        rankVal = new Label("Calculating", this.game.assetManager.gameOverLabelStyle);
-        scoreTable.row();
-        scoreTable.add(rankText).expandX();
-        scoreTable.row();
-        scoreTable.add(rankVal).expandX();
 
         //Add table to stage
         stage.addActor(scoreTable);
@@ -139,8 +123,6 @@ public class GameOverScreen implements Screen{
     public void show() {
         //to allow stage to identify events
         Gdx.input.setInputProcessor(stage);
-        stage.getRoot().setColor(1,1,1,0);
-        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     private void update(float dt){

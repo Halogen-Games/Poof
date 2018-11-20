@@ -1,24 +1,22 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
-import com.halogengames.poof.dataLoaders.PoofAssetManager;
+import com.badlogic.gdx.utils.Array;
 import com.halogengames.poof.dataLoaders.GameData;
-import com.halogengames.poof.dataLoaders.SoundManager;
 import com.halogengames.poof.Poof;
-import com.halogengames.poof.widgets.UpgradeOption;
+import com.halogengames.poof.utils.items.UpgradeBar;
+import com.halogengames.poof.utils.menus.ScrollMenu;
+import com.halogengames.poof.utils.menus.SelectionMenu;
+import com.halogengames.poof.widgets.upgrades.BombUpgrade;
+import com.halogengames.poof.widgets.upgrades.TimerUpgrade;
 
 import java.util.ArrayList;
 
@@ -33,18 +31,17 @@ class ShopScreen implements Screen{
     private Poof game;
     private Screen prevScreen;
 
-    //Syage used as an input multiplexer
+    //Stage used as an input multiplexer
     private Stage stage;
 
-    private ImageButton next;
-    private ImageButton prev;
-    private ImageButton back;
+    private SelectionMenu upgradeMenu;
 
-    private ArrayList<UpgradeOption> upgradeOptions;
-    private UpgradeOption timer;
-    private UpgradeOption bomb;
-    private UpgradeOption bomb1;
-    private UpgradeOption bomb2;
+    private Texture titleTex;
+    private float titleWidth;
+    private float titleHeight;
+    private Vector2 titlePos;
+
+    private TextButton backButton;
 
     private float numOpsPerPage;
     private float shopTopHeight;
@@ -56,98 +53,90 @@ class ShopScreen implements Screen{
         this.game = game;
         this.prevScreen = prevScr;
 
+        //Title Label
+        titleTex = game.assetManager.shopSkin.get("shopTitleTex", Texture.class);
+        titleWidth = Poof.V_WIDTH*2/3;
+        titleHeight = titleTex.getHeight()*titleWidth/titleTex.getWidth();
+
         //stage is only used as an input multiplexer
         stage = new Stage(Poof.VIEW_PORT, game.batch);
-        upgradeOptions = new ArrayList<UpgradeOption>();
 
-        timer = new UpgradeOption(game, stage);
-        bomb = new UpgradeOption(game, stage);
-        bomb1 = new UpgradeOption(game, stage);
-        upgradeOptions.add(timer);
-        upgradeOptions.add(bomb);
-        upgradeOptions.add(bomb1);
+        //create the menu
+        upgradeMenu = new ScrollMenu(game, 20);
+        upgradeMenu.setWidth(Poof.getViewPort().getWorldWidth()*0.9f);
+
+        //create pages containing upgrades
+        upgradeMenu.addCategory("Power Ups");
+        upgradeMenu.addItem(new BombUpgrade(game));
+
+        upgradeMenu.addCategory("Consumables");
+        upgradeMenu.addItem(new BombUpgrade(game));
+
+        upgradeMenu.addCategory("Consumables");
+        upgradeMenu.addItem(new BombUpgrade(game));
+
+        upgradeMenu.setPosition(Poof.getViewPort().getWorldWidth()/2 - upgradeMenu.getWidth()/2,Poof.V_HEIGHT - 2f*titleHeight-upgradeMenu.getHeight());
 
         shopTopHeight = Poof.V_HEIGHT/5;
         shopBottomHeight = Poof.V_HEIGHT/15;
         numOpsPerPage = 3;
         optionGutter = Poof.V_WIDTH/15;
 
+        backButton = new TextButton("Back", this.game.assetManager.levelSelectButtonStyle);
+        backButton.setPosition(Poof.V_WIDTH/2 - backButton.getWidth()/2,Poof.BANNER_AD_SIZE);
 
-        setOptionsPosData();
-        //addUIListeners();
+        stage.addActor(upgradeMenu);
+        stage.addActor(backButton);
+
+        addUIListeners();
 
         //to allow stage to identify events
         Gdx.input.setInputProcessor(stage);
     }
 
     private void addUIListeners(){
-        bomb.getUpgradeButton().addListener(new ChangeListener() {
+        backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.soundManager.playButtonTap();
-                //todo add data here
-            }
-        });
-
-        timer.getUpgradeButton().addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.soundManager.playButtonTap();
-                //todo add data here
-            }
-        });
-
-        prev.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.soundManager.playButtonTap();
-                //todo add data here
-            }
-        });
-
-        next.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.soundManager.playButtonTap();
-                //todo add data here
-            }
-        });
-
-        back.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.soundManager.playButtonTap();
-                //todo add data here
+                goBack();
             }
         });
     }
 
-    private void setOptionsPosData(){
-        float opWidth = Poof.V_WIDTH - 2*optionGutter;
-        float opHeight = (Poof.V_HEIGHT - Poof.BANNER_AD_SIZE - shopBottomHeight - shopTopHeight - optionGutter)/numOpsPerPage - optionGutter;
-        for(int i=0; i<upgradeOptions.size();i++){
-            upgradeOptions.get(i).setSize(opWidth,opHeight);
-            upgradeOptions.get(i).setPosition(optionGutter,shopBottomHeight + Poof.BANNER_AD_SIZE + (i+1)*(optionGutter) + i*opHeight);
-        }
+    private void goBack(){
+        Gdx.input.setInputProcessor(null);
+        game.soundManager.playButtonTap();
+        dispose();
+        game.setScreen(prevScreen);
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        stage.getRoot().setColor(1,1,1,0);
-        stage.getRoot().addAction(Actions.fadeIn(0.2f));
+    }
+
+    public void update(float dt){
+        upgradeMenu.setPosition(Poof.getViewPort().getWorldWidth()/2 - upgradeMenu.getWidth()/2,Poof.V_HEIGHT - 2*titleHeight-upgradeMenu.getHeight());
     }
 
     @Override
     public void render(float delta){
+        update(delta);
         stage.act(delta);
 
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        game.batch.setProjectionMatrix(Poof.CAM.combined);
+
         game.bg.render(delta);
 
+        stage.act(delta);
         stage.draw();
+
+        game.batch.begin();
+        game.batch.draw(titleTex,Poof.V_WIDTH/2 - titleWidth/2, Poof.V_HEIGHT*0.9f - titleHeight, titleWidth, titleHeight);
+        game.batch.end();
     }
 
     @Override

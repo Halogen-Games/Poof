@@ -8,6 +8,7 @@ import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.Poof;
 import com.halogengames.poof.dataLoaders.SoundManager;
+import com.halogengames.poof.widgets.Background;
 
 /**
  * Created by Rohit on 22-10-2017.
@@ -50,6 +51,7 @@ public class SplashScreen implements Screen {
         logoHeight = logoWidth*logo.getHeight()/logo.getWidth();
 
         if(this.game.assetManager.isLoaded() && this.game.soundManager.isLoaded()){
+            game.bg = new Background(game);
             game.showGDPRConsentPageIfNeeded();
         }
     }

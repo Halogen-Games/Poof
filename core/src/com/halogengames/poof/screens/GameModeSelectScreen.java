@@ -1,9 +1,12 @@
 package com.halogengames.poof.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -48,8 +51,8 @@ class GameModeSelectScreen implements Screen{
         table.setFillParent(true);
 
         //Title Label
-        Label title = new Label("Select\nGame Mode", this.game.assetManager.levelSelectTitleStyle);
-        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
+        Label title = new Label("Game Mode", this.game.assetManager.levelSelectTitleStyle);
+        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight() - 1.5f*title.getHeight(), Align.center);
         title.setAlignment(Align.center);
 
         //Adding buttons
@@ -97,10 +100,18 @@ class GameModeSelectScreen implements Screen{
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.input.setInputProcessor(null);
-                game.soundManager.playButtonTap();
-                dispose();
-                game.setScreen(prevScreen);
+                goBack();
+            }
+        });
+
+        stage.addListener(new InputListener(){
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if(keycode == Input.Keys.BACK){
+                    goBack();
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -109,14 +120,20 @@ class GameModeSelectScreen implements Screen{
         Gdx.input.setInputProcessor(null);
         game.soundManager.mainMenuMusic.stop();
         dispose();
+        //fixme: main menu not disposed. Possible memory leak?
         game.setScreen(new PlayScreen(game));
+    }
+
+    private void goBack(){
+        Gdx.input.setInputProcessor(null);
+        game.soundManager.playButtonTap();
+        dispose();
+        game.setScreen(prevScreen);
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        stage.getRoot().setColor(1,1,1,0);
-        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     @Override

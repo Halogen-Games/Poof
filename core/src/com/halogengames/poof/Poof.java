@@ -9,13 +9,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.halogengames.poof.AWS.analytics.AWSPinpointInterface;
 import com.halogengames.poof.advertisement.AdInterface;
 import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.dataLoaders.SoundManager;
-import com.halogengames.poof.AWS.database.CoreScoreDB;
-import com.halogengames.poof.dataLoaders.TilePower;
+import com.halogengames.poof.leaderboard.LeaderboardManager;
 import com.halogengames.poof.library.BasicShapes;
 import com.halogengames.poof.library.WidgetStack;
 import com.halogengames.poof.screens.MainMenuScreen;
@@ -39,6 +37,9 @@ public class Poof extends Game {
     public PoofAssetManager assetManager;
     public SoundManager soundManager;
 
+    //Game Data
+	public LeaderboardManager leaderboardManager;
+
 	//Drawing Objects
 	public SpriteBatch batch;
 	public ShapeRenderer renderer;
@@ -51,19 +52,15 @@ public class Poof extends Game {
 	//DB object
     public AdInterface adManager;
 
-    //AWS Objects
-    public CoreScoreDB db;
-	public AWSPinpointInterface analyticsManager;
-
 	public Background bg;
 
 	public boolean adShowing;
 
-	public Poof(CoreScoreDB db, AdInterface adManager, AWSPinpointInterface analyticsManager){
-        this.db = db;
+	public Poof(LeaderboardManager leaderboardManager, AdInterface adManager){
         this.adManager = adManager;
         this.adManager.setInterstitialRate(4);
-        this.analyticsManager = analyticsManager;
+
+        this.leaderboardManager = leaderboardManager;
 
         adShowing = false;
 
@@ -85,9 +82,6 @@ public class Poof extends Game {
 		shaper = new BasicShapes(this);
 
 		widgetStack = new WidgetStack(this);
-
-		//defining Background
-		bg = new Background(this);
 
 		//Camera and viewport
 		CAM = new OrthographicCamera(Poof.V_WIDTH, Poof.V_HEIGHT);
@@ -154,6 +148,22 @@ public class Poof extends Game {
 	public void resize(int width, int height) {
 		Poof.VIEW_PORT.update(width,height);
 		Poof.EXTEND_VIEW_PORT.update(width,height);
+	}
+
+	public SpriteBatch getBatch() {
+		return batch;
+	}
+
+	public static Viewport getViewPort() {
+		return VIEW_PORT;
+	}
+
+	public static OrthographicCamera getCam() {
+		return CAM;
+	}
+
+	public PoofAssetManager getAssetManager() {
+		return assetManager;
 	}
 }
 

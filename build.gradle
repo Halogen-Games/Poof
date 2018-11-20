@@ -58,17 +58,19 @@ project(":android") {
         // Amazon Cognito dependencies for user access to AWS resources
         implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
 
-        // AmazonDynamoDB dependencies for NoSQL Database
-        implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.23'
-
         //Amazon pinpoint for analytics
         implementation 'com.amazonaws:aws-android-sdk-pinpoint:2.6.23'
 
-
+        //for multidexing the app
         implementation 'com.android.support:multidex:1.0.3'
 
         //for chartboost
         implementation 'com.google.android.gms:play-services-ads:15.0.1'
+
+        //for play games services
+        implementation 'com.google.android.gms:play-services-auth:16.0.1'
+        implementation 'com.google.android.gms:play-services-games:16.0.0'
+
         implementation fileTree(dir: 'libs/chartboost', include: ['*.jar']) //imported in this way due to libGdx
 
         //for fetching region

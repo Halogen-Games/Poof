@@ -85,8 +85,6 @@ class HelpScreen implements Screen {
 
     @Override
     public void show() {
-        stage.getRoot().setColor(1,1,1,0);
-        stage.getRoot().addAction(Actions.fadeIn(0.2f));
     }
 
     private void update(float dt){
