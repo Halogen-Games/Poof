@@ -117,6 +117,8 @@ public class PrivacyScreen implements Screen {
 
         game.bg.render(delta);
 
+        game.batch.setProjectionMatrix(Poof.CAM.combined);
+
         String text = "We use some of your data to improve user experience, save high scores and show ads.\nCan we continue to use your data to tailor ads for you?";
 
         game.batch.begin();

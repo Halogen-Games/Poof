@@ -45,7 +45,6 @@ public class GameData {
 
     //player data
     public static Preferences prefs;
-    private static String playerID;
     public static int score;
 
     //todo: find a better way than using arrays below
@@ -68,7 +67,7 @@ public class GameData {
 
         baseWidth = 540;
 
-        maxTime = 60;
+        maxTime = 2;
 
         numBoardCols = 6;
         numBoardRows = 6;
@@ -159,27 +158,27 @@ public class GameData {
         }
 
         //new colors
-        if(score>=1500 && oldScore/400 != score/400){
+        if(score>=1200 && oldScore/300 != score/300){
             shiftTileColors();
         }
-        if(score>=750 && oldScore/200 != score/200){
+        if(score>=500 && oldScore/150 != score/150){
             shiftTileColors();
         }
 
         //power addition
         //Note: I don't expect the score to rise so much in a move so that one of the below blocks is skipped as score increases
-        if(score >= 2500 && oldScore<2500){
+        if(score >= 1500 && oldScore<1500){
             TilePower.setPowerProb("rock",0.025f);
-        }else if(score >= 2000 && oldScore<2000){
+        }else if(score >= 1000 && oldScore<1000){
             TilePower.setPowerProb("rock",0.020f);
-        }else if(score >= 1500 && oldScore<1500){
+        }else if(score >= 600 && oldScore<600){
             TilePower.setPowerProb("bomb",0.025f);
             TilePower.setPowerProb("rock",0.016f);
-        }else if(score >= 1000 && oldScore<1000){
+        }else if(score >= 400 && oldScore<400){
             TilePower.setPowerProb("rock",0.013f);
-        }else if(score>=500 && oldScore<500){
+        }else if(score>=200 && oldScore<200){
             TilePower.setPowerProb("bomb",0.020f);
-        }else if(score>=250 && oldScore<250){
+        }else if(score>=100 && oldScore<100){
             TilePower.setPowerProb("rock",0.01f);
         }
     }
@@ -189,9 +188,12 @@ public class GameData {
         levelTimer = maxTime;
         score = 0;
 
+        tileColors.shuffle();
+
         //set power probs
         TilePower.init();
-        TilePower.setPowerProb("rock",0.004f);
+        TilePower.setPowerProb("rock",0);
+        TilePower.setPowerProb("bomb",0);
 
         switch(gameMode){
             case Relaxed:{
@@ -199,7 +201,7 @@ public class GameData {
                 break;
             }
             case Timed:{
-                //nothiing to do here
+                TilePower.setPowerProb("timer",0.03f);
                 break;
             }
             default: throw new RuntimeException("Unknown Game Mode");

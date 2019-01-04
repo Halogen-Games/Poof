@@ -3,9 +3,12 @@ package com.halogengames.poof.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -28,14 +31,18 @@ class PauseScreen implements Screen {
     //to return back to the game
     private Screen playScr;
 
-    //Font
+    //Title Tex
+    private Texture titleTex;
+    private float titleWidth;
+    private float titleHeight;
+
     private Stage stage;
 
     //buttons
-    private TextButton resumeButton;
-    private TextButton restartButton;
-    private TextButton optionsButton;
-    private TextButton mainMenuButton;
+    private ImageButton resumeButton;
+    private ImageButton restartButton;
+    private ImageButton optionsButton;
+    private ImageButton mainMenuButton;
 
     PauseScreen(Poof game, PlayScreen scr){
         this.playScr = scr;
@@ -49,25 +56,29 @@ class PauseScreen implements Screen {
         table.setFillParent(true);
 
         //Title Label
-        Label title = new Label("Paused!!!", this.game.assetManager.pauseTitleStyle);
-        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
+        titleTex = game.assetManager.pauseTitleTex;
+        titleWidth = Poof.V_WIDTH*2/3;
+        titleHeight = titleTex.getHeight()*titleWidth/titleTex.getWidth();
 
         //Adding buttons
-        resumeButton = new TextButton("Resume", this.game.assetManager.pauseButtonStyle);
-        restartButton = new TextButton("Restart", this.game.assetManager.pauseButtonStyle);
-        optionsButton = new TextButton("Options", this.game.assetManager.pauseButtonStyle);
-        mainMenuButton = new TextButton("Main Menu", this.game.assetManager.pauseButtonStyle);
+        resumeButton = new ImageButton(this.game.assetManager.UISkin.get("resumeButton", ImageButton.ImageButtonStyle.class));
+        restartButton = new ImageButton(this.game.assetManager.UISkin.get("restartButton", ImageButton.ImageButtonStyle.class));
+        optionsButton = new ImageButton(this.game.assetManager.UISkin.get("optionsButton", ImageButton.ImageButtonStyle.class));
+        mainMenuButton = new ImageButton(this.game.assetManager.UISkin.get("mainMenuButton", ImageButton.ImageButtonStyle.class));
         addUIListeners();
 
+        //assuming all buttons are same size
+        float buttWidth = game.assetManager.buttWidth;
+        float buttHeight = resumeButton.getHeight()*buttWidth/resumeButton.getWidth();
+
         //adding buttons to table and table to stage
-        table.add(resumeButton);
+        table.add(resumeButton).size(buttWidth,buttHeight).padTop(game.assetManager.buttPadding);
         table.row();
-        table.add(restartButton);
+        table.add(restartButton).size(buttWidth,buttHeight).padTop(game.assetManager.buttPadding);
         table.row();
-        table.add(optionsButton);
+        table.add(optionsButton).size(buttWidth,buttHeight).padTop(game.assetManager.buttPadding);
         table.row();
-        table.add(mainMenuButton);
-        stage.addActor(title);
+        table.add(mainMenuButton).size(buttWidth,buttHeight).padTop(game.assetManager.buttPadding);
         stage.addActor(table);
 
         //to allow stage to identify events
@@ -151,6 +162,12 @@ class PauseScreen implements Screen {
         game.bg.render(delta);
 
         stage.draw();
+
+        game.batch.setProjectionMatrix(Poof.CAM.combined);
+
+        game.batch.begin();
+        game.batch.draw(titleTex,Poof.V_WIDTH/2 - titleWidth/2, Poof.V_HEIGHT*0.9f - titleHeight, titleWidth, titleHeight);
+        game.batch.end();
     }
 
     @Override

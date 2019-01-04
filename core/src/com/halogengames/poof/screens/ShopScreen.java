@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
@@ -41,7 +42,7 @@ class ShopScreen implements Screen{
     private float titleHeight;
     private Vector2 titlePos;
 
-    private TextButton backButton;
+    private ImageTextButton backButton;
 
     private float numOpsPerPage;
     private float shopTopHeight;
@@ -82,7 +83,7 @@ class ShopScreen implements Screen{
         numOpsPerPage = 3;
         optionGutter = Poof.V_WIDTH/15;
 
-        backButton = new TextButton("Back", this.game.assetManager.levelSelectButtonStyle);
+        backButton = new ImageTextButton("Back", this.game.assetManager.UISkin.get("textButtStyle_2", ImageTextButton.ImageTextButtonStyle.class));
         backButton.setPosition(Poof.V_WIDTH/2 - backButton.getWidth()/2,Poof.BANNER_AD_SIZE);
 
         stage.addActor(upgradeMenu);

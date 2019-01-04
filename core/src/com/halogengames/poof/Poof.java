@@ -91,7 +91,7 @@ public class Poof extends Game {
 		CAM.position.set(VIEW_PORT.getWorldWidth()/2, VIEW_PORT.getWorldHeight()/2, 0);
 
 		//todo: set this dynamically somehow
-        BANNER_AD_SIZE = 150;
+        BANNER_AD_SIZE = V_HEIGHT/10;
 
         //Init GameData
         GameData.init(this);

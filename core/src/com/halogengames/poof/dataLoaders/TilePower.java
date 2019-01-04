@@ -27,7 +27,7 @@ public class TilePower {
     public static void init(){
         powers = new RandomBag(1000);
 
-        initPowerProbs();
+        //initPowerProbs();
 
         bombRad = 0;
         timerVal = 0;

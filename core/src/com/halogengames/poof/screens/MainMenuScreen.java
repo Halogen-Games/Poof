@@ -67,7 +67,7 @@ public class MainMenuScreen implements Screen {
         addUIListeners();
 
         playButtSize = Poof.V_WIDTH/3;
-        smallButtSize = Poof.V_WIDTH/6;
+        smallButtSize = Poof.V_WIDTH/5;
 
         //set size
         playButton.setSize(playButtSize,playButtSize);
@@ -78,16 +78,16 @@ public class MainMenuScreen implements Screen {
 
         //set positions
         playButton.setPosition(Poof.VIEW_PORT.getWorldWidth()/2 - playButton.getWidth()/2, Poof.VIEW_PORT.getWorldHeight()/2.5f - playButton.getHeight()/2);
-        optionsButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*1/6 - hallOfFameButton.getWidth()/2, playButton.getY() - optionsButton.getHeight()*1f);
-        helpButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*2/6 - hallOfFameButton.getWidth()/2, playButton.getY() - helpButton.getHeight()*2f);
-        shopButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*4/6 - hallOfFameButton.getWidth()/2, playButton.getY() - helpButton.getHeight()*2f);
-        hallOfFameButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*5/6 - hallOfFameButton.getWidth()/2, playButton.getY() - hallOfFameButton.getHeight()*1f);
+        optionsButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*1/5 - hallOfFameButton.getWidth()/2, playButton.getY() - optionsButton.getHeight()*1f);
+        helpButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*2/4 - hallOfFameButton.getWidth()/2, playButton.getY() - helpButton.getHeight()*1.5f);
+        //shopButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*4/6 - hallOfFameButton.getWidth()/2, playButton.getY() - helpButton.getHeight()*2f);
+        hallOfFameButton.setPosition(Poof.VIEW_PORT.getWorldWidth()*4/5 - hallOfFameButton.getWidth()/2, playButton.getY() - hallOfFameButton.getHeight()*1f);
 
         stage.addActor(hallOfFameButton);
         stage.addActor(optionsButton);
         stage.addActor(helpButton);
         stage.addActor(playButton);
-        stage.addActor(shopButton);
+        //stage.addActor(shopButton);
 
         //to allow stage to identify events
         Gdx.input.setInputProcessor(stage);

@@ -5,10 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.Poof;
@@ -32,8 +31,8 @@ public class GameOverScreen implements Screen{
     private Label rankVal;
 
     //Buttons
-    private TextButton replayButton;
-    private TextButton mainMenuButton;
+    private ImageButton restartButton;
+    private ImageButton mainMenuButton;
 
     //Constructor
     public GameOverScreen(Poof game){
@@ -77,20 +76,24 @@ public class GameOverScreen implements Screen{
         table.setFillParent(true);
 
         //Add buttons
-        replayButton = new TextButton("Replay", this.game.assetManager.gameOverButtonStyle);
-        mainMenuButton = new TextButton("Main Menu", this.game.assetManager.gameOverButtonStyle);
+        restartButton = new ImageButton(this.game.assetManager.UISkin.get("restartButton", ImageButton.ImageButtonStyle.class));
+        mainMenuButton = new ImageButton(this.game.assetManager.UISkin.get("mainMenuButton", ImageButton.ImageButtonStyle.class));
 
         addUIListeners();
 
+        //assuming all buttons are same size
+        float buttWidth = game.assetManager.buttWidth;
+        float buttHeight = restartButton.getHeight()*buttWidth/restartButton.getWidth();
+
         //Add buttons to table and table to stage
-        table.add(replayButton);
+        table.add(restartButton).size(buttWidth,buttHeight).padTop(game.assetManager.buttPadding);
         table.row();
-        table.add(mainMenuButton);
+        table.add(mainMenuButton).size(buttWidth,buttHeight).padTop(game.assetManager.buttPadding);
         stage.addActor(table);
     }
 
     private void addUIListeners(){
-        replayButton.addListener(new ChangeListener() {
+        restartButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.soundManager.playButtonTap();
@@ -126,13 +129,6 @@ public class GameOverScreen implements Screen{
     }
 
     private void update(float dt){
-        if(GameData.worldRank[0]>0 && GameData.numGlobalPlayers[0]>0) {
-            rankVal.setText(String.valueOf(GameData.worldRank[0])+" of "+String.valueOf(GameData.numGlobalPlayers[0]));
-        }
-
-        if(GameData.worldRank[0]==GameData.NO_NETWORK || GameData.numGlobalPlayers[0]==GameData.NO_NETWORK) {
-            rankVal.setText("No Internet!");
-        }
     }
 
     @Override

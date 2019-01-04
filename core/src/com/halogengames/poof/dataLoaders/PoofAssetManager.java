@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -45,7 +46,8 @@ public class PoofAssetManager {
 
     //Skin
     public Skin shopSkin;
-    private Color fontColor = Color.BLACK;
+    public Skin UISkin;
+    private Color fontColor = Color.DARK_GRAY;
 
     //Font Generators
     public FreeTypeFontGenerator labelFontGenerator;
@@ -56,6 +58,13 @@ public class PoofAssetManager {
     public ArrayList<Texture> bgShapes;
     private ArrayList<String> bgShapesList;
     public Texture gradientBg;
+
+    public float buttWidth = Poof.V_WIDTH*3/8;
+    public float buttHeight = Poof.V_HEIGHT/15;
+    public float dialogButtHeight = Poof.V_HEIGHT/12;
+    public float buttPadding = buttHeight/4;
+
+    private int cornerRad = 15 + 5;
 
     //Main Menu Assets
     public Texture mainMenuTitleTex;
@@ -69,9 +78,11 @@ public class PoofAssetManager {
     public BitmapFont helpTextFont;
     public Animation<TextureRegion> helpAnim;
 
+    //Game Mode Select Title Screen
+    public Texture modeSelectTitleTex;
+
     //Options Screen Assets
-    public LabelStyle optionsTitleStyle;
-    public TextButtonStyle optionsButtonStyle;
+    public Texture optionsTitleTex;
     public SliderStyle optionsMusicSliderStyle;
     public SliderStyle optionsSoundSliderStyle;
 
@@ -80,18 +91,12 @@ public class PoofAssetManager {
     public TextButtonStyle privacyButtonStyle;
     public TextButtonStyle privacyPolicyButtonStyle;
 
-    //Level Screen Assets
-    public LabelStyle levelSelectTitleStyle;
-    public TextButtonStyle levelSelectButtonStyle;
-    public TextButtonStyle levelSelectGreyedButtonStyle;
-
     //Game Over Screen Assets
     public LabelStyle gameOverLabelStyle;
     public TextButtonStyle gameOverButtonStyle;
 
     //Pause Screen Assets
-    public LabelStyle pauseTitleStyle;
-    public TextButtonStyle pauseButtonStyle;
+    public Texture pauseTitleTex;
 
     //Play Screen Assets
     public Drawable playScreenPauseButtonDrawable;
@@ -107,6 +112,8 @@ public class PoofAssetManager {
     public PoofAssetManager(){
         manager = new AssetManager();
 
+        UISkin = new Skin();
+
         spriteAnims = new ArrayMap<String, Animation<TextureRegion>>();
 
         //Todo: load fonts using asset manager as well like in hud
@@ -116,18 +123,18 @@ public class PoofAssetManager {
         manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 
         labelFontLoader = new FreeTypeFontLoaderParameter();
-        labelFontLoader.fontFileName = "fonts/comic_sans_ms.ttf";
+        labelFontLoader.fontFileName = "fonts/arialRoundedMTBold.ttf";
         labelFontLoader.fontParameters.minFilter = TextureFilter.Linear;
         labelFontLoader.fontParameters.magFilter = TextureFilter.Linear;
 
         valueFontLoader = new FreeTypeFontLoaderParameter();
-        valueFontLoader.fontFileName = "fonts/comic_sans_ms.ttf";
+        valueFontLoader.fontFileName = "fonts/arialRoundedMTBold.ttf";
         valueFontLoader.fontParameters.minFilter = TextureFilter.Linear;
         valueFontLoader.fontParameters.magFilter = TextureFilter.Linear;
 
 //        Font Generators
-        labelFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/comic_sans_ms.ttf"));
-        valueFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/comic_sans_ms.ttf"));
+        labelFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arialRoundedMTBold.ttf"));
+        valueFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arialRoundedMTBold.ttf"));
 
         //font param common settings
         fontParam = new FreeTypeFontParameter();
@@ -141,7 +148,7 @@ public class PoofAssetManager {
         loadHelpScreenAssets();
         loadOptionsAssets();
         loadPrivacyScreenAssets();
-        loadLevelSelectAssets();
+        loadModeSelectAssets();
         loadGameOverAssets();
         loadPauseScreenAssets();
         loadPlayScreenAssets();
@@ -164,9 +171,9 @@ public class PoofAssetManager {
         getHelpScreenAssets();
         getOptionsAssets();
 //        getPrivacyScreenAssets();
-//        getLevelSelectAssets();
+        getModeSelectAssets();
 //        getGameOverAssets();
-//        getPauseScreenAssets();
+        getPauseScreenAssets();
         getPlayScreenAssets();
         getBoardAssets();
         getHUDAssets();
@@ -186,6 +193,14 @@ public class PoofAssetManager {
         }
 
         manager.load("common/blue_bg.png", Texture.class);
+
+        //UI Skin Assets
+
+        manager.load("common/blank_np_bg.png", Texture.class);
+        manager.load("buttons/yesButt.png", Texture.class);
+        manager.load("buttons/noButt.png", Texture.class);
+        manager.load("buttons/okButt.png", Texture.class);
+        manager.load("buttons/backButt.png", Texture.class);
     }
 
     private void getCommonAssets(){
@@ -195,38 +210,71 @@ public class PoofAssetManager {
         }
 
         gradientBg = manager.get("common/blue_bg.png", Texture.class);
+
+        //Set UI Skin
+        fontParam.color = Color.BLACK;
+        fontParam.size = 20;
+
+        Texture tex = manager.get("common/blank_np_bg.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        Drawable npDrawable = new NinePatchDrawable(new NinePatch(tex,cornerRad,cornerRad,cornerRad,cornerRad));
+        UISkin.add("blankNinePatchBG", npDrawable);
+
+        ImageButton.ImageButtonStyle yesButt = new ImageButton.ImageButtonStyle();
+        tex = manager.get("buttons/yesButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        yesButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("yesButton", yesButt);
+
+        ImageButton.ImageButtonStyle noButt = new ImageButton.ImageButtonStyle();
+        tex = manager.get("buttons/noButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        noButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("noButton", noButt);
+
+        ImageButton.ImageButtonStyle okButt = new ImageButton.ImageButtonStyle();
+        tex = manager.get("buttons/okButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        okButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("okButton", okButt);
+
+        ImageButton.ImageButtonStyle backButt = new ImageButton.ImageButtonStyle();
+        tex = manager.get("buttons/backButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        backButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("backButton", backButt);
     }
 
     private void loadMainMenuAssets(){
-        manager.load("main_menu/title.png", Texture.class);
-        manager.load("main_menu/play.png", Texture.class);
-        manager.load("main_menu/fame.png", Texture.class);
-        manager.load("main_menu/options.png", Texture.class);
-        manager.load("main_menu/help.png", Texture.class);
-        manager.load("main_menu/shop.png", Texture.class);
+        manager.load("titles/poofTitle.png", Texture.class);
+        manager.load("buttons/play.png", Texture.class);
+        manager.load("buttons/fame.png", Texture.class);
+        manager.load("buttons/options.png", Texture.class);
+        manager.load("buttons/help.png", Texture.class);
+        manager.load("buttons/shop.png", Texture.class);
     }
 
     private void getMainMenuAssets(){
-        mainMenuTitleTex = manager.get("main_menu/title.png", Texture.class);
+        mainMenuTitleTex = manager.get("titles/poofTitle.png", Texture.class);
         mainMenuTitleTex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
 
-        Texture tex = manager.get("main_menu/play.png", Texture.class);
+        Texture tex = manager.get("buttons/play.png", Texture.class);
         tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
         mainMenuPlayButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
 
-        tex = manager.get("main_menu/help.png", Texture.class);
+        tex = manager.get("buttons/help.png", Texture.class);
         tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
         mainMenuHelpButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
 
-        tex = manager.get("main_menu/fame.png", Texture.class);
+        tex = manager.get("buttons/fame.png", Texture.class);
         tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
         mainMenuFameButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
 
-        tex = manager.get("main_menu/options.png", Texture.class);
+        tex = manager.get("buttons/options.png", Texture.class);
         tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
         mainMenuOptionsButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
 
-        tex = manager.get("main_menu/shop.png", Texture.class);
+        tex = manager.get("buttons/shop.png", Texture.class);
         tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
         mainMenuShopButtonDrawable = new TextureRegionDrawable(new TextureRegion(tex));
     }
@@ -251,6 +299,7 @@ public class PoofAssetManager {
 
         //set shop title
         Texture shopTitleTex = manager.get("shop/shopTitle.png", Texture.class);
+        shopTitleTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         shopSkin.add("shopTitleTex", shopTitleTex);
 
         //set bg
@@ -295,38 +344,46 @@ public class PoofAssetManager {
 
     private void getHelpScreenAssets(){
         TextureAtlas helpAtlas = manager.get("manual/animation/slide_anim.txt", TextureAtlas.class);
-        helpAnim = new Animation<TextureRegion>(0.033f, helpAtlas.findRegions("slide"), Animation.PlayMode.LOOP);
+        helpAnim = new Animation<TextureRegion>(0.033f, helpAtlas.findRegions("Slide"), Animation.PlayMode.LOOP);
     }
 
     private void loadOptionsAssets(){
-        fontParam.color = fontColor;
-
-        //Title Style
-        fontParam.size = (int)(80 * Poof.V_WIDTH/GameData.baseWidth);
-        optionsTitleStyle = new LabelStyle();
-        optionsTitleStyle.font = labelFontGenerator.generateFont(fontParam);
-
-        //Button Style
-        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
-        optionsButtonStyle = new TextButtonStyle();
-        optionsButtonStyle.font = labelFontGenerator.generateFont(fontParam);
+        manager.load("titles/optionsTitle.png", Texture.class);
 
         //load slider assets
-        manager.load("slider/musicKnob.png", Texture.class);
-        manager.load("slider/musicBG.png", Texture.class);
-        manager.load("slider/soundKnob.png", Texture.class);
-        manager.load("slider/soundBG.png", Texture.class);
+        manager.load("options/musicKnob.png", Texture.class);
+        manager.load("options/musicBG.png", Texture.class);
+        manager.load("options/soundKnob.png", Texture.class);
+        manager.load("options/soundBG.png", Texture.class);
+
+        manager.load("buttons/privacyButt.png", Texture.class);
     }
 
     private void getOptionsAssets(){
+        optionsTitleTex = manager.get("titles/optionsTitle.png", Texture.class);
+        optionsTitleTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
         //Slider Styles
         optionsMusicSliderStyle = new SliderStyle();
-        optionsMusicSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(manager.get("slider/musicKnob.png",Texture.class)));
-        optionsMusicSliderStyle.background = new TextureRegionDrawable(new TextureRegion(manager.get("slider/musicBG.png",Texture.class)));
+        Texture tex = manager.get("options/musicKnob.png",Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        optionsMusicSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(tex));
+
+        tex = manager.get("options/musicBG.png",Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        optionsMusicSliderStyle.background = new TextureRegionDrawable(new TextureRegion(tex));
 
         optionsSoundSliderStyle = new SliderStyle();
-        optionsSoundSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(manager.get("slider/soundKnob.png",Texture.class)));
-        optionsSoundSliderStyle.background = new TextureRegionDrawable(new TextureRegion(manager.get("slider/soundBG.png",Texture.class)));
+        tex = manager.get("options/soundKnob.png",Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        optionsSoundSliderStyle.knob = new TextureRegionDrawable(new TextureRegion(tex));
+        tex = manager.get("options/soundBG.png",Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        optionsSoundSliderStyle.background = new TextureRegionDrawable(new TextureRegion(tex));
+
+        ImageButton.ImageButtonStyle privacyButt = new ImageButton.ImageButtonStyle();
+        privacyButt.up = new TextureRegionDrawable(new TextureRegion(manager.get("buttons/privacyButt.png", Texture.class)));
+        UISkin.add("privacyButton", privacyButt);
     }
 
     private void loadPrivacyScreenAssets(){
@@ -349,29 +406,35 @@ public class PoofAssetManager {
         privacyPolicyButtonStyle.font = labelFontGenerator.generateFont(fontParam);
     }
 
-    private void loadLevelSelectAssets(){
-        fontParam.color = fontColor;
+    private void loadModeSelectAssets(){
+        manager.load("titles/gameModeTitle.png", Texture.class);
 
-        //Title Style
-        fontParam.size = (int)(65 * Poof.V_WIDTH/GameData.baseWidth);
-        levelSelectTitleStyle = new LabelStyle();
-        levelSelectTitleStyle.font = labelFontGenerator.generateFont(fontParam);
+        manager.load("buttons/timedButt.png", Texture.class);
+        manager.load("buttons/relaxedButt.png", Texture.class);
+    }
 
-        //Button Style
-        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
-        levelSelectButtonStyle = new TextButtonStyle();
-        levelSelectButtonStyle.font = labelFontGenerator.generateFont(fontParam);
+    private void getModeSelectAssets(){
+        modeSelectTitleTex = manager.get("titles/gameModeTitle.png", Texture.class);
+        modeSelectTitleTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        fontParam.color = new Color(Color.LIGHT_GRAY);
-        levelSelectGreyedButtonStyle = new TextButtonStyle();
-        levelSelectGreyedButtonStyle.font = labelFontGenerator.generateFont(fontParam);
+        ImageButton.ImageButtonStyle timedButt = new ImageButton.ImageButtonStyle();
+        Texture tex = manager.get("buttons/timedButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        timedButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("timedButton", timedButt);
+
+        ImageButton.ImageButtonStyle relaxedButt = new ImageButton.ImageButtonStyle();
+        tex = manager.get("buttons/relaxedButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        relaxedButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("relaxedButton", relaxedButt);
     }
 
     private void loadGameOverAssets(){
         fontParam.color = fontColor;
 
         //Label Font
-        fontParam.size = (int)(30 * Poof.V_WIDTH/GameData.baseWidth);
+        fontParam.size = (int)(60 * Poof.V_WIDTH/GameData.baseWidth);
         gameOverLabelStyle = new LabelStyle();
         gameOverLabelStyle.font = valueFontGenerator.generateFont(fontParam);
 
@@ -382,17 +445,41 @@ public class PoofAssetManager {
     }
 
     private void loadPauseScreenAssets(){
-        fontParam.color = fontColor;
+        manager.load("titles/pauseTitle.png", Texture.class);
 
-        //Title Style
-        fontParam.size = (int)(80 * Poof.V_WIDTH/GameData.baseWidth);
-        pauseTitleStyle = new LabelStyle();
-        pauseTitleStyle.font = labelFontGenerator.generateFont(fontParam);
+        manager.load("buttons/resumeButt.png", Texture.class);
+        manager.load("buttons/restartButt.png", Texture.class);
+        manager.load("buttons/optionsButt.png", Texture.class);
+        manager.load("buttons/mainMenuButt.png", Texture.class);
+    }
 
-        //Button Style
-        fontParam.size = (int)(50 * Poof.V_WIDTH/GameData.baseWidth);
-        pauseButtonStyle = new TextButtonStyle();
-        pauseButtonStyle.font = labelFontGenerator.generateFont(fontParam);
+    private void getPauseScreenAssets(){
+        pauseTitleTex = manager.get("titles/pauseTitle.png", Texture.class);
+        pauseTitleTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        ImageButton.ImageButtonStyle resumeButt = new ImageButton.ImageButtonStyle();
+        Texture tex = manager.get("buttons/resumeButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        resumeButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("resumeButton", resumeButt);
+
+        ImageButton.ImageButtonStyle restartButt = new ImageButton.ImageButtonStyle();
+        tex = manager.get("buttons/restartButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        restartButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("restartButton", restartButt);
+
+        ImageButton.ImageButtonStyle optionsButt = new ImageButton.ImageButtonStyle();
+        tex = manager.get("buttons/optionsButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        optionsButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("optionsButton", optionsButt);
+
+        ImageButton.ImageButtonStyle mainMenuButt = new ImageButton.ImageButtonStyle();
+        tex = manager.get("buttons/mainMenuButt.png", Texture.class);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        mainMenuButt.up = new TextureRegionDrawable(new TextureRegion(tex));
+        UISkin.add("mainMenuButton", mainMenuButt);
     }
 
     private void loadPlayScreenAssets(){
@@ -414,7 +501,7 @@ public class PoofAssetManager {
     }
 
     private void loadBoardAssets(){
-        //Tile Texturess
+        //Tile Textures
         for(int i = 0; i<GameData.tileColors.size; i++){
             String color = GameData.tileColors.get(i);
             manager.load("tiles/tile_" + color + ".png",Texture.class);
@@ -432,8 +519,13 @@ public class PoofAssetManager {
         tileTextures = new ArrayMap<String, Texture>();
         for(int i = 0; i<GameData.tileColors.size; i++){
             String color = GameData.tileColors.get(i);
-            tileTextures.put(color+"_tile", manager.get("tiles/tile_" + color + ".png",Texture.class));
-            tileTextures.put(color+"_tile_touched", manager.get("tiles/tile_" + color + "_touched.png",Texture.class));
+            Texture tex = manager.get("tiles/tile_" + color + ".png",Texture.class);
+            tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
+            tileTextures.put(color+"_tile", tex);
+
+            tex = manager.get("tiles/tile_" + color + "_touched.png",Texture.class);
+            tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
+            tileTextures.put(color+"_tile_touched", tex);
         }
 
         for (String key:tileTextures.keys()){
@@ -443,8 +535,11 @@ public class PoofAssetManager {
         //Power Textures
         powerTextures = new ArrayMap<String, Texture>();
         for (String power:TilePower.getPossiblePowersList()){
-            if(power != null)
-                powerTextures.put(power, manager.get("tiles/tile_" + power + ".png",Texture.class));
+            if(power != null) {
+                Texture tex = manager.get("tiles/tile_" + power + ".png", Texture.class);
+                tex.setFilter(TextureFilter.Linear,TextureFilter.Linear);
+                powerTextures.put(power, tex);
+            }
         }
         for (String key:powerTextures.keys()){
             powerTextures.get(key).setFilter(TextureFilter.Linear, TextureFilter.Linear);

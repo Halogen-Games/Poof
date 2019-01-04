@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
@@ -55,8 +57,8 @@ public class GameDialog extends Widget {
         this.sizeChanged();
     }
 
-    public void addButton(String label, final Callable listener){
-        TextButton button = new TextButton(label, this.game.assetManager.levelSelectButtonStyle);
+    public void addButton(String buttSkin, final Callable listener){
+        ImageButton button = new ImageButton(this.game.assetManager.UISkin.get(buttSkin, ImageButton.ImageButtonStyle.class));
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -65,12 +67,15 @@ public class GameDialog extends Widget {
                 try{
                     listener.call();
                 }catch(Exception e){
-                    throw new RuntimeException("Dialogue button func error");
+                    throw new RuntimeException(e.getMessage());
                 }
             }
         });
-        table.add(button).expandX().padTop(buttonTopPad).padBottom(gutter);
-        this.setHeight(textHeight + 2*gutter + buttonTopPad + button.getHeight());
+        float height = game.assetManager.dialogButtHeight;
+        float width = button.getWidth()*height/button.getHeight();
+
+        table.add(button).expandX().padBottom(gutter).size(width,height);
+        this.setHeight(textHeight + 2*gutter + buttonTopPad + height);
     }
 
     @Override

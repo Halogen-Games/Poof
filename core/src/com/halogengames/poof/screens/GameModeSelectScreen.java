@@ -4,12 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -28,17 +33,23 @@ import com.halogengames.poof.Poof;
 class GameModeSelectScreen implements Screen{
     //the game for sprite batch
     private Poof game;
+    private Skin skin;
     private Screen prevScreen;
+
+    private Texture titleTex;
+    private float titleWidth;
+    private float titleHeight;
 
     //To add the buttons on the screen
     private Stage stage;
-    private TextButton timedButton;
-    private TextButton relaxedButton;
-    private TextButton backButton;
+    private ImageButton timedButton;
+    private ImageButton relaxedButton;
+    private ImageButton backButton;
 
     //Constructor
     GameModeSelectScreen(Poof game, Screen prevScr){
         this.game = game;
+        this.skin = game.getAssetManager().UISkin;
         this.prevScreen = prevScr;
 
         //stage
@@ -51,27 +62,28 @@ class GameModeSelectScreen implements Screen{
         table.setFillParent(true);
 
         //Title Label
-        Label title = new Label("Game Mode", this.game.assetManager.levelSelectTitleStyle);
-        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight() - 1.5f*title.getHeight(), Align.center);
-        title.setAlignment(Align.center);
+        titleTex = game.assetManager.modeSelectTitleTex;
+        titleWidth = Poof.V_WIDTH*2/3;
+        titleHeight = titleTex.getHeight()*titleWidth/titleTex.getWidth();
 
         //Adding buttons
-        timedButton = new TextButton("Timed", this.game.assetManager.levelSelectButtonStyle);
-        relaxedButton = new TextButton("Relaxed", this.game.assetManager.levelSelectButtonStyle);
-        TextButton comingSoonButton = new TextButton("Coming Soon...", this.game.assetManager.levelSelectGreyedButtonStyle);
-        backButton = new TextButton("Back", this.game.assetManager.levelSelectButtonStyle);
+        timedButton = new ImageButton(skin.get("timedButton", ImageButton.ImageButtonStyle.class));
+        float timedButtonScale = game.assetManager.buttWidth/timedButton.getWidth();
+
+        relaxedButton = new ImageButton(skin.get("relaxedButton", ImageButton.ImageButtonStyle.class));
+        float relaxedButtonScale = game.assetManager.buttWidth/relaxedButton.getWidth();
+
+        backButton = new ImageButton(skin.get("backButton", ImageButton.ImageButtonStyle.class));
+        float backButtonScale = game.assetManager.buttWidth/backButton.getWidth();
         addUIListeners();
 
         //adding buttons to table and table to stage
-        table.add(timedButton);
+        table.add(timedButton).size(game.assetManager.buttWidth,timedButtonScale*backButton.getHeight()).padTop(game.assetManager.buttPadding);
         table.row();
-        table.add(relaxedButton);
+        table.add(relaxedButton).size(game.assetManager.buttWidth,relaxedButtonScale*backButton.getHeight()).padTop(game.assetManager.buttPadding);
         table.row();
-        table.add(comingSoonButton);
-        table.row();
-        table.add(backButton).padTop(Poof.V_HEIGHT/10);
+        table.add(backButton).size(game.assetManager.buttWidth,backButtonScale*backButton.getHeight()).padTop(5*game.assetManager.buttPadding);
 
-        stage.addActor(title);
         stage.addActor(table);
 
         //to allow stage to identify events
@@ -146,6 +158,12 @@ class GameModeSelectScreen implements Screen{
         game.bg.render(delta);
 
         stage.draw();
+
+        game.batch.setProjectionMatrix(Poof.CAM.combined);
+
+        game.batch.begin();
+        game.batch.draw(titleTex,Poof.V_WIDTH/2 - titleWidth/2, Poof.V_HEIGHT*0.9f - titleHeight, titleWidth, titleHeight);
+        game.batch.end();
     }
 
     @Override

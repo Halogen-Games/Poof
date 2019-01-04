@@ -262,10 +262,8 @@ class PlayScreen implements Screen {
         //Create the continue dialogue
         final GameDialog dialog = new GameDialog(text, this.game);
 
-        text = "OK";
-
         if(showRewardAd) {
-            dialog.addButton("Sure!", new Callable() {
+            dialog.addButton("yesButton", new Callable() {
                 @Override
                 public Object call() {
                     rewardGiven = true;
@@ -289,16 +287,22 @@ class PlayScreen implements Screen {
                 }
             });
 
-            text = "No";
+            dialog.addButton("noButton", new Callable() {
+                @Override
+                public Object call() {
+                    this_handle.gameOver();
+                    return null;
+                }
+            });
+        } else{
+            dialog.addButton("okButton", new Callable() {
+                @Override
+                public Object call() {
+                    this_handle.gameOver();
+                    return null;
+                }
+            });
         }
-
-        dialog.addButton(text, new Callable() {
-            @Override
-            public Object call() {
-                this_handle.gameOver();
-                return null;
-            }
-        });
     }
 
     private void showRewardConfirmation(){
@@ -319,7 +323,7 @@ class PlayScreen implements Screen {
         //Create the reward confirmation dialogue
         final GameDialog dialog = new GameDialog(text, this.game);
 
-        dialog.addButton("OK", new Callable() {
+        dialog.addButton("okButton", new Callable() {
             @Override
             public Object call() {
                 resume();

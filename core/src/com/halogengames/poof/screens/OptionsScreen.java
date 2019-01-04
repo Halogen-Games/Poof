@@ -3,9 +3,12 @@ package com.halogengames.poof.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -25,14 +28,19 @@ class OptionsScreen implements Screen {
 
     private Screen prevScreen;
 
+    //Title Tex
+    private Texture titleTex;
+    private float titleWidth;
+    private float titleHeight;
+
     //Sliders
     private Slider musicSlider;
     private Slider soundSlider;
 
     //To add the buttons on the screen
     private Stage stage;
-    private TextButton backButton;
-    private TextButton privacyButton;
+    private ImageButton backButton;
+    private ImageButton privacyButton;
 
     OptionsScreen(Poof game, Screen prevScr){
         this.game = game;
@@ -49,12 +57,15 @@ class OptionsScreen implements Screen {
         table.setFillParent(true);
 
         //Add Label
-        Label title = new Label("Options", this.game.assetManager.optionsTitleStyle);
-        title.setPosition(Poof.VIEW_PORT.getWorldWidth()/2, Poof.VIEW_PORT.getWorldHeight()*0.9f - title.getHeight(), Align.center);
+        titleTex = game.assetManager.optionsTitleTex;
+        titleWidth = Poof.V_WIDTH*2/3;
+        titleHeight = titleTex.getHeight()*titleWidth/titleTex.getWidth();
 
         //adding back button
-        backButton = new TextButton("Back", this.game.assetManager.optionsButtonStyle);
-        privacyButton = new TextButton("Privacy", this.game.assetManager.optionsButtonStyle);
+        backButton = new ImageButton(game.assetManager.UISkin.get("backButton", ImageButton.ImageButtonStyle.class));
+        float buttonScale = game.assetManager.buttWidth/backButton.getWidth();
+
+        privacyButton = new ImageButton(game.assetManager.UISkin.get("privacyButton", ImageButton.ImageButtonStyle.class));
 
         //adding sliders
         musicSlider = new Slider(0,1,0.01f,false, this.game.assetManager.optionsMusicSliderStyle);
@@ -68,14 +79,13 @@ class OptionsScreen implements Screen {
         //adding buttons to table and table to stage
         table.add(musicSlider).width(Poof.V_WIDTH*0.65f).padBottom(Poof.V_HEIGHT/15);
         table.row();
-        table.add(soundSlider).width(Poof.V_WIDTH*0.65f).padBottom(Poof.V_HEIGHT/10);
+        table.add(soundSlider).width(Poof.V_WIDTH*0.65f).padBottom(Poof.V_HEIGHT/15);
         if(game.adManager.isEURegion()) {
             table.row();
-            table.add(privacyButton);
+            table.add(privacyButton).size(buttonScale*privacyButton.getWidth(),buttonScale*privacyButton.getHeight()).padTop(game.assetManager.buttPadding);
         }
         table.row();
-        table.add(backButton);
-        stage.addActor(title);
+        table.add(backButton).size(game.assetManager.buttWidth,buttonScale*backButton.getHeight()).padTop(game.assetManager.buttPadding);
         stage.addActor(table);
 
         //to allow stage to identify events
@@ -128,6 +138,7 @@ class OptionsScreen implements Screen {
 
     private void openGDPRScreen(){
         Gdx.input.setInputProcessor(null);
+        game.soundManager.playButtonTap();
         game.setScreen(new PrivacyScreen(game,this));
     }
 
@@ -149,6 +160,12 @@ class OptionsScreen implements Screen {
         game.bg.render(delta);
 
         stage.draw();
+
+        game.batch.setProjectionMatrix(Poof.CAM.combined);
+
+        game.batch.begin();
+        game.batch.draw(titleTex,Poof.V_WIDTH/2 - titleWidth/2, Poof.V_HEIGHT*0.9f - titleHeight, titleWidth, titleHeight);
+        game.batch.end();
     }
 
     @Override

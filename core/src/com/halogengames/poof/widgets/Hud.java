@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.halogengames.poof.dataLoaders.PoofAssetManager;
 import com.halogengames.poof.dataLoaders.GameData;
 import com.halogengames.poof.Poof;
@@ -31,33 +33,42 @@ public class Hud {
         //align table to top of stage
         table.top();
         //set table to size of stage
-        table.setFillParent(true);
+        //table.setFillParent(true);
 
         //define the labels
         Label timeTextLabel = new Label("TIME", this.game.assetManager.hudLabelStyle);
         timeLabel = new Label(String.valueOf((int)Math.ceil(GameData.levelTimer)), this.game.assetManager.hudLabelStyle);
         Label scoreTextLabel = new Label("SCORE", this.game.assetManager.hudLabelStyle);
         scoreLabel = new Label(String.valueOf(GameData.score), this.game.assetManager.hudLabelStyle);
-        Label highscoreTextLabel = new Label("Best", this.game.assetManager.hudLabelStyle);
+        Label highscoreTextLabel = new Label("BEST", this.game.assetManager.hudLabelStyle);
         Label highscoreLabel = new Label(String.valueOf(GameData.getHighScore()), this.game.assetManager.hudLabelStyle);
 
-        table.add(highscoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
-        table.add(scoreTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
+        table.add(highscoreTextLabel).expandX();
+        table.add(scoreTextLabel).expandX();
         if(GameData.getGameMode() == GameData.GameMode.Timed){
-            table.add(timeTextLabel).expandX().padTop(Poof.V_HEIGHT*0.01f);
+            table.add(timeTextLabel).expandX();
         }
+
         table.row();
+
         table.add(highscoreLabel).expandX();
         table.add(scoreLabel).expandX();
         if(GameData.getGameMode() == GameData.GameMode.Timed){
             table.add(timeLabel).expandX();
         }
 
+        table.setBackground(game.assetManager.UISkin.get("blankNinePatchBG",NinePatchDrawable.class));
+
+        table.pack();
+        table.setWidth(Poof.V_WIDTH*0.95f);
+        table.setPosition(Poof.V_WIDTH/2 - table.getWidth()/2,Poof.V_HEIGHT-Poof.V_WIDTH*0.025f-table.getHeight());
+
         stage.addActor(table);
     }
 
     public void draw(){
         update();
+
         stage.draw();
     }
 

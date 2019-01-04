@@ -132,7 +132,7 @@ public class Tile extends Sprite{
             batch.draw(getTexture(), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
         }
         if(tilePower != null ){
-            batch.draw(this.game.assetManager.powerTextures.get(tilePower), parentXPos + getX(), parentYPos + getY(), tileSize, tileSize);
+            batch.draw(this.game.assetManager.powerTextures.get(tilePower), parentXPos + getX() + tileSize/10, parentYPos + getY() + tileSize/10, tileSize*0.8f, tileSize*0.8f);
         }
     }
 

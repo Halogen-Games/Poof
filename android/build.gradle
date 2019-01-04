@@ -5,7 +5,7 @@ Changed Task Run() to Task RunAndroid() below
  */
 
 android {
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     compileSdkVersion 26
     sourceSets {
         main {

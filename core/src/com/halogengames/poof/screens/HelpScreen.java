@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -33,7 +35,7 @@ class HelpScreen implements Screen {
 
     //To add the buttons on the screen
     private Stage stage;
-    private TextButton backButton;
+    private ImageButton backButton;
 
     //for animation
     private TextureRegion animTex;
@@ -56,11 +58,12 @@ class HelpScreen implements Screen {
         table.setFillParent(true);
 
         //Adding buttons
-        backButton = new TextButton("Back", this.game.assetManager.pauseButtonStyle);
+        backButton = new ImageButton(game.assetManager.UISkin.get("backButton", ImageButton.ImageButtonStyle.class));
+        float backButtonScale = game.assetManager.buttWidth/backButton.getWidth();
         addUIListeners();
 
         //adding buttons to table and table to stage
-        table.add(backButton);
+        table.add(backButton).size(game.assetManager.buttWidth,backButtonScale*backButton.getHeight()).padTop(game.assetManager.buttPadding);
         stage.addActor(table);
 
         //to allow stage to identify events
@@ -92,7 +95,7 @@ class HelpScreen implements Screen {
         animTex = this.game.assetManager.helpAnim.getKeyFrame(elapsed);
 
         animWidth = Poof.VIEW_PORT.getWorldWidth()*0.8f;
-        animHeight = animTex.getRegionHeight() * animWidth/animTex.getRegionWidth();
+        animHeight = animTex.getRegionHeight()* animWidth/animTex.getRegionWidth();
     }
 
     @Override
@@ -103,28 +106,28 @@ class HelpScreen implements Screen {
         Gdx.gl.glClearColor(GameData.clearColor.r, GameData.clearColor.g, GameData.clearColor.b, GameData.clearColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        game.batch.setProjectionMatrix(Poof.CAM.combined);
-
         game.bg.render(delta);
+
+        game.batch.setProjectionMatrix(Poof.CAM.combined);
 
         game.batch.begin();
         //todo: (Low Priority) remove below hardcoded animWidth/15 and make animations such that their center is centered at screen as well
         game.batch.draw(
-                animTex,
-                Poof.VIEW_PORT.getWorldWidth()/2 - animWidth/2 + animWidth/15,
-                Poof.VIEW_PORT.getWorldHeight()*0.8f - animHeight,
-                animWidth,
-                animHeight
+            animTex,
+            Poof.VIEW_PORT.getWorldWidth()/2 - animWidth/2 + animWidth/15,
+            Poof.VIEW_PORT.getWorldHeight()*0.8f - animHeight,
+            animWidth,
+            animHeight
         );
 
         this.game.assetManager.helpTextFont.draw(
-                game.batch,
-                "Drag to select a chain of similar colored blocks to remove them from the board",
-                Poof.VIEW_PORT.getWorldWidth()*0.1f,
-                Poof.VIEW_PORT.getWorldHeight()*0.7f - animHeight,
-                Poof.VIEW_PORT.getWorldWidth()*0.8f,
-                Align.center,
-                true
+            game.batch,
+            "Drag to select a chain of similar colored blocks to remove them from the board",
+            Poof.VIEW_PORT.getWorldWidth()*0.1f,
+            Poof.VIEW_PORT.getWorldHeight()*0.7f - animHeight,
+            Poof.VIEW_PORT.getWorldWidth()*0.8f,
+            Align.center,
+            true
         );
         game.batch.end();
 

@@ -1,701 +1,701 @@
 slide_anim-0.png
-size: 1526, 1785
+size: 1516, 1740
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 1
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 2
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 3
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 4
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 5
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 6
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 7
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 8
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 9
-slide
+Slide
   rotate: false
-  xy: 764, 1
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 10
-slide
+Slide
   rotate: false
-  xy: 764, 1
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 11
-slide
+Slide
   rotate: false
-  xy: 764, 1
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 12
-slide
+Slide
   rotate: false
-  xy: 764, 1
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 13
-slide
+Slide
   rotate: false
-  xy: 764, 1
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 14
-slide
+Slide
   rotate: false
-  xy: 1, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 15
-slide
+Slide
   rotate: false
-  xy: 764, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 16
-slide
+Slide
   rotate: false
-  xy: 1, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 17
-slide
+Slide
   rotate: false
-  xy: 764, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 18
-slide
+Slide
   rotate: false
-  xy: 1, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 19
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 20
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 21
-slide
+Slide
   rotate: false
-  xy: 764, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 22
 
 slide_anim-1.png
-size: 1526, 1785
+size: 1516, 1740
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 23
-slide
+Slide
   rotate: false
-  xy: 764, 1
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 24
-slide
+Slide
   rotate: false
-  xy: 1, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 25
-slide
+Slide
   rotate: false
-  xy: 764, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 26
-slide
+Slide
   rotate: false
-  xy: 1, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 27
-slide
+Slide
   rotate: false
-  xy: 764, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 28
-slide
+Slide
   rotate: false
-  xy: 1, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 29
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 30
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 31
-slide
+Slide
   rotate: false
-  xy: 764, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 32
 
 slide_anim-2.png
-size: 1526, 1785
+size: 1516, 1740
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 33
-slide
+Slide
   rotate: false
-  xy: 764, 1
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 34
-slide
+Slide
   rotate: false
-  xy: 1, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 35
-slide
+Slide
   rotate: false
-  xy: 764, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 36
-slide
+Slide
   rotate: false
-  xy: 1, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 37
-slide
+Slide
   rotate: false
-  xy: 764, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 38
-slide
+Slide
   rotate: false
-  xy: 1, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 39
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 40
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 41
-slide
+Slide
   rotate: false
-  xy: 764, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 42
 
 slide_anim-3.png
-size: 1526, 1785
+size: 1516, 1740
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 43
-slide
+Slide
   rotate: false
-  xy: 764, 1
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 44
-slide
+Slide
   rotate: false
-  xy: 1, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 45
-slide
+Slide
   rotate: false
-  xy: 764, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 46
-slide
+Slide
   rotate: false
-  xy: 1, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 47
-slide
+Slide
   rotate: false
-  xy: 764, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 48
-slide
+Slide
   rotate: false
-  xy: 1, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 49
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 50
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 51
-slide
+Slide
   rotate: false
-  xy: 764, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 52
 
 slide_anim-4.png
-size: 1526, 1785
+size: 1516, 1740
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-slide
+Slide
   rotate: false
   xy: 1, 1
-  size: 761, 355
-  orig: 761, 355
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 53
-slide
+Slide
   rotate: false
-  xy: 764, 1
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 54
-slide
+Slide
   rotate: false
-  xy: 1, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 55
-slide
+Slide
   rotate: false
-  xy: 764, 358
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 349
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 56
-slide
+Slide
   rotate: false
-  xy: 1, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 57
-slide
+Slide
   rotate: false
-  xy: 764, 715
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 697
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 58
-slide
+Slide
   rotate: false
-  xy: 1, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 59
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 60
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 61
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 62
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 63
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 64
-slide
+Slide
   rotate: false
-  xy: 764, 1072
-  size: 761, 355
-  orig: 761, 355
+  xy: 1, 1393
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 65
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 66
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 67
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 68
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 69
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 70
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 71
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 72
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 73
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 74
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 75
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 76
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 77
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 78
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 79
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 80
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 81
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 82
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 83
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 84
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 85
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 86
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 87
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 88
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 89
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 90
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 91
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 92
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 93
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 94
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 95
-slide
+Slide
   rotate: false
-  xy: 1, 1429
-  size: 761, 355
-  orig: 761, 355
+  xy: 759, 1045
+  size: 756, 346
+  orig: 756, 346
   offset: 0, 0
   index: 96
